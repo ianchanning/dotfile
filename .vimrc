@@ -1,6 +1,8 @@
 " vim-pathogen
 execute pathogen#infect()
 
+syntax enable
+set background=dark
 " Solarized
 try
     colorscheme solarized
