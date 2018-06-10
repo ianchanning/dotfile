@@ -1,12 +1,17 @@
-" vim-pathogen
-execute pathogen#infect()
+set nocompatible              " be iMproved, required
+filetype off                  " required
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'tpope/vim-fugitive'
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 syntax enable
 set background=dark
-" Solarized
 try
     colorscheme solarized
-catch
 endtry
 
 " With a map leader it's possible to do extra key combinations
