@@ -15,6 +15,7 @@ try
     " In a Gnome terminal, 
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     colorscheme solarized
+catch
 endtry
 
 " With a map leader it's possible to do extra key combinations
