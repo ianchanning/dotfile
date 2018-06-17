@@ -23,31 +23,31 @@ Plugin 'tpope/vim-vinegar'
 " comment stuff
 Plugin 'tpope/vim-commentary'
 " status bar
-" Plugin 'vim-airline/vim-airline'
-" Plugin 'vim-airline/vim-airline-themes'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 " Searching
-" Plugin 'jremmen/vim-ripgrep'
-" Plugin 'junegunn/fzf'
-" Plugin 'junegunn/fzf.vim'
+Plugin 'jremmen/vim-ripgrep'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 " Zeal
-" Plugin 'KabbAmine/zeavim.vim'
+Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 " Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-" Plugin 'w0rp/ale'
+Plugin 'w0rp/ale'
 " Plugin 'vim-syntastic/syntastic'
 " distraction free mode
-" Plugin 'junegunn/goyo.vim'
+Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 " Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
 " Plugin 'vim-scripts/AutoClose' " delimitMate alternative
-" Plugin 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 " JavaScript
-" Plugin 'mtscout6/syntastic-local-eslint.vim'
-" Plugin 'pangloss/vim-javascript'
-" Plugin 'mxw/vim-jsx'
+Plugin 'mtscout6/syntastic-local-eslint.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 " docblocks
-" Plugin 'heavenshell/vim-jsdoc'
+Plugin 'heavenshell/vim-jsdoc'
 " Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
@@ -71,7 +71,7 @@ Plugin 'tpope/vim-commentary'
 " Plugin 'Shougo/vimproc'
 " Markdown
 " Causes slow down when viewing a mardown page
-" Plugin 'plasticboy/vim-markdown'
+Plugin 'plasticboy/vim-markdown'
 " Asynchronous tasks
 " Plugin 'skywind3000/asyncrun.vim'
 " Powershell
