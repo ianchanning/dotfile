@@ -5,6 +5,7 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
 " gives a reasonable linebar without plugins
@@ -21,31 +22,32 @@ Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-vinegar'
 " comment stuff
 Plugin 'tpope/vim-commentary'
+" status bar
+" Plugin 'vim-airline/vim-airline'
+" Plugin 'vim-airline/vim-airline-themes'
 " Searching
 " Plugin 'jremmen/vim-ripgrep'
 " Plugin 'junegunn/fzf'
 " Plugin 'junegunn/fzf.vim'
 " Zeal
 " Plugin 'KabbAmine/zeavim.vim'
-
 " highlight tabs and spaces at the end of lines
 " Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
+" Plugin 'w0rp/ale'
 " Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 " Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 " Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
 " Plugin 'vim-scripts/AutoClose' " delimitMate alternative
-" Plugin 'vim-airline/vim-airline'
-" Plugin 'vim-airline/vim-airline-themes'
+" Plugin 'ervandew/supertab'
 " JavaScript
 " Plugin 'mtscout6/syntastic-local-eslint.vim'
 " Plugin 'pangloss/vim-javascript'
 " Plugin 'mxw/vim-jsx'
 " docblocks
 " Plugin 'heavenshell/vim-jsdoc'
-
 " Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
@@ -55,27 +57,24 @@ Plugin 'tpope/vim-commentary'
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
 " Plugin 'SirVer/ultisnips'
-
 " Python
 " Plugin 'davidhalter/jedi-vim'
 " Plugin 'cjrh/vim-conda'
-"
 " @link https://www.youtube.com/watch?v=YhqsjUUHj6g
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
 " Plugin 'Align'
 " Plugin 'SQLUtilities'
-" Plugin 'ervandew/supertab'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
 " Plugin 'Shougo/vimproc'
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-
+" Markdown
 " Causes slow down when viewing a mardown page
 " Plugin 'plasticboy/vim-markdown'
+" Asynchronous tasks
 " Plugin 'skywind3000/asyncrun.vim'
+" Powershell
 " Plugin 'PProvost/vim-ps1'
 
 call vundle#end()            " required
@@ -96,7 +95,7 @@ endtry
 " override the default and turn off whitespace warnings
 try 
     let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
-    let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+    " let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 catch
 endtry
 
@@ -217,9 +216,9 @@ endtry
 
 " Syntastic + eslint
 try
-   set statusline+=%#warningmsg#
-   set statusline+=%{SyntasticStatuslineFlag()}
-   set statusline+=%*
+   " set statusline+=%#warningmsg#
+   " set statusline+=%{SyntasticStatuslineFlag()}
+   " set statusline+=%*
 
    let g:syntastic_always_populate_loc_list = 1
    let g:syntastic_auto_loc_list = 1
@@ -253,7 +252,7 @@ let g:mapleader = ","
 
 " Enable syntax highlighting
 syntax enable
-if &diff || !has("gui_running")
+if &diff
     " setup for diff/cmd mode
     set background=light
 else
