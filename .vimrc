@@ -73,9 +73,9 @@ Plugin 'SQLUtilities'
 " Causes slow down when viewing a mardown page
 Plugin 'plasticboy/vim-markdown'
 " Asynchronous tasks
-" Plugin 'skywind3000/asyncrun.vim'
+Plugin 'skywind3000/asyncrun.vim'
 " Powershell
-" Plugin 'PProvost/vim-ps1'
+Plugin 'PProvost/vim-ps1'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -95,7 +95,7 @@ endtry
 " override the default and turn off whitespace warnings
 try 
     let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
-    " let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+    let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     let g:airline_powerline_fonts = 1
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
@@ -220,13 +220,16 @@ map <leader>rw :Rg -tjs -tcss -thtml <cword><cr>
 " xml
 map <leader>rx :Rg -Txml -Ttags <cword><cr>
 
-map <leader>ag :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword><cr>
-map <leader>af :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword>\(<cr>
-
 " FZF
-map <leader>f :Files!<cr>
-map <leader>ft :BTags!<cr>
-map <leader>fb :Buffers!<cr>
+if has("gui_running")
+    map <leader>f :Files!<cr>
+    map <leader>ft :BTags!<cr>
+    map <leader>fb :Buffers!<cr>
+else
+    map <leader>f :Files<cr>
+    map <leader>ft :BTags<cr>
+    map <leader>fb :Buffers<cr>
+endif
 
 " Async Tags
 map <leader>at :AsyncRun ctags -R .<cr>
