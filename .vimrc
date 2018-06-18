@@ -35,7 +35,7 @@ Plugin 'KabbAmine/zeavim.vim'
 " Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
 " Plugin 'w0rp/ale'
-Plugin 'vim-syntastic/syntastic'
+" Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
@@ -48,15 +48,15 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
-Plugin 'shawncplus/phpcomplete.vim'
+" Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
-Plugin 'tobyS/vmustache'
-Plugin 'tobyS/pdv'
+" Plugin 'tobyS/vmustache'
+" Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 " Python
 " Plugin 'davidhalter/jedi-vim'
 " Plugin 'cjrh/vim-conda'
@@ -64,8 +64,8 @@ Plugin 'SirVer/ultisnips'
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
-Plugin 'Align'
-Plugin 'SQLUtilities'
+" Plugin 'Align'
+" Plugin 'SQLUtilities'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
 " Plugin 'Shougo/vimproc'
@@ -73,9 +73,9 @@ Plugin 'SQLUtilities'
 " Causes slow down when viewing a mardown page
 Plugin 'plasticboy/vim-markdown'
 " Asynchronous tasks
-Plugin 'skywind3000/asyncrun.vim'
+" Plugin 'skywind3000/asyncrun.vim'
 " Powershell
-Plugin 'PProvost/vim-ps1'
+" Plugin 'PProvost/vim-ps1'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -86,16 +86,18 @@ filetype plugin indent on    " required
 " =============
 
 " Vim Markdown
-try 
+try
     let g:vim_markdown_folding_disabled = 1
 catch
 endtry
 
 " Airline
 " override the default and turn off whitespace warnings
-try 
+try
     let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
-    let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+    if exists("g:asyncrun_status")
+        let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+    endif
     let g:airline_powerline_fonts = 1
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
@@ -135,22 +137,22 @@ endtry
 
 " PHP doc block
 " @link https://github.com/tobyS/pdv
-" try
+try
     let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
-    " nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<CR>
-    map <leader>d :call pdv#DocumentWithSnip()<CR>
-" catch
-" endtry
+catch
+endtry
+" nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<CR>
+map <leader>d :call pdv#DocumentWithSnip()<CR>
 
 " @link https://github.com/heavenshell/vim-jsdoc
-try 
+try
     let g:jsdoc_allow_input_prompt = 1
     let g:jsdoc_input_description = 1
 catch
 endtry
 
 " toggle distraction free
-" map <leader>gg :Goyo<cr>
+map <leader>gg :Goyo<cr>
 
 " Javascript doc block
 " map <leader>// :JsDoc<cr>
@@ -164,7 +166,7 @@ map <leader>" ysiw"
 map <leader>td :Tabularize /\$\w*/l1<cr>
 
 " python-mode
-try 
+try
     " try and prevent rope slowdown
     " let g:pymode_rope_lookup_project = 0
     " Override go-to.definition key shortcut to Ctrl-]
@@ -247,24 +249,26 @@ endtry
 
 " Syntastic + eslint
 try
-   set statusline+=%#warningmsg#
-   set statusline+=%{SyntasticStatuslineFlag()}
-   set statusline+=%*
+    if has('gui_running')
+        set statusline+=%#warningmsg#
+        set statusline+=%{SyntasticStatuslineFlag()}
+        set statusline+=%*
+    endif
 
-   let g:syntastic_always_populate_loc_list = 1
-   let g:syntastic_auto_loc_list = 1
-   let g:syntastic_check_on_open = 0
-   let g:syntastic_check_on_wq = 1
-   " eslint
-   " @todo add link to where I got these from
-   let g:syntastic_javascript_checkers = ['eslint']
-   let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-   " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-   let g:syntastic_php_checkers = ['php']
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 1
+    let g:syntastic_check_on_open = 0
+    let g:syntastic_check_on_wq = 1
+    " eslint
+    " @todo add link to where I got these from
+    let g:syntastic_javascript_checkers = ['eslint']
+    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+    let g:syntastic_php_checkers = ['php']
 
-   " Sillyness with unicode
-   " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-   let g:syntastic_error_symbol = "✗"
+    " Sillyness with unicode
+    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+    let g:syntastic_error_symbol = "✗"
 catch
 endtry
 
@@ -390,13 +394,13 @@ autocmd BufWrite *.ctp :call DeleteTrailingWS()
 " if the file doesn't exist create it from a template
 function! OpenLog()
     " @todo change this to ~/log
-	let logdir = 'C:\Users\Ian\SparkleShare\sparkleshare\work\log\'
-	let logfile = logdir . strftime("%Y-%m-%d.md")
-	" @link https://stackoverflow.com/a/3098685/327074
-	if !filereadable(logfile)
-		execute ':!cp ' . logdir . 'template.md ' . logfile
-	endif
-	execute ':e ' . logfile
+    let logdir = 'C:\Users\Ian\SparkleShare\sparkleshare\work\log\'
+    let logfile = logdir . strftime("%Y-%m-%d.md")
+    " @link https://stackoverflow.com/a/3098685/327074
+    if !filereadable(logfile)
+        execute ':!cp ' . logdir . 'template.md ' . logfile
+    endif
+    execute ':e ' . logfile
 endfunction
 
 " }}}
