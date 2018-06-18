@@ -82,6 +82,14 @@ filetype plugin indent on    " required
 
 
 " }}}
+" General"{{{
+" =======
+" With a map leader it's possible to do extra key combinations
+let mapleader = ","
+let g:mapleader = ","
+
+
+" }}}
 " Plugin config"{{{
 " =============
 
@@ -274,14 +282,6 @@ endtry
 
 
 " }}}
-" General"{{{
-" =======
-" With a map leader it's possible to do extra key combinations
-let mapleader = ","
-let g:mapleader = ","
-
-
-" }}}
 " Colors and Fonts"{{{
 " ================
 
@@ -312,7 +312,8 @@ if has("gui_running")
         if &diff
             set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
         else
-            set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
+            " set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
+            set guifont=Source_Code_Pro_Light:h15:cANSI
         endif
     endif
 endif
