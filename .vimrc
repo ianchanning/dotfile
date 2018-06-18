@@ -34,8 +34,8 @@ Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 " Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-Plugin 'w0rp/ale'
-" Plugin 'vim-syntastic/syntastic'
+" Plugin 'w0rp/ale'
+Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
@@ -48,15 +48,15 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
-" Plugin 'shawncplus/phpcomplete.vim'
+Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
-" Plugin 'tobyS/vmustache'
-" Plugin 'tobyS/pdv'
+Plugin 'tobyS/vmustache'
+Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
-" Plugin 'SirVer/ultisnips'
+Plugin 'SirVer/ultisnips'
 " Python
 " Plugin 'davidhalter/jedi-vim'
 " Plugin 'cjrh/vim-conda'
@@ -64,8 +64,8 @@ Plugin 'heavenshell/vim-jsdoc'
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
-" Plugin 'Align'
-" Plugin 'SQLUtilities'
+Plugin 'Align'
+Plugin 'SQLUtilities'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
 " Plugin 'Shougo/vimproc'
@@ -205,37 +205,31 @@ try
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
     " let rg_web = '-tjs -tcss -thtml' 
     " let rg_xml = '-Txml -Ttags'
-    " map <leader>rg :Rg -tphp expand("<cword>")<cr>
-    map <leader>rg :Rg<cr>
-    " current word in the current buffer
-    map <leader>rb :Rg <cword> %<cr>
-    " php
-    map <leader>rp :Rg <cword><cr>
-    " add a ( on the end to search for functions
-    map <leader>rf :Rg <cword>\(<cr>
-    " web
-    map <leader>rw :Rg -tjs -tcss -thtml <cword><cr>
-    " xml
-    map <leader>rx :Rg -Txml -Ttags <cword><cr>
-
-    map <leader>ag :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword><cr>
-    map <leader>af :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword>\(<cr>
 catch
 endtry
+" map <leader>rg :Rg -tphp expand("<cword>")<cr>
+map <leader>rg :Rg<cr>
+" current word in the current buffer
+map <leader>rb :Rg <cword> %<cr>
+" php
+map <leader>rp :Rg <cword><cr>
+" add a ( on the end to search for functions
+map <leader>rf :Rg <cword>\(<cr>
+" web
+map <leader>rw :Rg -tjs -tcss -thtml <cword><cr>
+" xml
+map <leader>rx :Rg -Txml -Ttags <cword><cr>
+
+map <leader>ag :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword><cr>
+map <leader>af :AsyncRun rg --vimgrep -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !tests <cword>\(<cr>
 
 " FZF
-try
-    map <leader>f :Files<cr>
-    map <leader>ft :BTags<cr>
-    map <leader>fb :Buffers<cr>
-catch
-endtry
+map <leader>f :Files!<cr>
+map <leader>ft :BTags!<cr>
+map <leader>fb :Buffers!<cr>
 
 " Async Tags
-try
-    map <leader>at :AsyncRun ctags -R .<cr>
-catch
-endtry
+map <leader>at :AsyncRun ctags -R .<cr>
 
 try
     let g:SuperTabDefaultCompletionType = "context"
@@ -250,9 +244,9 @@ endtry
 
 " Syntastic + eslint
 try
-   " set statusline+=%#warningmsg#
-   " set statusline+=%{SyntasticStatuslineFlag()}
-   " set statusline+=%*
+   set statusline+=%#warningmsg#
+   set statusline+=%{SyntasticStatuslineFlag()}
+   set statusline+=%*
 
    let g:syntastic_always_populate_loc_list = 1
    let g:syntastic_auto_loc_list = 1
@@ -309,9 +303,9 @@ if has("gui_running")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
         if &diff
-            set guifont=Consolas:h11:cANSI
+            set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
         else
-            set guifont=Consolas:h15:cANSI
+            set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
         endif
     endif
 endif
