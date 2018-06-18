@@ -32,10 +32,10 @@ Plugin 'junegunn/fzf.vim'
 " Zeal
 Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
-Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
+" Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
 " Plugin 'w0rp/ale'
-Plugin 'vim-syntastic/syntastic'
+" Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
@@ -48,15 +48,15 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
-Plugin 'shawncplus/phpcomplete.vim'
+" Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
-Plugin 'tobyS/vmustache'
-Plugin 'tobyS/pdv'
+" Plugin 'tobyS/vmustache'
+" Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 " Python
 " Plugin 'davidhalter/jedi-vim'
 " Plugin 'cjrh/vim-conda'
@@ -64,8 +64,8 @@ Plugin 'SirVer/ultisnips'
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
-Plugin 'Align'
-Plugin 'SQLUtilities'
+" Plugin 'Align'
+" Plugin 'SQLUtilities'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
 " Plugin 'Shougo/vimproc'
@@ -73,9 +73,9 @@ Plugin 'SQLUtilities'
 " Causes slow down when viewing a mardown page
 Plugin 'plasticboy/vim-markdown'
 " Asynchronous tasks
-Plugin 'skywind3000/asyncrun.vim'
+" Plugin 'skywind3000/asyncrun.vim'
 " Powershell
-Plugin 'PProvost/vim-ps1'
+" Plugin 'PProvost/vim-ps1'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
