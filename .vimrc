@@ -82,6 +82,14 @@ filetype plugin indent on    " required
 
 
 " }}}
+" General"{{{
+" =======
+" With a map leader it's possible to do extra key combinations
+let mapleader = ","
+let g:mapleader = ","
+
+
+" }}}
 " Plugin config"{{{
 " =============
 
@@ -271,14 +279,6 @@ try
     let g:syntastic_error_symbol = "✗"
 catch
 endtry
-
-
-" }}}
-" General"{{{
-" =======
-" With a map leader it's possible to do extra key combinations
-let mapleader = ","
-let g:mapleader = ","
 
 
 " }}}
