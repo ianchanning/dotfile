@@ -292,7 +292,7 @@ if &diff
     set background=light
 else
     " setup for non-diff/gui mode
-    set background=dark
+    set background=light
 endif
 
 try
@@ -363,7 +363,7 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set number " line numbers
+" set number " line numbers
 set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
