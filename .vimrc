@@ -8,8 +8,11 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
+" 24-bit colorscheme
+" Plugin 'jacoborus/tender.vim'
+" Plugin 'guns/xterm-color-table.vim'
 " gives a reasonable linebar without plugins
-Plugin 'tpope/vim-sensible'
+" Plugin 'tpope/vim-sensible'
 " git
 Plugin 'tpope/vim-fugitive'
 " put quotes and brackets around expressions
@@ -34,23 +37,29 @@ Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-" Plugin 'w0rp/ale'
-Plugin 'vim-syntastic/syntastic'
+Plugin 'w0rp/ale'
+" Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
-" Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative
+Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
+" Plugin 'vim-scripts/AutoClose' " delimitMate alternative, 
+" has issues with YouCompleteMe
+" @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plugin 'ervandew/supertab'
+Plugin 'vim-scripts/taglist.vim' " Browsing source code
+" Asynchronous tasks - used for ctags
+Plugin 'skywind3000/asyncrun.vim'
 " JavaScript
-Plugin 'mtscout6/syntastic-local-eslint.vim'
+" Plugin 'mtscout6/syntastic-local-eslint.vim' " replaced with ALE
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
+" PHP
 Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
-" Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
+Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
 Plugin 'tobyS/vmustache'
 Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
@@ -71,9 +80,7 @@ Plugin 'SQLUtilities'
 " Plugin 'Shougo/vimproc'
 " Markdown
 " Causes slow down when viewing a mardown page
-Plugin 'plasticboy/vim-markdown'
-" Asynchronous tasks
-Plugin 'skywind3000/asyncrun.vim'
+" Plugin 'plasticboy/vim-markdown'
 " Powershell
 Plugin 'PProvost/vim-ps1'
 
@@ -94,54 +101,10 @@ let g:mapleader = ","
 " =============
 
 " Vim Markdown
-try
-    let g:vim_markdown_folding_disabled = 1
-catch
-endtry
-
-" Airline
-" override the default and turn off whitespace warnings
-try
-    let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
-    if exists("g:asyncrun_status")
-        let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
-    endif
-    let g:airline_powerline_fonts = 1
-    if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
-    endif
-
-    " unicode symbols
-    let g:airline_left_sep = '»'
-    let g:airline_left_sep = '▶'
-    let g:airline_right_sep = '«'
-    let g:airline_right_sep = '◀'
-    let g:airline_symbols.crypt = '🔒'
-    let g:airline_symbols.linenr = '☰'
-    let g:airline_symbols.linenr = '␊'
-    let g:airline_symbols.linenr = '␤'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.maxlinenr = ''
-    let g:airline_symbols.maxlinenr = '㏑'
-    let g:airline_symbols.branch = '⎇'
-    let g:airline_symbols.paste = 'ρ'
-    let g:airline_symbols.paste = 'Þ'
-    let g:airline_symbols.paste = '∥'
-    let g:airline_symbols.spell = 'Ꞩ'
-    let g:airline_symbols.notexists = 'Ɇ'
-    let g:airline_symbols.whitespace = 'Ξ'
-
-    " powerline symbols
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
-    let g:airline_symbols.linenr = '☰'
-    let g:airline_symbols.maxlinenr = ''
-catch
-endtry
+" try 
+"     let g:vim_markdown_folding_disabled = 1
+" catch
+" endtry
 
 " PHP doc block
 " @link https://github.com/tobyS/pdv
@@ -153,7 +116,7 @@ endtry
 map <leader>d :call pdv#DocumentWithSnip()<CR>
 
 " @link https://github.com/heavenshell/vim-jsdoc
-try
+try 
     let g:jsdoc_allow_input_prompt = 1
     let g:jsdoc_input_description = 1
 catch
@@ -232,9 +195,9 @@ map <leader>rx :Rg -Txml -Ttags <cword><cr>
 
 " FZF
 if has("gui_running")
-    map <leader>f :Files!<cr>
-    map <leader>ft :BTags!<cr>
-    map <leader>fb :Buffers!<cr>
+    map <leader>f :Files<cr>
+    map <leader>ft :BTags<cr>
+    map <leader>fb :Buffers<cr>
 else
     map <leader>f :Files<cr>
     map <leader>ft :BTags<cr>
@@ -256,27 +219,109 @@ catch
 endtry
 
 " Syntastic + eslint
+" try
+"     if has('gui_running')
+"         set statusline+=%#warningmsg#
+"         set statusline+=%{SyntasticStatuslineFlag()}
+"         set statusline+=%*
+"     endif
+
+"     let g:syntastic_always_populate_loc_list = 1
+"     let g:syntastic_auto_loc_list = 1
+"     let g:syntastic_check_on_open = 0
+"     let g:syntastic_check_on_wq = 1
+"     " eslint
+"     " @todo add link to where I got these from
+"     let g:syntastic_javascript_checkers = ['eslint']
+"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+"     let g:syntastic_php_checkers = ['php']
+
+"     " Sillyness with unicode
+"     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+"     let g:syntastic_error_symbol = "✗"
+" catch
+" endtry
+
+" Ale
+    " `'cleancode,codesize,controversial,design,naming,unusedcode'`
+    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " @link https://unicode-table.com/en/blocks/dingbats/
+    let g:ale_sign_error = '✘'
+    let g:ale_sign_warning = '✗'
+
+" vim-commentary
+autocmd FileType php setlocal commentstring=\/\/\ %s
+autocmd FileType javascript setlocal commentstring=\/\/\ %s
+autocmd FileType dosbatch setlocal commentstring=rem\ %s
+
+" Airline
+" override the default and turn off whitespace warnings
 try
-    if has('gui_running')
-        set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
+    let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+catch
+endtry
+try 
+    let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
+    let g:airline_powerline_fonts = 1
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
     endif
 
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 0
-    let g:syntastic_check_on_wq = 1
-    " eslint
-    " @todo add link to where I got these from
-    let g:syntastic_javascript_checkers = ['eslint']
-    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-    let g:syntastic_php_checkers = ['php']
+    " unicode symbols
+    let g:airline_left_sep = '»'
+    let g:airline_left_sep = '▶'
+    let g:airline_right_sep = '«'
+    let g:airline_right_sep = '◀'
+    let g:airline_symbols.crypt = '🔒'
+    let g:airline_symbols.linenr = '☰'
+    let g:airline_symbols.linenr = '␊'
+    let g:airline_symbols.linenr = '␤'
+    let g:airline_symbols.linenr = '¶'
+    let g:airline_symbols.maxlinenr = ''
+    let g:airline_symbols.maxlinenr = '㏑'
+    let g:airline_symbols.branch = '⎇'
+    let g:airline_symbols.paste = 'ρ'
+    let g:airline_symbols.paste = 'Þ'
+    let g:airline_symbols.paste = '∥'
+    let g:airline_symbols.spell = 'Ꞩ'
+    let g:airline_symbols.notexists = 'Ɇ'
+    let g:airline_symbols.whitespace = 'Ξ'
 
-    " Sillyness with unicode
-    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-    let g:syntastic_error_symbol = "✗"
+    " powerline symbols
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly = ''
+    let g:airline_symbols.linenr = '☰'
+    let g:airline_symbols.maxlinenr = ''
+
+    " simplest looking theme for the windows terminal
+    " if has("win32") && !has("gui_running")
+    if !has("gui_running")
+        " let g:airline_theme='base16_ashes'
+        " let g:airline_theme='base16_colors'
+        " let g:airline_theme='base16_monokai'
+        " let g:airline_theme='base16_ocean'
+        " let g:airline_theme='base16_railscasts' " I think this is the best of base16
+        " let g:airline_theme='base16_spacemacs' " I want the side colours across the middle
+        " let g:airline_theme='molokai' " this has the right colour across the middle
+        " let g:airline_theme='qwq' " this has the right colour across the middle
+        " this has the right colour across the middle and is best overall
+        " its better than qwq because it has a grey for normal and white for
+        " insert where as qwq is white for both
+        " also the colour differences between the arrows wasn't enough
+        " so where as the gradients are more correct in qwq they're too hard
+        " to see
+        " it is better than molokai also because it has grey for normal and
+        " white for insert and molokai is white for both
+        " let g:airline_theme='base16_railscasts' 
+        let g:airline_theme='base16' 
+    endif
+    " for some reason this doesn't get set in the above if section
+    " let g:airline_theme='base16' 
 catch
 endtry
 
@@ -287,18 +332,41 @@ endtry
 
 " Enable syntax highlighting
 syntax enable
+if (has("termguicolors"))
+    " set termguicolors
+endif
+" colorscheme tender
+" if &diff || (has("win32") && !has("gui_running"))
 if &diff
     " setup for diff/cmd mode
+    " cmd is Windows only
     set background=light
 else
     " setup for non-diff/gui mode
     set background=dark
 endif
 
+" Colour testing
+" @link https://vi.stackexchange.com/questions/17464/24-bit-256-colorscheme-in-windows-console
+" if !has('gui_running')
+"     echomsg "Found: Terminal" &term "with" &t_Co "colors"
+"     echomsg "Trying to set ANSI 256-color terminal"
+"     set term=ansi t_Co=256
+"     echomsg "Result: Terminal" &term "with" &t_Co "colors"
+" endif 
+
 try
     " In a Gnome terminal, 
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized
+    " For Windows terminal we just use the default scheme 
+    " Assuming that you've installed the solarized cmd colours it looks ok
+    if has("unix") || has("gui_running")
+        colorscheme solarized
+    endif
+    " if has("win32") && !has("gui_running")
+    if !has("gui_running")
+        colorscheme solarized
+    endif
 catch
 endtry
 
@@ -310,21 +378,37 @@ if has("gui_running")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
         if &diff
-            set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
+            set guifont=Anonymice_Powerline:h11:cANSI:qDRAFT
+            " set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
         else
-            " set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
-            set guifont=Source_Code_Pro_Light:h15:cANSI
+            set guifont=Anonymice_Powerline:h14:cANSI:qDRAFT
+            " set guifont=Source\ Code\ Pro\ for\ Powerline:h14:cANSI
+            " set guifont=Source_Code_Pro_Light:h15:cANSI
         endif
     endif
 endif
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=.git\*,.hg\*,.svn\*
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-endif
+" Binary
+set wildignore+=*.aux,*.out,*.toc
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.jar,*.pyc,*.rbc,*.class
+set wildignore+=*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp
+set wildignore+=*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm
+set wildignore+=*.eot,*.otf,*.ttf,*.woff
+set wildignore+=*.doc,*.pdf
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+" Cache
+set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*.gem
+set wildignore+=.sass-cache
+set wildignore+=npm-debug.log
+" Compiled
+set wildignore+=*.marko.js
+set wildignore+=*.min.*,*-min.*
+" Temp/System
+set wildignore+=*.*~,*~
+set wildignore+=*.swp,.lock,.DS_Store,._*,tags.lock
+
+set wildmenu " useful menu when hitting <Tab>
 
 set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
 set ffs=unix,dos,mac " Use Unix as the standard file type
@@ -335,6 +419,8 @@ set hlsearch " Highlight search results
 set incsearch " Makes search act like search in modern browsers 
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
+set history=500 " increase the history from 50 to 500
+
 
 " No annoying sound on errors
 set noerrorbells
@@ -364,8 +450,11 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set number " line numbers
-set colorcolumn=80 " highlight when text gets too long
+" set number " line numbers
+" the colorcolumn is an ugly red in cmd
+if !has("win32") || has("gui_running")
+    set colorcolumn=80 " highlight when text gets too long
+endif
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :nohlsearch<cr>
@@ -439,8 +528,8 @@ map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
 
 " turn off the > beep
 " @link https://stackoverflow.com/a/24242461/327074
-au BufWinEnter *.php set mps-=<:>
-au BufWinEnter *.ctp set mps-=<:>
+autocmd BufWinEnter *.php set mps-=<:>
+autocmd BufWinEnter *.ctp set mps-=<:>
 
 
 " }}}
@@ -486,9 +575,29 @@ nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " copy of SublimeText's @
 nnoremap @ :lvimgrep function %<cr>:lopen<cr>
 
+
 " }}}
 " Diff"{{{
 " ====
 
 set diffopt+=iwhite " ignore whitespace for diff
+
+
+" }}}
+" Other"{{{
+" ====
+
+" include PHP/JavaScript syntax in omnicomplete <c-x><c-o>
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+
+" Variable to highlight markdown fenced code properly -- uses tpope's
+" vim-markdown plugin (which is bundled with vim7.4 now)
+" There are more syntaxes, but checking for them makes editing md very slow
+" let g:markdown_fenced_languages = [
+"       \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript.jsx',
+"       \   'sh',
+" \ ]
+
+
 " }}}
