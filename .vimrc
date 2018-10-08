@@ -8,8 +8,8 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
-" gives a reasonable linebar without plugins
-Plugin 'tpope/vim-sensible'
+" Sensible defaults
+" Plugin 'tpope/vim-sensible'
 " git
 Plugin 'tpope/vim-fugitive'
 " put quotes and brackets around expressions
@@ -22,6 +22,8 @@ Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-vinegar'
 " comment stuff
 Plugin 'tpope/vim-commentary'
+" Repeat unimpaired and surround expressions
+Plugin 'tpope/vim-repeat'
 " status bar
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -34,20 +36,26 @@ Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 " Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-" Plugin 'w0rp/ale'
+Plugin 'w0rp/ale'
 " Plugin 'vim-syntastic/syntastic'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
-" Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative
+Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
+" Plugin 'vim-scripts/AutoClose' " delimitMate alternative, 
+" has issues with YouCompleteMe
+" @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plugin 'ervandew/supertab'
+Plugin 'vim-scripts/taglist.vim' " Browsing source code
+" Asynchronous tasks - used for ctags
+Plugin 'skywind3000/asyncrun.vim'
 " JavaScript
-Plugin 'mtscout6/syntastic-local-eslint.vim'
+" Plugin 'mtscout6/syntastic-local-eslint.vim' " replaced with ALE
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
+" PHP
 " Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
 " Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
@@ -72,8 +80,6 @@ Plugin 'heavenshell/vim-jsdoc'
 " Markdown
 " Causes slow down when viewing a mardown page
 Plugin 'plasticboy/vim-markdown'
-" Asynchronous tasks
-" Plugin 'skywind3000/asyncrun.vim'
 " Powershell
 " Plugin 'PProvost/vim-ps1'
 
@@ -99,10 +105,33 @@ try
 catch
 endtry
 
+" Ale
+try
+    " 'cleancode,codesize,controversial,design,naming,unusedcode'
+    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " @link https://unicode-table.com/en/blocks/dingbats/
+    " let g:ale_sign_error = '✘'
+    " let g:ale_sign_warning = '✗'
+    " @link https://unicode-table.com/en/#control-character
+    let g:ale_sign_error = '»'
+    let g:ale_sign_warning = '»'
+    " let g:ale_lint_on_enter = 0
+    let g:ale_lint_on_text_changed = 'normal'
+catch
+endtry
+
+" vim-commentary
+try
+    autocmd FileType php setlocal commentstring=\/\/\ %s
+    autocmd FileType javascript setlocal commentstring=\/\/\ %s
+    autocmd FileType dosbatch setlocal commentstring=rem\ %s
+catch
+endtry
+
 " Airline
 " override the default and turn off whitespace warnings
 try
-    let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
+    " let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -159,6 +188,12 @@ try
 catch
 endtry
 
+" vim-javascript
+try
+    let g:javascript_plugin_jsdoc = 1
+catch
+endtry
+
 " toggle distraction free
 map <leader>gg :Goyo<cr>
 
@@ -171,7 +206,7 @@ map <leader>" ysiw"
 
 " Tabularize PHP docblock at the $var
 " there was a conflict with tt in the Align plugin, so switched to td
-map <leader>td :Tabularize /\$\w*/l1<cr>
+" map <leader>td :Tabularize /\$\w*/l1<cr>
 
 " python-mode
 try
@@ -209,7 +244,8 @@ endtry
 try
     " remove a few directories from the search
     " put PHP search in by default
-    let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
+    " let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output'
     " I can't figure out using variables in map commands - I'm guessing you can't
     " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
@@ -232,9 +268,9 @@ map <leader>rx :Rg -Txml -Ttags <cword><cr>
 
 " FZF
 if has("gui_running")
-    map <leader>f :Files!<cr>
-    map <leader>ft :BTags!<cr>
-    map <leader>fb :Buffers!<cr>
+    map <leader>f :Files<cr>
+    map <leader>ft :BTags<cr>
+    map <leader>fb :Buffers<cr>
 else
     map <leader>f :Files<cr>
     map <leader>ft :BTags<cr>
@@ -256,29 +292,29 @@ catch
 endtry
 
 " Syntastic + eslint
-try
-    if has('gui_running')
-        set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
-    endif
+" try
+"     if has('gui_running')
+"         set statusline+=%#warningmsg#
+"         set statusline+=%{SyntasticStatuslineFlag()}
+"         set statusline+=%*
+"     endif
 
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 0
-    let g:syntastic_check_on_wq = 1
-    " eslint
-    " @todo add link to where I got these from
-    let g:syntastic_javascript_checkers = ['eslint']
-    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-    let g:syntastic_php_checkers = ['php']
+"     let g:syntastic_always_populate_loc_list = 1
+"     let g:syntastic_auto_loc_list = 1
+"     let g:syntastic_check_on_open = 0
+"     let g:syntastic_check_on_wq = 1
+"     " eslint
+"     " @todo add link to where I got these from
+"     let g:syntastic_javascript_checkers = ['eslint']
+"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+"     let g:syntastic_php_checkers = ['php']
 
-    " Sillyness with unicode
-    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-    let g:syntastic_error_symbol = "✗"
-catch
-endtry
+"     " Sillyness with unicode
+"     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+"     let g:syntastic_error_symbol = "✗"
+" catch
+" endtry
 
 
 " }}}
@@ -326,14 +362,16 @@ else
 endif
 
 set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
-set ffs=unix,dos,mac " Use Unix as the standard file type
+set fileformats=unix,dos,mac " Use Unix as the standard file type
 set showmatch " Show matching brackets when text indicator is over them
 set matchtime=2 " How many tenths of a second to blink when matching brackets
+set backspace=indent,eol,start " allow backspace to delete characters
 set hidden " A buffer becomes hidden when it is abandoned
 set hlsearch " Highlight search results
 set incsearch " Makes search act like search in modern browsers 
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
+set history=1000
 
 " No annoying sound on errors
 set noerrorbells
@@ -394,7 +432,7 @@ autocmd BufWrite *.ctp :call DeleteTrailingWS()
 " if the file doesn't exist create it from a template
 function! OpenLog()
     " @todo change this to ~/log
-    let logdir = 'C:\Users\Ian\SparkleShare\sparkleshare\work\log\'
+    let logdir = '~/Dropbox/log/'
     let logfile = logdir . strftime("%Y-%m-%d.md")
     " @link https://stackoverflow.com/a/3098685/327074
     if !filereadable(logfile)
@@ -438,8 +476,15 @@ map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
 
 " turn off the > beep
 " @link https://stackoverflow.com/a/24242461/327074
-au BufWinEnter *.php set mps-=<:>
-au BufWinEnter *.ctp set mps-=<:>
+autocmd BufWinEnter *.php set mps-=<:>
+autocmd BufWinEnter *.ctp set mps-=<:>
+
+
+" }}}
+" JSX specific"{{{
+" ============================
+au FileType javascript set softtabstop=2 | set shiftwidth=2
+au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
 
 
 " }}}
@@ -485,9 +530,29 @@ nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " copy of SublimeText's @
 nnoremap @ :lvimgrep function %<cr>:lopen<cr>
 
+
 " }}}
 " Diff"{{{
 " ====
 
 set diffopt+=iwhite " ignore whitespace for diff
+
+
+" }}}
+" Other"{{{
+" ====
+
+" include PHP/JavaScript syntax in omnicomplete <c-x><c-o>
+" autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+
+" Variable to highlight markdown fenced code properly -- uses tpope's
+" vim-markdown plugin (which is bundled with vim7.4 now)
+" There are more syntaxes, but checking for them makes editing md very slow
+" let g:markdown_fenced_languages = [
+"       \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript.jsx',
+"       \   'sh',
+" \ ]
+
+
 " }}}
