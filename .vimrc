@@ -7,10 +7,11 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'altercation/vim-colors-solarized'
+" Plugin 'altercation/vim-colors-solarized'
+Plugin 'lifepillar/vim-solarized8'
 " 24-bit colorscheme
-" Plugin 'jacoborus/tender.vim'
-" Plugin 'guns/xterm-color-table.vim'
+Plugin 'jacoborus/tender.vim'
+Plugin 'guns/xterm-color-table.vim'
 " gives a reasonable linebar without plugins
 " Plugin 'tpope/vim-sensible'
 " git
@@ -25,6 +26,8 @@ Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-vinegar'
 " comment stuff
 Plugin 'tpope/vim-commentary'
+" Repeate surround and unimpaired actions
+Plugin 'tpope/vim-repeat'
 " status bar
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -43,11 +46,11 @@ Plugin 'w0rp/ale'
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative, 
+" Plugin 'vim-scripts/AutoClose' " delimitMate alternative,
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
-Plugin 'ervandew/supertab'
-Plugin 'vim-scripts/taglist.vim' " Browsing source code
+" Plugin 'ervandew/supertab'
+" Plugin 'vim-scripts/taglist.vim' " Browsing source code
 " Asynchronous tasks - used for ctags
 Plugin 'skywind3000/asyncrun.vim'
 " JavaScript
@@ -101,7 +104,7 @@ let g:mapleader = ","
 " =============
 
 " Vim Markdown
-" try 
+" try
 "     let g:vim_markdown_folding_disabled = 1
 " catch
 " endtry
@@ -116,7 +119,7 @@ endtry
 map <leader>d :call pdv#DocumentWithSnip()<CR>
 
 " @link https://github.com/heavenshell/vim-jsdoc
-try 
+try
     let g:jsdoc_allow_input_prompt = 1
     let g:jsdoc_input_description = 1
 catch
@@ -176,7 +179,7 @@ try
     " I can't figure out using variables in map commands - I'm guessing you can't
     " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
-    " let rg_web = '-tjs -tcss -thtml' 
+    " let rg_web = '-tjs -tcss -thtml'
     " let rg_xml = '-Txml -Ttags'
 catch
 endtry
@@ -244,11 +247,20 @@ endtry
 " endtry
 
 " Ale
+try
     " `'cleancode,codesize,controversial,design,naming,unusedcode'`
     let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
     " @link https://unicode-table.com/en/blocks/dingbats/
-    let g:ale_sign_error = '✘'
-    let g:ale_sign_warning = '✗'
+    " let g:ale_sign_error = '✘'
+    " let g:ale_sign_warning = '✗'
+    " these work for Vim as well as GVim
+    let g:ale_sign_error = '»'
+    let g:ale_sign_warning = '»'
+    let g:ale_lint_on_enter = 0
+    let g:ale_lint_on_save = 1
+    let g:ale_lint_on_text_changed = 'normal'
+catch
+endtry
 
 " vim-commentary
 autocmd FileType php setlocal commentstring=\/\/\ %s
@@ -261,8 +273,8 @@ try
     let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 catch
 endtry
-try 
-    let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
+try
+    " let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
     let g:airline_powerline_fonts = 1
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
@@ -317,11 +329,20 @@ try
         " to see
         " it is better than molokai also because it has grey for normal and
         " white for insert and molokai is white for both
-        " let g:airline_theme='base16_railscasts' 
-        let g:airline_theme='base16' 
+        " let g:airline_theme='base16_railscasts'
+        " let g:airline_theme='base16'
+        " After installing neovim I spotted that the path was still including
+        " the old 8.0 vim, now with the improved 8.1 Vim it seems that colors
+        " are better handled
+        " The .vimrc and PHP code look pretty excellent
+        " But markdown is a bit screwed
+        " Also the base text is red
+        " Now also the airline themes work better
+        " let g:airline_theme='base16_colors'
+        " Actually now, with termguicolors working
+        " The solarized plugin should set the airline theme
+        " Which now has the correct colours
     endif
-    " for some reason this doesn't get set in the above if section
-    " let g:airline_theme='base16' 
 catch
 endtry
 
@@ -331,11 +352,18 @@ endtry
 " ================
 
 " Enable syntax highlighting
+" Oh wow!
+" Now that I've got Vim 8.1 and Windows 10 build 1803
+" suddenly termguicolors works!
+" Now there's two major changes - the AirlineTheme colors work exactly as
+" intended - so the solarized theme looks the same as the GVim one
+" However the solarized colourscheme in the editor was suddenly hideous
+" So I've temporarily set it back to default
+" I've now found a 24-bit solarized colorscheme - so we can use solarized
 syntax enable
 if (has("termguicolors"))
-    " set termguicolors
+    set termguicolors
 endif
-" colorscheme tender
 " if &diff || (has("win32") && !has("gui_running"))
 if &diff
     " setup for diff/cmd mode
@@ -348,24 +376,30 @@ endif
 
 " Colour testing
 " @link https://vi.stackexchange.com/questions/17464/24-bit-256-colorscheme-in-windows-console
-" if !has('gui_running')
+if !has('gui_running')
 "     echomsg "Found: Terminal" &term "with" &t_Co "colors"
 "     echomsg "Trying to set ANSI 256-color terminal"
-"     set term=ansi t_Co=256
+    " does very bad things
+    " set term=ansi t_Co=256
+    " does nothing
+    " set t_Co=256
+    " let g:solarized_termcolors=256
 "     echomsg "Result: Terminal" &term "with" &t_Co "colors"
-" endif 
+endif
 
 try
-    " In a Gnome terminal, 
+    " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    " For Windows terminal we just use the default scheme 
+    " For Windows terminal we just use the default scheme
     " Assuming that you've installed the solarized cmd colours it looks ok
     if has("unix") || has("gui_running")
-        colorscheme solarized
+        colorscheme solarized8
     endif
     " if has("win32") && !has("gui_running")
     if !has("gui_running")
-        colorscheme solarized
+        colorscheme solarized8
+        " 24-bit glory
+        " colorscheme tender
     endif
 catch
 endtry
@@ -387,6 +421,14 @@ if has("gui_running")
         endif
     endif
 endif
+
+
+" }}}
+" General"{{{
+" ================
+
+" A lot of this come from my initial use of Ultimate vimrc
+" @link https://github.com/amix/vimrc
 
 " Ignore compiled files
 " Binary
@@ -411,15 +453,16 @@ set wildignore+=*.swp,.lock,.DS_Store,._*,tags.lock
 set wildmenu " useful menu when hitting <Tab>
 
 set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
-set ffs=unix,dos,mac " Use Unix as the standard file type
+set fileformats=unix,dos,mac " Use Unix as the standard file type
 set showmatch " Show matching brackets when text indicator is over them
 set matchtime=2 " How many tenths of a second to blink when matching brackets
 set hidden " A buffer becomes hidden when it is abandoned
+set backspace=eol,start,indent " allows deleting using backspace
 set hlsearch " Highlight search results
-set incsearch " Makes search act like search in modern browsers 
+set incsearch " Makes search act like search in modern browsers
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
-set history=500 " increase the history from 50 to 500
+set history=1000 " increase the history from 50 to 1000
 
 
 " No annoying sound on errors
@@ -450,7 +493,7 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-" set number " line numbers
+set number " line numbers
 " the colorcolumn is an ugly red in cmd
 if !has("win32") || has("gui_running")
     set colorcolumn=80 " highlight when text gets too long
@@ -478,6 +521,7 @@ autocmd BufWrite *.js :call DeleteTrailingWS()
 autocmd BufWrite *.jsx :call DeleteTrailingWS()
 autocmd BufWrite *.php :call DeleteTrailingWS()
 autocmd BufWrite *.ctp :call DeleteTrailingWS()
+autocmd BufWrite *.vimrc :call DeleteTrailingWS()
 
 " Logbook
 " create a work log file for today
@@ -521,7 +565,7 @@ endif
 " Add a ; to the end of the line
 map <leader>; A;<esc>
 
-" CakePHP navigation 
+" CakePHP navigation
 map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
 map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
 map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
@@ -544,7 +588,7 @@ autocmd BufWinEnter *.ctp set mps-=<:>
 nnoremap <leader>bb :buffers<cr>:b<space>
 
 " hide/show the quickfix lists
-" similar bracket syntax to vim-unimpaired 
+" similar bracket syntax to vim-unimpaired
 map [qq :cclose<cr>
 map ]qq :copen<cr>
 map [ll :lclose<cr>
