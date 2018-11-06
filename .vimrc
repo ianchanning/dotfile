@@ -8,8 +8,10 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
+" 24-bit, requires termguicolors
+Plugin 'lifepillar/vim-solarized8'
 " Sensible defaults
-" Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-sensible'
 " git
 Plugin 'tpope/vim-fugitive'
 " put quotes and brackets around expressions
@@ -34,7 +36,7 @@ Plugin 'junegunn/fzf.vim'
 " Zeal
 Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
-" Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
+Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
 Plugin 'w0rp/ale'
 " Plugin 'vim-syntastic/syntastic'
@@ -42,7 +44,7 @@ Plugin 'w0rp/ale'
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative, 
+" Plugin 'vim-scripts/AutoClose' " delimitMate alternative,
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plugin 'ervandew/supertab'
@@ -58,7 +60,8 @@ Plugin 'heavenshell/vim-jsdoc'
 " PHP
 " Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
-" Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
+Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee, required for
+" vim-markdown
 " Plugin 'tobyS/vmustache'
 " Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
@@ -179,7 +182,7 @@ try
 catch
 endtry
 " nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<CR>
-map <leader>d :call pdv#DocumentWithSnip()<CR>
+" map <leader>d :call pdv#DocumentWithSnip()<CR>
 
 " @link https://github.com/heavenshell/vim-jsdoc
 try
@@ -245,11 +248,11 @@ try
     " remove a few directories from the search
     " put PHP search in by default
     " let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
-    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !*.md --glob !Session.vim'
     " I can't figure out using variables in map commands - I'm guessing you can't
     " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
-    " let rg_web = '-tjs -tcss -thtml' 
+    " let rg_web = '-tjs -tcss -thtml'
     " let rg_xml = '-Txml -Ttags'
 catch
 endtry
@@ -323,18 +326,24 @@ endtry
 
 " Enable syntax highlighting
 syntax enable
+
+" @link https://askubuntu.com/questions/67/how-do-i-enable-full-color-support-in-vim
+if (has("termguicolors"))
+    set termguicolors
+endif
+
 if &diff
     " setup for diff/cmd mode
     set background=light
 else
     " setup for non-diff/gui mode
-    set background=light
+    set background=dark
 endif
 
 try
-    " In a Gnome terminal, 
+    " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized
+    colorscheme solarized8
 catch
 endtry
 
@@ -353,6 +362,8 @@ if has("gui_running")
     endif
 endif
 
+" Autocomplete menu for ed commands
+set wildmenu
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
@@ -368,7 +379,7 @@ set matchtime=2 " How many tenths of a second to blink when matching brackets
 set backspace=indent,eol,start " allow backspace to delete characters
 set hidden " A buffer becomes hidden when it is abandoned
 set hlsearch " Highlight search results
-set incsearch " Makes search act like search in modern browsers 
+set incsearch " Makes search act like search in modern browsers
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
 set history=1000
@@ -401,7 +412,7 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-" set number " line numbers
+set number " line numbers
 set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
@@ -426,6 +437,8 @@ autocmd BufWrite *.js :call DeleteTrailingWS()
 autocmd BufWrite *.jsx :call DeleteTrailingWS()
 autocmd BufWrite *.php :call DeleteTrailingWS()
 autocmd BufWrite *.ctp :call DeleteTrailingWS()
+autocmd BufWrite *.vimrc :call DeleteTrailingWS()
+autocmd BufWrite *.md :call DeleteTrailingWS()
 
 " Logbook
 " create a work log file for today
@@ -469,7 +482,7 @@ endif
 " Add a ; to the end of the line
 map <leader>; A;<esc>
 
-" CakePHP navigation 
+" CakePHP navigation
 map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
 map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
 map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
@@ -478,6 +491,7 @@ map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
 " @link https://stackoverflow.com/a/24242461/327074
 autocmd BufWinEnter *.php set mps-=<:>
 autocmd BufWinEnter *.ctp set mps-=<:>
+autocmd BufWinEnter *.md set mps-=<:>
 
 
 " }}}
@@ -499,7 +513,7 @@ au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
 nnoremap <leader>bb :buffers<cr>:b<space>
 
 " hide/show the quickfix lists
-" similar bracket syntax to vim-unimpaired 
+" similar bracket syntax to vim-unimpaired
 map [qq :cclose<cr>
 map ]qq :copen<cr>
 map [ll :lclose<cr>
@@ -549,10 +563,7 @@ set diffopt+=iwhite " ignore whitespace for diff
 " Variable to highlight markdown fenced code properly -- uses tpope's
 " vim-markdown plugin (which is bundled with vim7.4 now)
 " There are more syntaxes, but checking for them makes editing md very slow
-" let g:markdown_fenced_languages = [
-"       \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript.jsx',
-"       \   'sh',
-" \ ]
+let g:vim_markdown_fenced_languages = ['js=javascript']
 
 
 " }}}
