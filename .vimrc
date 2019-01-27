@@ -10,9 +10,18 @@ Plugin 'VundleVim/Vundle.vim'
 " Plugin 'altercation/vim-colors-solarized'
 Plugin 'lifepillar/vim-solarized8'
 " 24-bit colorscheme
-Plugin 'jacoborus/tender.vim'
-Plugin 'guns/xterm-color-table.vim'
-" gives a reasonable linebar without plugins
+" Plugin 'jacoborus/tender.vim'
+" light colorscheme
+Plugin 'nightsense/snow'
+Plugin 'andreypopp/vim-colors-plain'
+Plugin 'cormacrelf/vim-colors-github'
+Plugin 'vim-scripts/chlordane.vim'
+Plugin 'vim-scripts/mayansmoke'
+Plugin 'arcticicestudio/nord-vim'
+" Plugin 'sonph/onehalf', {'rtp': 'vim/'}
+" color testing
+" Plugin 'guns/xterm-color-table.vim'
+" Tim Pope's vimrc sensible defaults
 " Plugin 'tpope/vim-sensible'
 " git
 Plugin 'tpope/vim-fugitive'
@@ -49,10 +58,11 @@ Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on m
 " Plugin 'vim-scripts/AutoClose' " delimitMate alternative,
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
-" Plugin 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 " Plugin 'vim-scripts/taglist.vim' " Browsing source code
 " Asynchronous tasks - used for ctags
 Plugin 'skywind3000/asyncrun.vim'
+Plugin 'majutsushi/tagbar'
 " JavaScript
 " Plugin 'mtscout6/syntastic-local-eslint.vim' " replaced with ALE
 Plugin 'pangloss/vim-javascript'
@@ -76,14 +86,14 @@ Plugin 'SirVer/ultisnips'
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
-Plugin 'Align'
+" Plugin 'Align' " maps tons of shortcuts which causes conflicts
 Plugin 'SQLUtilities'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
 " Plugin 'Shougo/vimproc'
 " Markdown
 " Causes slow down when viewing a mardown page
-" Plugin 'plasticboy/vim-markdown'
+Plugin 'plasticboy/vim-markdown'
 " Powershell
 Plugin 'PProvost/vim-ps1'
 
@@ -249,7 +259,11 @@ endtry
 " Ale
 try
     " `'cleancode,codesize,controversial,design,naming,unusedcode'`
-    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " cleancode has warnings for else and Configure static access which is
+    " used everywhere
+    let g:ale_php_phpmd_ruleset = "codesize,design"
+    " use only eslint
+    let g:ale_linters = {'javascript': ['eslint']}
     " @link https://unicode-table.com/en/blocks/dingbats/
     " let g:ale_sign_error = '✘'
     " let g:ale_sign_warning = '✗'
@@ -310,6 +324,7 @@ try
     let g:airline_symbols.linenr = '☰'
     let g:airline_symbols.maxlinenr = ''
 
+    let g:airline_theme='solarized'
     " simplest looking theme for the windows terminal
     " if has("win32") && !has("gui_running")
     if !has("gui_running")
@@ -342,6 +357,7 @@ try
         " Actually now, with termguicolors working
         " The solarized plugin should set the airline theme
         " Which now has the correct colours
+        let g:airline_theme='solarized'
     endif
 catch
 endtry
@@ -364,27 +380,13 @@ syntax enable
 if (has("termguicolors"))
     set termguicolors
 endif
-" if &diff || (has("win32") && !has("gui_running"))
 if &diff
     " setup for diff/cmd mode
     " cmd is Windows only
     set background=light
 else
-    " setup for non-diff/gui mode
+    " setup for non-diff mode
     set background=dark
-endif
-
-" Colour testing
-" @link https://vi.stackexchange.com/questions/17464/24-bit-256-colorscheme-in-windows-console
-if !has('gui_running')
-"     echomsg "Found: Terminal" &term "with" &t_Co "colors"
-"     echomsg "Trying to set ANSI 256-color terminal"
-    " does very bad things
-    " set term=ansi t_Co=256
-    " does nothing
-    " set t_Co=256
-    " let g:solarized_termcolors=256
-"     echomsg "Result: Terminal" &term "with" &t_Co "colors"
 endif
 
 try
@@ -392,14 +394,13 @@ try
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     " For Windows terminal we just use the default scheme
     " Assuming that you've installed the solarized cmd colours it looks ok
+    " Now that we've got 24-bit cmd and termguicolors use solarized8
     if has("unix") || has("gui_running")
         colorscheme solarized8
     endif
     " if has("win32") && !has("gui_running")
     if !has("gui_running")
         colorscheme solarized8
-        " 24-bit glory
-        " colorscheme tender
     endif
 catch
 endtry
@@ -412,10 +413,12 @@ if has("gui_running")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
         if &diff
-            set guifont=Anonymice_Powerline:h11:cANSI:qDRAFT
+            " set guifont=Anonymice_Powerline:h11:cANSI:qDRAFT
+            set guifont=DejaVu_Sans_Mono_For_Powerline:h11:cANSI
             " set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
         else
-            set guifont=Anonymice_Powerline:h14:cANSI:qDRAFT
+            " set guifont=Anonymice_Powerline:h14:cANSI:qDRAFT
+            set guifont=DejaVu_Sans_Mono_For_Powerline:h14:cANSI
             " set guifont=Source\ Code\ Pro\ for\ Powerline:h14:cANSI
             " set guifont=Source_Code_Pro_Light:h15:cANSI
         endif
@@ -493,7 +496,8 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set number " line numbers
+" set number " line numbers
+set nowrap
 " the colorcolumn is an ugly red in cmd
 if !has("win32") || has("gui_running")
     set colorcolumn=80 " highlight when text gets too long
@@ -528,11 +532,12 @@ autocmd BufWrite *.vimrc :call DeleteTrailingWS()
 " if the file doesn't exist create it from a template
 function! OpenLog()
     " @todo change this to ~/log
-    let logdir = 'C:\Users\Ian\SparkleShare\sparkleshare\work\log\'
+    let logdir = 'C:\Users\Ian\SparkleShare\sparklebox\log\'
     let logfile = logdir . strftime("%Y-%m-%d.md")
+    let logtemplate = logdir . 'template.md'
     " @link https://stackoverflow.com/a/3098685/327074
-    if !filereadable(logfile)
-        execute ':!cp ' . logdir . 'template.md ' . logfile
+    if !filereadable(expand(logfile)) && filereadable(expand(logtemplate))
+        execute ':!cp ' . logtemplate . ' ' . logfile
     endif
     execute ':e ' . logfile
 endfunction
@@ -577,6 +582,13 @@ autocmd BufWinEnter *.ctp set mps-=<:>
 
 
 " }}}
+" JSX specific"{{{
+" ============================
+au FileType javascript set softtabstop=2 | set shiftwidth=2
+au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+
+
+" }}}
 " Plugin independent shortcuts"{{{
 " ============================
 
@@ -586,15 +598,20 @@ autocmd BufWinEnter *.ctp set mps-=<:>
 " nnoremap <leader>bb :set nomore<bar>:ls<bar>:set more<cr>:b<space>
 " I prefer to allow the 'more' so you can see the previous pages of buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
+" similar concept for the tag stack
+nnoremap <leader>tt :tags<cr>
 
 " hide/show the quickfix lists
 " similar bracket syntax to vim-unimpaired
-map [qq :cclose<cr>
-map ]qq :copen<cr>
-map [ll :lclose<cr>
-map ]ll :lopen<cr>
-map [pp :pclose<cr>
-map ]pp :popen<cr>
+nnoremap [qq :cclose<cr>
+nnoremap ]qq :copen<cr>
+nnoremap [ll :lclose<cr>
+nnoremap ]ll :lopen<cr>
+nnoremap [pp :pclose<cr>
+nnoremap ]pp :popen<cr>
+" up and down the tag stack
+nnoremap [ts :pop<cr>
+nnoremap ]ts :tag<cr>
 
 
 " }}}
@@ -638,10 +655,10 @@ autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 " Variable to highlight markdown fenced code properly -- uses tpope's
 " vim-markdown plugin (which is bundled with vim7.4 now)
 " There are more syntaxes, but checking for them makes editing md very slow
-" let g:markdown_fenced_languages = [
-"       \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript.jsx',
-"       \   'sh',
-" \ ]
+let g:vim_markdown_fenced_languages = [
+      \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript.jsx',
+      \   'sh',
+\ ]
 
 
 " }}}
