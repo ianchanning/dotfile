@@ -8,6 +8,7 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
+" Plugin 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 Plugin 'lifepillar/vim-solarized8'
 " Sensible defaults
@@ -26,6 +27,10 @@ Plugin 'tpope/vim-vinegar'
 Plugin 'tpope/vim-commentary'
 " Repeat unimpaired and surround expressions
 Plugin 'tpope/vim-repeat'
+" Database connections
+Plugin 'tpope/vim-dadbod'
+" JSON pretty print - gqaj
+Plugin 'tpope/vim-jdaddy'
 " status bar
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -33,35 +38,39 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'jremmen/vim-ripgrep'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
+" Plugin 'junegunn/vim-peekaboo'
+" Git
+" Plugin 'junegunn/gv.vim'
+" Plugin 'gregsexton/gitv'
+" Plugin 'idanarye/vim-merginal'
 " Zeal
 Plugin 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
 Plugin 'w0rp/ale'
-" Plugin 'vim-syntastic/syntastic'
+" Plugin 'neomake/neomake'
+" Plugin 'benjie/local-npm-bin.vim'
 " distraction free mode
 Plugin 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative,
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plugin 'ervandew/supertab'
-Plugin 'vim-scripts/taglist.vim' " Browsing source code
+Plugin 'majutsushi/tagbar' " Browsing tags
 " Asynchronous tasks - used for ctags
 Plugin 'skywind3000/asyncrun.vim'
 " JavaScript
-" Plugin 'mtscout6/syntastic-local-eslint.vim' " replaced with ALE
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
+Plugin 'jparise/vim-graphql'
 " docblocks
 Plugin 'heavenshell/vim-jsdoc'
 " PHP
 " Plugin 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
-Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee, required for
-" vim-markdown
+" Plugin 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
 " Plugin 'tobyS/vmustache'
 " Plugin 'tobyS/pdv'
 " Plugin has problems with saving sessions
@@ -75,7 +84,7 @@ Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee, required for
 " Plugin 'python-mode/python-mode'
 " Plugin 'Bogdanp/pyrepl.vim'
 " Align SQL
-" Plugin 'Align'
+" Plugin 'Align' " this creates lots of shortcuts which conflicts
 " Plugin 'SQLUtilities'
 " Haskell
 " Plugin 'eagletmt/ghcmod-vim'
@@ -83,6 +92,8 @@ Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee, required for
 " Markdown
 " Causes slow down when viewing a mardown page
 Plugin 'plasticboy/vim-markdown'
+" Plugin 'vim-pandoc/vim-pandoc-syntax'
+Plugin 'suan/vim-instant-markdown'
 " Powershell
 " Plugin 'PProvost/vim-ps1'
 
@@ -113,13 +124,30 @@ try
     " 'cleancode,codesize,controversial,design,naming,unusedcode'
     let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
     " @link https://unicode-table.com/en/blocks/dingbats/
-    " let g:ale_sign_error = '✘'
+    let g:ale_sign_error = '✘'
     " let g:ale_sign_warning = '✗'
     " @link https://unicode-table.com/en/#control-character
-    let g:ale_sign_error = '»'
+    " let g:ale_sign_error = '»'
     let g:ale_sign_warning = '»'
     " let g:ale_lint_on_enter = 0
-    let g:ale_lint_on_text_changed = 'normal'
+    " let g:ale_lint_on_text_changed = 'normal'
+    let g:ale_linters = {'javascript': ['eslint']}
+    let g:ale_fixers = {'javascript': ['eslint']}
+    let g:ale_fix_on_save = 1
+    " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
+    " let g:ale_javascript_eslint_use_global = 1
+    let g:ale_javascript_eslint_executable = 'eslint_d'
+catch
+endtry
+
+" Neomake
+try
+    let g:neomake_javascript_enabled_makers = ['eslint_d']
+    " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
+    " Autofix entire buffer with eslint_d:
+    nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
+    " Autofix visual selection with eslint_d:
+    vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<CR>gv
 catch
 endtry
 
@@ -134,7 +162,6 @@ endtry
 " Airline
 " override the default and turn off whitespace warnings
 try
-    " let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -248,7 +275,7 @@ try
     " remove a few directories from the search
     " put PHP search in by default
     " let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
-    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !*.md --glob !Session.vim'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !*.md --glob !Session.vim --glob !_volumes*'
     " I can't figure out using variables in map commands - I'm guessing you can't
     " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
@@ -256,29 +283,19 @@ try
     " let rg_xml = '-Txml -Ttags'
 catch
 endtry
-" map <leader>rg :Rg -tphp expand("<cword>")<cr>
 map <leader>rg :Rg<cr>
 " current word in the current buffer
 map <leader>rb :Rg <cword> %<cr>
-" php
-map <leader>rp :Rg <cword><cr>
 " add a ( on the end to search for functions
 map <leader>rf :Rg <cword>\(<cr>
-" web
-map <leader>rw :Rg -tjs -tcss -thtml <cword><cr>
-" xml
-map <leader>rx :Rg -Txml -Ttags <cword><cr>
+" wholeword
+map <leader>rw :Rg -w <cword><cr>
 
 " FZF
-if has("gui_running")
-    map <leader>f :Files<cr>
-    map <leader>ft :BTags<cr>
-    map <leader>fb :Buffers<cr>
-else
-    map <leader>f :Files<cr>
-    map <leader>ft :BTags<cr>
-    map <leader>fb :Buffers<cr>
-endif
+map <leader>f :Files<cr>
+map <leader>ft :BTags<cr>
+map <leader>fb :Buffers<cr>
+let g:fzf_layout = { 'left': '~70%' }
 
 " Async Tags
 map <leader>at :AsyncRun ctags -R .<cr>
@@ -293,31 +310,6 @@ try
     let g:sqlutil_align_comma = 1
 catch
 endtry
-
-" Syntastic + eslint
-" try
-"     if has('gui_running')
-"         set statusline+=%#warningmsg#
-"         set statusline+=%{SyntasticStatuslineFlag()}
-"         set statusline+=%*
-"     endif
-
-"     let g:syntastic_always_populate_loc_list = 1
-"     let g:syntastic_auto_loc_list = 1
-"     let g:syntastic_check_on_open = 0
-"     let g:syntastic_check_on_wq = 1
-"     " eslint
-"     " @todo add link to where I got these from
-"     let g:syntastic_javascript_checkers = ['eslint']
-"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-"     let g:syntastic_php_checkers = ['php']
-
-"     " Sillyness with unicode
-"     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-"     let g:syntastic_error_symbol = "✗"
-" catch
-" endtry
 
 
 " }}}
@@ -337,21 +329,25 @@ if &diff
     set background=light
 else
     " setup for non-diff/gui mode
-    set background=dark
+    set background=light
 endif
 
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     colorscheme solarized8
+    " colorscheme solarized
+    " Attempts at debugging lack of bold fonts in Konsole
+    " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
+    " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
 catch
 endtry
 
 " Get us some nice fonts for GVim
 if has("gui_running")
-    if has("gui_gtk2")
-        set guifont=Inconsolata\ 15
-    elseif has("gui_macvim")
+    " set guifont=NovaMono\ for\ Powerline\ 8
+    set guifont=Source\ Code\ Pro\ for\ Powerline\ 8
+    if has("gui_macvim")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
         if &diff
@@ -412,7 +408,8 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set number " line numbers
+set nonumber " line numbers
+" set nowrap " used this when lots of windows are required
 set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
@@ -439,16 +436,22 @@ autocmd BufWrite *.php :call DeleteTrailingWS()
 autocmd BufWrite *.ctp :call DeleteTrailingWS()
 autocmd BufWrite *.vimrc :call DeleteTrailingWS()
 autocmd BufWrite *.md :call DeleteTrailingWS()
+autocmd BufWrite *.sql :call DeleteTrailingWS()
+autocmd BufWrite *.graphql :call DeleteTrailingWS()
 
 " Logbook
 " create a work log file for today
 " if the file doesn't exist create it from a template
 function! OpenLog()
-    " @todo change this to ~/log
-    let logdir = '~/Dropbox/log/'
+    " We've switched from Dropbox to SparkleShare
+    " let logdir = '~/Dropbox/log/'
+    " let logdir = '~/SparkleShare/bitbucket.org/sparkle/log/'
+    " Now symlinked
+    let logdir = '~/log/'
     let logfile = logdir . strftime("%Y-%m-%d.md")
-    " @link https://stackoverflow.com/a/3098685/327074
-    if !filereadable(logfile)
+    " '~' doesn't work for the filereadable check, need `expand`
+    " @link https://stackoverflow.com/a/53205873/327074
+    if !filereadable(expand(logfile))
         execute ':!cp ' . logdir . 'template.md ' . logfile
     endif
     execute ':e ' . logfile
@@ -512,15 +515,19 @@ au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
 " I prefer to allow the 'more' so you can see the previous pages of buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
 
+nnoremap <leader>tt :tags<cr>
+
 " hide/show the quickfix lists
 " similar bracket syntax to vim-unimpaired
-map [qq :cclose<cr>
-map ]qq :copen<cr>
-map [ll :lclose<cr>
-map ]ll :lopen<cr>
-map [pp :pclose<cr>
-map ]pp :popen<cr>
-
+nnoremap [qq :cclose<cr>
+nnoremap ]qq :copen<cr>
+nnoremap [ll :lclose<cr>
+nnoremap ]ll :lopen<cr>
+nnoremap [pp :pclose<cr>
+nnoremap ]pp :popen<cr>
+" tag stack
+nnoremap [ts :pop<cr>
+nnoremap ]ts :tag<cr>
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
@@ -542,7 +549,8 @@ map <leader>v "+p
 nnoremap <leader>gp yiw<cr>:g/<C-R>"/p<cr>
 nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " copy of SublimeText's @
-nnoremap @ :lvimgrep function %<cr>:lopen<cr>
+" this conflicts with registers, and it's not really used
+" nnoremap @ :lvimgrep function %<cr>:lopen<cr>
 
 
 " }}}
@@ -550,6 +558,14 @@ nnoremap @ :lvimgrep function %<cr>:lopen<cr>
 " ====
 
 set diffopt+=iwhite " ignore whitespace for diff
+
+
+" }}}
+" Git"{{{
+" ====
+
+map <leader>gl :Git log --graph --oneline --decorate --all<cr>
+map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative --all<cr>
 
 
 " }}}
