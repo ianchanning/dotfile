@@ -7,10 +7,11 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'altercation/vim-colors-solarized'
+" Plugin 'altercation/vim-colors-solarized'
 " Plugin 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 Plugin 'lifepillar/vim-solarized8'
+" Plugin 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
 Plugin 'tpope/vim-sensible'
 " git
@@ -58,7 +59,7 @@ Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on m
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plugin 'ervandew/supertab'
-Plugin 'majutsushi/tagbar' " Browsing tags
+" Plugin 'majutsushi/tagbar' " Browsing tags
 " Asynchronous tasks - used for ctags
 Plugin 'skywind3000/asyncrun.vim'
 " JavaScript
@@ -116,6 +117,7 @@ let g:mapleader = ","
 " Vim Markdown
 try
     let g:vim_markdown_folding_disabled = 1
+    let g:instant_markdown_autostart = 0
 catch
 endtry
 
@@ -133,7 +135,7 @@ try
     " let g:ale_lint_on_text_changed = 'normal'
     let g:ale_linters = {'javascript': ['eslint']}
     let g:ale_fixers = {'javascript': ['eslint']}
-    let g:ale_fix_on_save = 1
+    " let g:ale_fix_on_save = 1
     " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
     " let g:ale_javascript_eslint_use_global = 1
     let g:ale_javascript_eslint_executable = 'eslint_d'
@@ -215,6 +217,7 @@ endtry
 try
     let g:jsdoc_allow_input_prompt = 1
     let g:jsdoc_input_description = 1
+    let g:jsdoc_enable_es6 = 1
 catch
 endtry
 
@@ -275,7 +278,7 @@ try
     " remove a few directories from the search
     " put PHP search in by default
     " let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
-    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !*.md --glob !Session.vim --glob !_volumes*'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes*'
     " I can't figure out using variables in map commands - I'm guessing you can't
     " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
     " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
@@ -337,6 +340,7 @@ try
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     colorscheme solarized8
     " colorscheme solarized
+    " colorscheme onehalflight
     " Attempts at debugging lack of bold fonts in Konsole
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
@@ -345,8 +349,9 @@ endtry
 
 " Get us some nice fonts for GVim
 if has("gui_running")
+    set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
     " set guifont=NovaMono\ for\ Powerline\ 8
-    set guifont=Source\ Code\ Pro\ for\ Powerline\ 8
+    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 8
     if has("gui_macvim")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
@@ -357,6 +362,8 @@ if has("gui_running")
         endif
     endif
 endif
+" Match the terminal font for gnvim which doesn't have 'gui_running' set
+set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
 
 " Autocomplete menu for ed commands
 set wildmenu
@@ -410,7 +417,7 @@ set smartindent "Smart indent
 
 set nonumber " line numbers
 " set nowrap " used this when lots of windows are required
-set colorcolumn=80 " highlight when text gets too long
+set colorcolumn=100 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :nohlsearch<cr>
@@ -461,7 +468,7 @@ endfunction
 " GUI Options"{{{
 " ===========
 
-" Remove the menubar, toolbar and right scrollbar
+" Remove the menu bar, toolbar and right scrollbar
 " @link https://stackoverflow.com/a/13525844/327074
 function! ToggleGUICruft()
     if &guioptions=='i'
@@ -474,7 +481,7 @@ endfunction
 if has("gui_running")
     " F10 toggle
     map <F10> <Esc>:call ToggleGUICruft()<cr>
-    " by default, hide gui menus
+    " by default, hide GUI menus
     set guioptions=i
 endif
 
@@ -500,8 +507,8 @@ autocmd BufWinEnter *.md set mps-=<:>
 " }}}
 " JSX specific"{{{
 " ============================
-au FileType javascript set softtabstop=2 | set shiftwidth=2
-au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+au FileType javascript set softtabstop=2 | set shiftwidth=2 | set colorcolumn=100
+au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2 | set colorcolumn=100
 
 
 " }}}
@@ -557,7 +564,7 @@ nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " Diff"{{{
 " ====
 
-set diffopt+=iwhite " ignore whitespace for diff
+set diffopt+=iwhite " ignore white space for diff
 
 
 " }}}
@@ -566,6 +573,14 @@ set diffopt+=iwhite " ignore whitespace for diff
 
 map <leader>gl :Git log --graph --oneline --decorate --all<cr>
 map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative --all<cr>
+
+
+" }}}
+" Spelling"{{{
+" ====
+
+setlocal spell
+set spelllang=en_gb
 
 
 " }}}
