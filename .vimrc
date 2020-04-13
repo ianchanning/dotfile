@@ -1,7 +1,18 @@
-" Vundle "{{{
+" Initially copied from https://github.com/amix/vimrc
+
+" vim-plug "{{{
 " ======
 
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 set nocompatible              " be iMproved, required
+" Match the Vundle plugin directory
+" https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
 call plug#begin('~/.vim/bundle')
 
 " Plug 'altercation/vim-colors-solarized'
@@ -17,16 +28,18 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " use [ / ] for next / previous with lots of options
 Plug 'tpope/vim-unimpaired'
+" Allow . to work with surround and unimpaired
+Plug 'tpope/vim-repeat'
 " store sessions that plays nicely with Airline and PDV
 Plug 'tpope/vim-obsession'
 " improve the file explorer
 Plug 'tpope/vim-vinegar'
+" database explorer
+Plug 'tpope/vim-dadbod'
 " comment stuff
 Plug 'tpope/vim-commentary'
-" Repeat unimpaired and surround expressions
-Plug 'tpope/vim-repeat'
-" Database connections
-Plug 'tpope/vim-dadbod'
+" comment stuff
+Plug 'tpope/vim-commentary'
 " JSON pretty print - gqaj
 Plug 'tpope/vim-jdaddy'
 " status bar
@@ -36,6 +49,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'mileszs/ack.vim'
 " Plug 'junegunn/vim-peekaboo'
 " Git
 " Plug 'junegunn/gv.vim'
@@ -46,13 +60,14 @@ Plug 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-Plug 'w0rp/ale'
-" Plug 'neomake/neomake'
-" Plug 'benjie/local-npm-bin.vim'
+Plug 'dense-analysis/ale'
+Plug 'neomake/neomake'
+" Plug 'vim-syntastic/syntastic'
 " distraction free mode
 Plug 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 Plug 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
+" tab autocomplete
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 Plug 'ervandew/supertab'
@@ -60,9 +75,23 @@ Plug 'ervandew/supertab'
 " Asynchronous tasks - used for ctags
 Plug 'skywind3000/asyncrun.vim'
 " JavaScript
+" Plug 'mtscout6/syntastic-local-eslint.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'jparise/vim-graphql'
+" ReasonML
+Plug 'reasonml-editor/vim-reason-plus'
+" ReasonML recommended installing deoplete
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" else
+"  We're not installing deoplete for Vim
+"  So comment this section out to prevent errors on starting Vim
+"   Plug 'Shougo/deoplete.nvim'
+"   Plug 'roxma/nvim-yarp'
+"   Plug 'roxma/vim-hug-neovim-rpc'
+endif
+>>>>>>> f929d94f3bb6cd6f8eacb9e3900850e02bf5a740
 " docblocks
 Plug 'heavenshell/vim-jsdoc'
 " PHP
@@ -84,24 +113,36 @@ Plug 'heavenshell/vim-jsdoc'
 " Align SQL
 " Plug 'Align' " this creates lots of shortcuts which conflicts
 " Plug 'SQLUtilities'
-" Haskell
+" Haskell @link https://monicalent.com/blog/2017/11/19/haskell-in-vim/
+" ghc-mod fails with the stack install :(
 " Plug 'eagletmt/ghcmod-vim'
 " Plug 'Shougo/vimproc'
+" Try intero-vim instead
+" Plug 'parsonsmatt/intero-neovim'
+" Language Server Protocol
+" This requires extra step of install.sh
+" Plug 'autozimu/LanguageClient-neovim'
 " Markdown
-" Causes slow down when viewing a mardown page
+" Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
-" Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'suan/vim-instant-markdown'
-Plug 'iamcco/markdown-preview.nvim'
+" Plug 'euclio/vim-markdown-composer'
+" Asynchronous tasks
+" Plug 'skywind3000/asyncrun.vim'
 " Powershell
 " Plug 'PProvost/vim-ps1'
-
+Plug 'cespare/vim-toml'
 call plug#end()
 
 
 " }}}
 " General"{{{
 " =======
+
+" Sets how many lines of history VIM has to remember (default=50)
+set history=500
+" Set to auto read when a file is changed from the outside
+set autoread
+
 " With a map leader it's possible to do extra key combinations
 let mapleader = ","
 let g:mapleader = ","
@@ -110,6 +151,48 @@ let g:mapleader = ","
 " }}}
 " Plugin config"{{{
 " =============
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+
+" ALE
+
+" *** failed attempt to figure out the correct path for ALE + javascript-typescript-langserver
+" try
+"     call ale#Set('javascript_tsls_executable', 'javascript-typescript-langserver')
+"     call ale#Set('javascript_tsls_config_path', '')
+"     call ale#Set('javascript_tsls_use_global', get(g:, 'ale_use_global_executables', 0))
+
+"     call ale#linter#Define('javascript', {
+"     \   'name': 'javascript-typescript-langserver',
+"     \   'lsp': 'stdio',
+"     \   'executable_callback': ale#node#FindExecutableFunc('javascript_tsls', [
+"     \       'javascript-typescript-langserver',
+"     \   ]),
+"     \   'command': '%e',
+"     \   'project_root_callback': {-> ''},
+"     \   'language': '',
+"     \})
+" catch
+" endtry
+
+" LSP
+try
+    let g:LanguageClient_serverCommands = {
+          \ 'haskell': ['hie-wrapper'],
+          \ 'javascript': ['tcp://127.0.0.1:2089']
+          \ }
+catch
+endtry
+
+nnoremap <F5> :call LanguageClient_contextMenu()<cr>
+map <leader>lk :call LanguageClient#textDocument_hover()<cr>
+map <leader>lg :call LanguageClient#textDocument_definition()<cr>
+map <leader>lr :call LanguageClient#textDocument_rename()<cr>
+map <leader>lf :call LanguageClient#textDocument_formatting()<cr>
+map <leader>lb :call LanguageClient#textDocument_references()<cr>
+map <leader>la :call LanguageClient#textDocument_codeAction()<cr>
+map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
 
 " Vim Markdown
 try
@@ -161,6 +244,7 @@ endtry
 " Airline
 " override the default and turn off whitespace warnings
 try
+    " let g:airline_theme = 'onehalflight'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -201,38 +285,35 @@ try
 catch
 endtry
 
+" vim-surround with quotes
+map <leader>' ysiw'
+map <leader>" ysiw"
+
 " PHP doc block
 " @link https://github.com/tobyS/pdv
-try
-    let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
-catch
-endtry
-" nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<CR>
-" map <leader>d :call pdv#DocumentWithSnip()<CR>
+" try
+"     let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
+" catch
+" endtry
+" " nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<cr>
+" map <leader>d :call pdv#DocumentWithSnip()<cr>
 
-" @link https://github.com/heavenshell/vim-jsdoc
+" vim-javascript
 try
+    " @link https://github.com/pangloss/vim-javascript#configuration-variables
+    let g:javascript_plugin_jsdoc = 1
+    " @link https://github.com/heavenshell/vim-jsdoc
     let g:jsdoc_allow_input_prompt = 1
     let g:jsdoc_input_description = 1
     let g:jsdoc_enable_es6 = 1
 catch
 endtry
 
-" vim-javascript
-try
-    let g:javascript_plugin_jsdoc = 1
-catch
-endtry
-
 " toggle distraction free
-map <leader>gg :Goyo<cr>
+" map <leader>gg :Goyo<cr>
 
 " Javascript doc block
 " map <leader>// :JsDoc<cr>
-
-" vim-surround with quotes
-map <leader>' ysiw'
-map <leader>" ysiw"
 
 " Tabularize PHP docblock at the $var
 " there was a conflict with tt in the Align plugin, so switched to td
@@ -273,23 +354,27 @@ endtry
 " ripgrep
 try
     " remove a few directories from the search
-    " put PHP search in by default
-    " let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
     let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes*'
-    " I can't figure out using variables in map commands - I'm guessing you can't
-    " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
-    " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
-    " let rg_web = '-tjs -tcss -thtml'
-    " let rg_xml = '-Txml -Ttags'
+    " let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
+    " Ack adds some augmentation to the quickfix list
+    if executable('rg')
+        let g:ackprg = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
+    endif
 catch
 endtry
-map <leader>rg :Rg<cr>
+map <leader>rg :Ack!<cr>
 " current word in the current buffer
-map <leader>rb :Rg <cword> %<cr>
+map <leader>rb :Ack! <cword> %<cr>
+" php
+map <leader>rp :Ack! -tphp --type-add "ctp:*.ctp" -tctp <cword><cr>
 " add a ( on the end to search for functions
-map <leader>rf :Rg <cword>\(<cr>
-" wholeword
-map <leader>rw :Rg -w <cword><cr>
+map <leader>rf :Ack! <cword>\\\(<cr>
+" web
+map <leader>rw :Ack! -tjs -tcss -thtml <cword><cr>
+" xml
+map <leader>rx :Ack! -Txml -Ttags <cword><cr>
+" javascript
+map <leader>rj :Ack! -tjs --type-add "jsx:*.jsx" -tjsx -tjson -w <cword><cr>
 
 " FZF
 map <leader>f :Files<cr>
@@ -307,9 +392,37 @@ endtry
 
 " SQL Formatter
 try
-    let g:sqlutil_align_comma = 1
+    " let g:sqlutil_align_comma = 1
 catch
 endtry
+
+" Syntastic + eslint
+try
+    if has('gui_running')
+        set statusline+=%#warningmsg#
+        set statusline+=%{SyntasticStatuslineFlag()}
+        set statusline+=%*
+    endif
+
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 1
+    let g:syntastic_check_on_open = 0
+    let g:syntastic_check_on_wq = 1
+    " eslint
+    " @todo add link to where I got these from
+    let g:syntastic_javascript_checkers = ['eslint']
+    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+    let g:syntastic_php_checkers = ['php']
+
+    " Sillyness with unicode
+    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+    let g:syntastic_error_symbol = "✗"
+catch
+endtry
+
+" vim-commentary
+autocmd FileType rust setlocal commentstring=//\ %s
 
 
 " }}}
@@ -364,6 +477,7 @@ set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
 
 " Autocomplete menu for ed commands
 set wildmenu
+
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
@@ -412,9 +526,8 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set nonumber " line numbers
-" set nowrap " used this when lots of windows are required
-set colorcolumn=100 " highlight when text gets too long
+set nonumber " no line numbers
+set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :nohlsearch<cr>
@@ -503,10 +616,9 @@ autocmd BufWinEnter *.md set mps-=<:>
 
 " }}}
 " JSX specific"{{{
-" ============================
-au FileType javascript set softtabstop=2 | set shiftwidth=2 | set colorcolumn=100
-au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2 | set colorcolumn=100
-
+" ============
+au FileType javascript set softtabstop=2 | set shiftwidth=2
+au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
 
 " }}}
 " Plugin independent shortcuts"{{{
@@ -554,6 +666,7 @@ nnoremap <leader>gp yiw<cr>:g/<C-R>"/p<cr>
 nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " copy of SublimeText's @
 " this conflicts with registers, and it's not really used
+" use FZF :Lines instead
 " nnoremap @ :lvimgrep function %<cr>:lopen<cr>
 
 
