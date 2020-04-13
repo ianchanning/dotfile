@@ -335,9 +335,9 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    " colorscheme solarized8
+    colorscheme solarized8
     " colorscheme solarized
-    colorscheme onehalflight
+    " colorscheme onehalflight
     " Attempts at debugging lack of bold fonts in Konsole
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
