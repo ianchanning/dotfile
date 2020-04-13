@@ -2,104 +2,101 @@
 " ======
 
 set nocompatible              " be iMproved, required
-filetype off                  " required
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/bundle')
 
-Plugin 'VundleVim/Vundle.vim'
-" Plugin 'altercation/vim-colors-solarized'
-" Plugin 'sickill/vim-monokai'
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
-Plugin 'lifepillar/vim-solarized8'
-" Plugin 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'lifepillar/vim-solarized8'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
-Plugin 'tpope/vim-sensible'
+Plug 'tpope/vim-sensible'
 " git
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " put quotes and brackets around expressions
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 " use [ / ] for next / previous with lots of options
-Plugin 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired'
 " store sessions that plays nicely with Airline and PDV
-Plugin 'tpope/vim-obsession'
+Plug 'tpope/vim-obsession'
 " improve the file explorer
-Plugin 'tpope/vim-vinegar'
+Plug 'tpope/vim-vinegar'
 " comment stuff
-Plugin 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary'
 " Repeat unimpaired and surround expressions
-Plugin 'tpope/vim-repeat'
+Plug 'tpope/vim-repeat'
 " Database connections
-Plugin 'tpope/vim-dadbod'
+Plug 'tpope/vim-dadbod'
 " JSON pretty print - gqaj
-Plugin 'tpope/vim-jdaddy'
+Plug 'tpope/vim-jdaddy'
 " status bar
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 " Searching
-Plugin 'jremmen/vim-ripgrep'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-" Plugin 'junegunn/vim-peekaboo'
+Plug 'jremmen/vim-ripgrep'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/vim-peekaboo'
 " Git
-" Plugin 'junegunn/gv.vim'
-" Plugin 'gregsexton/gitv'
-" Plugin 'idanarye/vim-merginal'
+" Plug 'junegunn/gv.vim'
+" Plug 'gregsexton/gitv'
+" Plug 'idanarye/vim-merginal'
 " Zeal
-Plugin 'KabbAmine/zeavim.vim'
+Plug 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
-Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
+Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-Plugin 'w0rp/ale'
-" Plugin 'neomake/neomake'
-" Plugin 'benjie/local-npm-bin.vim'
+Plug 'w0rp/ale'
+" Plug 'neomake/neomake'
+" Plug 'benjie/local-npm-bin.vim'
 " distraction free mode
-Plugin 'junegunn/goyo.vim'
+Plug 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
-Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
+Plug 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
-Plugin 'ervandew/supertab'
-" Plugin 'majutsushi/tagbar' " Browsing tags
+Plug 'ervandew/supertab'
+" Plug 'majutsushi/tagbar' " Browsing tags
 " Asynchronous tasks - used for ctags
-Plugin 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/asyncrun.vim'
 " JavaScript
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'jparise/vim-graphql'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'jparise/vim-graphql'
 " docblocks
-Plugin 'heavenshell/vim-jsdoc'
+Plug 'heavenshell/vim-jsdoc'
 " PHP
-" Plugin 'shawncplus/phpcomplete.vim'
+" Plug 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
-" Plugin 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
-" Plugin 'tobyS/vmustache'
-" Plugin 'tobyS/pdv'
-" Plugin has problems with saving sessions
+" Plug 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
+" Plug 'tobyS/vmustache'
+" Plug 'tobyS/pdv'
+" Plug has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
-" Plugin 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 " Python
-" Plugin 'davidhalter/jedi-vim'
-" Plugin 'cjrh/vim-conda'
+" Plug 'davidhalter/jedi-vim'
+" Plug 'cjrh/vim-conda'
 " @link https://www.youtube.com/watch?v=YhqsjUUHj6g
-" Plugin 'python-mode/python-mode'
-" Plugin 'Bogdanp/pyrepl.vim'
+" Plug 'python-mode/python-mode'
+" Plug 'Bogdanp/pyrepl.vim'
 " Align SQL
-" Plugin 'Align' " this creates lots of shortcuts which conflicts
-" Plugin 'SQLUtilities'
+" Plug 'Align' " this creates lots of shortcuts which conflicts
+" Plug 'SQLUtilities'
 " Haskell
-" Plugin 'eagletmt/ghcmod-vim'
-" Plugin 'Shougo/vimproc'
+" Plug 'eagletmt/ghcmod-vim'
+" Plug 'Shougo/vimproc'
 " Markdown
 " Causes slow down when viewing a mardown page
-Plugin 'plasticboy/vim-markdown'
-" Plugin 'vim-pandoc/vim-pandoc-syntax'
-Plugin 'suan/vim-instant-markdown'
+Plug 'plasticboy/vim-markdown'
+" Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'suan/vim-instant-markdown'
+Plug 'iamcco/markdown-preview.nvim'
 " Powershell
-" Plugin 'PProvost/vim-ps1'
+" Plug 'PProvost/vim-ps1'
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+call plug#end()
 
 
 " }}}
@@ -338,9 +335,9 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized8
+    " colorscheme solarized8
     " colorscheme solarized
-    " colorscheme onehalflight
+    colorscheme onehalflight
     " Attempts at debugging lack of bold fonts in Konsole
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
