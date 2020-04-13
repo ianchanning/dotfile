@@ -68,7 +68,7 @@ Plug 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-Plug 'neomake/neomake'
+" Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
 " Language Server Protocol
 " Plug 'dense-analysis/ale'
@@ -76,6 +76,8 @@ Plug 'neomake/neomake'
 "     \ 'branch': 'next',
 "     \ 'do': 'bash install.sh',
 "     \ }
+" Reasons for using COC:
+" https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " distraction free mode
 Plug 'junegunn/goyo.vim'
@@ -209,6 +211,7 @@ map <leader>cp :call CocAction('diagnosticPreview')<cr>
 map <leader>cr :call CocAction('rename')<cr>
 map <leader>cf :call CocAction('format')<cr>
 " map <leader>cb :call CocAction('references')<cr>
+map <leader>ca  <Plug>(coc-codeaction)
 " map <leader>ca :call CocAction('codeAction')<cr>
 " map <leader>cs :call CocAction('documentSymbols')<cr>
 map <leader>cd :call CocAction('jumpDefinition')<cr>
@@ -265,15 +268,15 @@ endtry
 " endtry
 
 " Neomake
-try
-    let g:neomake_javascript_enabled_makers = ['eslint_d']
-    " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
-    " Autofix entire buffer with eslint_d:
-    nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
-    " Autofix visual selection with eslint_d:
-    vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<CR>gv
-catch
-endtry
+" try
+"     let g:neomake_javascript_enabled_makers = ['eslint_d']
+"     " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
+"     " Autofix entire buffer with eslint_d:
+"     nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
+"     " Autofix visual selection with eslint_d:
+"     vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<CR>gv
+" catch
+" endtry
 
 " vim-commentary
 try
