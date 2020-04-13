@@ -91,7 +91,6 @@ if has('nvim')
 "   Plug 'roxma/nvim-yarp'
 "   Plug 'roxma/vim-hug-neovim-rpc'
 endif
->>>>>>> f929d94f3bb6cd6f8eacb9e3900850e02bf5a740
 " docblocks
 Plug 'heavenshell/vim-jsdoc'
 " PHP
