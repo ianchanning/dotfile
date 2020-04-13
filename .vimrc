@@ -3,9 +3,17 @@
 " vim-plug "{{{
 " ======
 
+" Auto-install
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+" Vim
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+" Neovim
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
@@ -19,7 +27,7 @@ call plug#begin('~/.vim/bundle')
 " Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
+" Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -60,9 +68,15 @@ Plug 'KabbAmine/zeavim.vim'
 " highlight tabs and spaces at the end of lines
 Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-Plug 'dense-analysis/ale'
 Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
+" Language Server Protocol
+" Plug 'dense-analysis/ale'
+" Plug 'autozimu/LanguageClient-neovim', {
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh',
+"     \ }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " distraction free mode
 Plug 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
@@ -82,15 +96,15 @@ Plug 'jparise/vim-graphql'
 " ReasonML
 Plug 'reasonml-editor/vim-reason-plus'
 " ReasonML recommended installing deoplete
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" else
-"  We're not installing deoplete for Vim
-"  So comment this section out to prevent errors on starting Vim
-"   Plug 'Shougo/deoplete.nvim'
-"   Plug 'roxma/nvim-yarp'
-"   Plug 'roxma/vim-hug-neovim-rpc'
-endif
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" " else
+" "  We're not installing deoplete for Vim
+" "  So comment this section out to prevent errors on starting Vim
+" "   Plug 'Shougo/deoplete.nvim'
+" "   Plug 'roxma/nvim-yarp'
+" "   Plug 'roxma/vim-hug-neovim-rpc'
+" endif
 " docblocks
 Plug 'heavenshell/vim-jsdoc'
 " PHP
@@ -118,15 +132,20 @@ Plug 'heavenshell/vim-jsdoc'
 " Plug 'Shougo/vimproc'
 " Try intero-vim instead
 " Plug 'parsonsmatt/intero-neovim'
-" Language Server Protocol
-" This requires extra step of install.sh
-" Plug 'autozimu/LanguageClient-neovim'
 " Markdown
 " Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
+function! BuildComposer(info)
+  if a:info.status != 'unchanged' || a:info.force
+    if has('nvim')
+      !cargo build --release
+    else
+      !cargo build --release --no-default-features --features json-rpc
+    endif
+  endif
+endfunction
+Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 " Plug 'euclio/vim-markdown-composer'
-" Asynchronous tasks
-" Plug 'skywind3000/asyncrun.vim'
 " Powershell
 " Plug 'PProvost/vim-ps1'
 Plug 'cespare/vim-toml'
@@ -152,7 +171,54 @@ let g:mapleader = ","
 " =============
 
 " deoplete
-let g:deoplete#enable_at_startup = 1
+" try
+"     let g:deoplete#enable_at_startup = 1
+"     " " Use ALE and also some plugin 'foobar' as completion sources for all code.
+"     " call deoplete#custom#option('sources', {
+"     " \ '_': ['ale'],
+"     " \})
+" catch
+" endtry
+
+" LSP - enable autozimu/LanguageClient-neovim above for this section
+" try
+"     " let g:LanguageClient_serverCommands = {
+"     "       \ 'haskell': ['hie-wrapper'],
+"     "       \ 'javascript': ['tcp://127.0.0.1:2089']
+"     "       \ }
+"     let g:LanguageClient_serverCommands = {
+"         \ 'reason': [expand('~/rls-linux/reason-language-server')],
+"         \ }
+"     let g:LanguageClient_diagnosticsList = 'Location'
+" catch
+" endtry
+
+" nnoremap <F5> :call LanguageClient_contextMenu()<cr>
+" map <leader>lk :call LanguageClient#textDocument_hover()<cr>
+" map <leader>lg :call LanguageClient#textDocument_definition()<cr>
+" map <leader>lr :call LanguageClient#textDocument_rename()<cr>
+" map <leader>lf :call LanguageClient#textDocument_formatting()<cr>
+" map <leader>lb :call LanguageClient#textDocument_references()<cr>
+" map <leader>la :call LanguageClient#textDocument_codeAction()<cr>
+" map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
+
+" LSP - COC
+map <leader>ch :call CocAction('doHover')<cr>
+map <leader>ci :call CocAction('diagnosticInfo')<cr>
+map <leader>cp :call CocAction('diagnosticPreview')<cr>
+map <leader>cr :call CocAction('rename')<cr>
+map <leader>cf :call CocAction('format')<cr>
+" map <leader>cb :call CocAction('references')<cr>
+" map <leader>ca :call CocAction('codeAction')<cr>
+" map <leader>cs :call CocAction('documentSymbols')<cr>
+map <leader>cd :call CocAction('jumpDefinition')<cr>
+
+" Vim Markdown
+try
+    let g:vim_markdown_folding_disabled = 1
+    let g:instant_markdown_autostart = 0
+catch
+endtry
 
 " ALE
 
@@ -172,54 +238,31 @@ let g:deoplete#enable_at_startup = 1
 "     \   'project_root_callback': {-> ''},
 "     \   'language': '',
 "     \})
+
+  " let g:ale_reason_ls_executable = expand('~/rls-linux/reason-language-server')
 " catch
 " endtry
 
-" LSP
-try
-    let g:LanguageClient_serverCommands = {
-          \ 'haskell': ['hie-wrapper'],
-          \ 'javascript': ['tcp://127.0.0.1:2089']
-          \ }
-catch
-endtry
-
-nnoremap <F5> :call LanguageClient_contextMenu()<cr>
-map <leader>lk :call LanguageClient#textDocument_hover()<cr>
-map <leader>lg :call LanguageClient#textDocument_definition()<cr>
-map <leader>lr :call LanguageClient#textDocument_rename()<cr>
-map <leader>lf :call LanguageClient#textDocument_formatting()<cr>
-map <leader>lb :call LanguageClient#textDocument_references()<cr>
-map <leader>la :call LanguageClient#textDocument_codeAction()<cr>
-map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
-
-" Vim Markdown
-try
-    let g:vim_markdown_folding_disabled = 1
-    let g:instant_markdown_autostart = 0
-catch
-endtry
-
-" Ale
-try
-    " 'cleancode,codesize,controversial,design,naming,unusedcode'
-    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
-    " @link https://unicode-table.com/en/blocks/dingbats/
-    let g:ale_sign_error = '✘'
-    " let g:ale_sign_warning = '✗'
-    " @link https://unicode-table.com/en/#control-character
-    " let g:ale_sign_error = '»'
-    let g:ale_sign_warning = '»'
-    " let g:ale_lint_on_enter = 0
-    " let g:ale_lint_on_text_changed = 'normal'
-    let g:ale_linters = {'javascript': ['eslint']}
-    let g:ale_fixers = {'javascript': ['eslint']}
-    " let g:ale_fix_on_save = 1
-    " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
-    " let g:ale_javascript_eslint_use_global = 1
-    let g:ale_javascript_eslint_executable = 'eslint_d'
-catch
-endtry
+" ALE
+" try
+"     " 'cleancode,codesize,controversial,design,naming,unusedcode'
+"     let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+"     " @link https://unicode-table.com/en/blocks/dingbats/
+"     let g:ale_sign_error = '✘'
+"     " let g:ale_sign_warning = '✗'
+"     " @link https://unicode-table.com/en/#control-character
+"     " let g:ale_sign_error = '»'
+"     let g:ale_sign_warning = '»'
+"     " let g:ale_lint_on_enter = 0
+"     " let g:ale_lint_on_text_changed = 'normal'
+"     let g:ale_linters = {'javascript': ['eslint']}
+"     let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
+"     " let g:ale_fix_on_save = 1
+"     " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
+"     " let g:ale_javascript_eslint_use_global = 1
+"     let g:ale_javascript_eslint_executable = 'eslint_d'
+" catch
+" endtry
 
 " Neomake
 try
@@ -602,9 +645,9 @@ endif
 map <leader>; A;<esc>
 
 " CakePHP navigation
-map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
-map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
-map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
+" map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
+" map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
+" map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
 
 " turn off the > beep
 " @link https://stackoverflow.com/a/24242461/327074
