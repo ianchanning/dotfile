@@ -1,5 +1,5 @@
 " Initially copied from https://github.com/amix/vimrc
-
+" let $NVIM_COC_LOG_LEVEL='debug'
 " vim-plug "{{{
 " ======
 
@@ -23,11 +23,13 @@ set nocompatible              " be iMproved, required
 " https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
 call plug#begin('~/.vim/bundle')
 
+" Colours
 " Plug 'altercation/vim-colors-solarized'
 " Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
+" Plug 'ianchanning/vim-selenized'
 Plug 'lifepillar/vim-solarized8'
-" Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -46,10 +48,8 @@ Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-dadbod'
 " comment stuff
 Plug 'tpope/vim-commentary'
-" comment stuff
-Plug 'tpope/vim-commentary'
 " JSON pretty print - gqaj
-Plug 'tpope/vim-jdaddy'
+" Plug 'tpope/vim-jdaddy' " use jq instead
 " status bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -80,13 +80,13 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " distraction free mode
-Plug 'junegunn/goyo.vim'
+" Plug 'junegunn/goyo.vim'
 " autocomplete matching brackets and quotes
 Plug 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
 " tab autocomplete
 " has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab' " this isn't required now we have coc
 " Plug 'majutsushi/tagbar' " Browsing tags
 " Asynchronous tasks - used for ctags
 Plug 'skywind3000/asyncrun.vim'
@@ -96,7 +96,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'jparise/vim-graphql'
 " ReasonML
-Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'reasonml-editor/vim-reason-plus'
 " ReasonML recommended installing deoplete
 " if has('nvim')
 "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -151,6 +151,8 @@ Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 " Powershell
 " Plug 'PProvost/vim-ps1'
 Plug 'cespare/vim-toml'
+Plug 'preservim/nerdtree'
+Plug 'yegappan/mru'
 call plug#end()
 
 
@@ -283,13 +285,14 @@ try
     autocmd FileType php setlocal commentstring=\/\/\ %s
     autocmd FileType javascript setlocal commentstring=\/\/\ %s
     autocmd FileType dosbatch setlocal commentstring=rem\ %s
+    autocmd FileType rust setlocal commentstring=//\ %s
 catch
 endtry
 
 " Airline
 " override the default and turn off whitespace warnings
 try
-    " let g:airline_theme = 'onehalflight'
+    let g:airline_theme = 'onehalflight'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -399,14 +402,16 @@ endtry
 " ripgrep
 try
     " remove a few directories from the search
-    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes*'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
     " let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
     " Ack adds some augmentation to the quickfix list
     if executable('rg')
-        let g:ackprg = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
+        let g:ackprg = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
     endif
 catch
 endtry
+" Note: There is a reason why I switched to using Ack, I think it was to allow
+" specifying types... can't remember though
 map <leader>rg :Ack!<cr>
 " current word in the current buffer
 map <leader>rb :Ack! <cword> %<cr>
@@ -419,12 +424,13 @@ map <leader>rw :Ack! -tjs -tcss -thtml <cword><cr>
 " xml
 map <leader>rx :Ack! -Txml -Ttags <cword><cr>
 " javascript
-map <leader>rj :Ack! -tjs --type-add "jsx:*.jsx" -tjsx -tjson -w <cword><cr>
+map <leader>rj :Ack! -tjs --type-add "jsx:*.jsx" -tjsx -tjson <cword><cr>
 
 " FZF
 map <leader>f :Files<cr>
 map <leader>ft :BTags<cr>
 map <leader>fb :Buffers<cr>
+map <leader>fl :Lines<cr>
 let g:fzf_layout = { 'left': '~70%' }
 
 " Async Tags
@@ -442,32 +448,29 @@ catch
 endtry
 
 " Syntastic + eslint
-try
-    if has('gui_running')
-        set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
-    endif
+" try
+"     if has('gui_running')
+"         set statusline+=%#warningmsg#
+"         set statusline+=%{SyntasticStatuslineFlag()}
+"         set statusline+=%*
+"     endif
 
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 0
-    let g:syntastic_check_on_wq = 1
-    " eslint
-    " @todo add link to where I got these from
-    let g:syntastic_javascript_checkers = ['eslint']
-    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-    let g:syntastic_php_checkers = ['php']
+"     let g:syntastic_always_populate_loc_list = 1
+"     let g:syntastic_auto_loc_list = 1
+"     let g:syntastic_check_on_open = 0
+"     let g:syntastic_check_on_wq = 1
+"     " eslint
+"     " @todo add link to where I got these from
+"     let g:syntastic_javascript_checkers = ['eslint']
+"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+"     let g:syntastic_php_checkers = ['php']
 
-    " Sillyness with unicode
-    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-    let g:syntastic_error_symbol = "✗"
-catch
-endtry
-
-" vim-commentary
-autocmd FileType rust setlocal commentstring=//\ %s
+"     " Sillyness with unicode
+"     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+"     let g:syntastic_error_symbol = "✗"
+" catch
+" endtry
 
 
 " }}}
@@ -493,9 +496,11 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized8
+    " colorscheme solarized8
     " colorscheme solarized
-    " colorscheme onehalflight
+    colorscheme onehalflight
+    " Main problem with selenized is that the diff sucks
+    " colorscheme selenized
     " Attempts at debugging lack of bold fonts in Konsole
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
@@ -644,9 +649,6 @@ endif
 " PHP specific"{{{
 " ============
 
-" Add a ; to the end of the line
-map <leader>; A;<esc>
-
 " CakePHP navigation
 " map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
 " map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
@@ -658,16 +660,21 @@ autocmd BufWinEnter *.php set mps-=<:>
 autocmd BufWinEnter *.ctp set mps-=<:>
 autocmd BufWinEnter *.md set mps-=<:>
 
-
 " }}}
-" JSX specific"{{{
+" Tab settings"{{{
 " ============
-au FileType javascript set softtabstop=2 | set shiftwidth=2
-au FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+
+autocmd FileType javascript set softtabstop=2 | set shiftwidth=2
+autocmd FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+autocmd FileType yaml set softtabstop=2 | set shiftwidth=2
+autocmd FileType reason set softtabstop=2 | set shiftwidth=2
 
 " }}}
 " Plugin independent shortcuts"{{{
 " ============================
+
+" Add a ; to the end of the line
+map <leader>; A;<esc>
 
 " better file finder
 " @link http://vim.wikia.com/wiki/Easier_buffer_switching
@@ -689,6 +696,11 @@ nnoremap ]pp :popen<cr>
 " tag stack
 nnoremap [ts :pop<cr>
 nnoremap ]ts :tag<cr>
+
+" terminal easy escape
+" It's actually useful to have this complex escape sequence for when you need
+" Esc in your terminal session - e.g. opening Vim in your terminal session
+" tnoremap <Esc> <C-\><C-n>
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
@@ -726,8 +738,8 @@ set diffopt+=iwhite " ignore white space for diff
 " Git"{{{
 " ====
 
-map <leader>gl :Git log --graph --oneline --decorate --all<cr>
-map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative --all<cr>
+map <leader>gl :Git log --graph --oneline --decorate<cr>
+map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative<cr>
 
 
 " }}}
