@@ -1,22 +1,26 @@
-" Initially copied from https://github.com/amix/vimrc
-" let $NVIM_COC_LOG_LEVEL='debug'
-" vim-plug "{{{
-" ======
+" Initially copied from https://github.com/amix/vimrc let
+" $NVIM_COC_LOG_LEVEL='debug' vim-plug "{{{ ======
 
 " Auto-install
-" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
-" Vim
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation Vim
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC endif
 endif
 " Neovim
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC endif
 endif
+
+" Enable completion where available.  This setting must be set before ALE is
+" loaded.
+"
+" You should not turn this setting on if you wish to use ALE as a completion
+" source for other completion plugins, like Deoplete.  let
+" g:ale_completion_enabled = 1
 
 set nocompatible              " be iMproved, required
 " Match the Vundle plugin directory
@@ -29,7 +33,7 @@ call plug#begin('~/.vim/bundle')
 " 24-bit, requires termguicolors
 " Plug 'ianchanning/vim-selenized'
 Plug 'lifepillar/vim-solarized8'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
+" Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -49,8 +53,8 @@ Plug 'tpope/vim-dadbod'
 " comment stuff
 Plug 'tpope/vim-commentary'
 " JSON pretty print - gqaj
-" Plug 'tpope/vim-jdaddy' " use jq instead
-" status bar
+" Plug 'tpope/vim-jdaddy' " use jq instead status bar
+" - this is a good example for github README instructions
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " Searching
@@ -58,37 +62,33 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mileszs/ack.vim'
-" Plug 'junegunn/vim-peekaboo'
-" Git
-" Plug 'junegunn/gv.vim'
+" Plug 'junegunn/vim-peekaboo' "Git
+Plug 'junegunn/gv.vim'
 " Plug 'gregsexton/gitv'
 " Plug 'idanarye/vim-merginal'
-" Zeal
-Plug 'KabbAmine/zeavim.vim'
+" Plug 'KabbAmine/zeavim.vim' " Zeal
 " highlight tabs and spaces at the end of lines
 Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
 " Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
 " Language Server Protocol
-" Plug 'dense-analysis/ale'
-" Plug 'autozimu/LanguageClient-neovim', {
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh',
-"     \ }
-" Reasons for using COC:
+Plug 'dense-analysis/ale' " use this just for linting not LSP
+" Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
+" install.sh', \ } Reasons for using COC:
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" https://bluz71.github.io/2019/10/16/lsp-in-vim-with-the-lsc-plugin.html
+Plug 'natebosch/vim-lsc'
 " distraction free mode
 " Plug 'junegunn/goyo.vim'
-" autocomplete matching brackets and quotes
-Plug 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" tab autocomplete
-" has issues with YouCompleteMe
-" @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
-" Plug 'ervandew/supertab' " this isn't required now we have coc
-" Plug 'majutsushi/tagbar' " Browsing tags
-" Asynchronous tasks - used for ctags
+" autocomplete matching
+" brackets and quotes
+Plug 'Raimondi/delimitMate' " this caused minor slowdown/refreshing issues on my Eee
+" tab autocomplete has issues with YouCompleteMe @link
+" https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
+" Plug 'ervandew/supertab' " this isn't required now we have coc Plug
+" 'majutsushi/tagbar' " Browsing tags Asynchronous tasks - used for ctags
 Plug 'skywind3000/asyncrun.vim'
 " JavaScript
 " Plug 'mtscout6/syntastic-local-eslint.vim'
@@ -96,7 +96,8 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'jparise/vim-graphql'
 " ReasonML
-" Plug 'reasonml-editor/vim-reason-plus'
+Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'amiralies/vim-rescript'
 " ReasonML recommended installing deoplete
 " if has('nvim')
 "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -155,6 +156,8 @@ Plug 'preservim/nerdtree'
 Plug 'yegappan/mru'
 call plug#end()
 
+" @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
+" let g:node_client_debug = 1
 
 " }}}
 " General"{{{
@@ -178,9 +181,9 @@ let g:mapleader = ","
 " try
 "     let g:deoplete#enable_at_startup = 1
 "     " " Use ALE and also some plugin 'foobar' as completion sources for all code.
-"     " call deoplete#custom#option('sources', {
-"     " \ '_': ['ale'],
-"     " \})
+"     call deoplete#custom#option('sources', {
+"     \ '_': ['ale'],
+"     \})
 " catch
 " endtry
 
@@ -197,6 +200,15 @@ let g:mapleader = ","
 " catch
 " endtry
 
+" LSC
+try
+    let g:lsc_server_commands = {
+      \ 'javascript.jsx': 'typescript-language-server --stdio',
+      \ 'reason': 'reason-language-server'
+      \ }
+catch
+endtry
+
 " nnoremap <F5> :call LanguageClient_contextMenu()<cr>
 " map <leader>lk :call LanguageClient#textDocument_hover()<cr>
 " map <leader>lg :call LanguageClient#textDocument_definition()<cr>
@@ -207,16 +219,16 @@ let g:mapleader = ","
 " map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
 
 " LSP - COC
-map <leader>ch :call CocAction('doHover')<cr>
-map <leader>ci :call CocAction('diagnosticInfo')<cr>
-map <leader>cp :call CocAction('diagnosticPreview')<cr>
-map <leader>cr :call CocAction('rename')<cr>
-map <leader>cf :call CocAction('format')<cr>
+" map <leader>ch :call CocAction('doHover')<cr>
+" map <leader>ci :call CocAction('diagnosticInfo')<cr>
+" map <leader>cp :call CocAction('diagnosticPreview')<cr>
+" map <leader>cr :call CocAction('rename')<cr>
+" map <leader>cf :call CocAction('format')<cr>
 " map <leader>cb :call CocAction('references')<cr>
-map <leader>ca  <Plug>(coc-codeaction)
-" map <leader>ca :call CocAction('codeAction')<cr>
+" map <leader>ca  <Plug>(coc-codeaction)
+" " map <leader>ca :call CocAction('codeAction')<cr>
 " map <leader>cs :call CocAction('documentSymbols')<cr>
-map <leader>cd :call CocAction('jumpDefinition')<cr>
+" map <leader>cd :call CocAction('jumpDefinition')<cr>
 
 " Vim Markdown
 try
@@ -228,6 +240,9 @@ endtry
 " ALE
 
 " *** failed attempt to figure out the correct path for ALE + javascript-typescript-langserver
+" I tried again and just installed typescript globally - magically ALE seems
+" to work with tsserver
+" @link https://stackoverflow.com/questions/61178344/configuring-vim-neovim-ale-plugin-to-support-alegotodefinition-in-javascript-fi
 " try
 "     call ale#Set('javascript_tsls_executable', 'javascript-typescript-langserver')
 "     call ale#Set('javascript_tsls_config_path', '')
@@ -249,25 +264,38 @@ endtry
 " endtry
 
 " ALE
-" try
-"     " 'cleancode,codesize,controversial,design,naming,unusedcode'
-"     let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
-"     " @link https://unicode-table.com/en/blocks/dingbats/
-"     let g:ale_sign_error = '✘'
-"     " let g:ale_sign_warning = '✗'
-"     " @link https://unicode-table.com/en/#control-character
-"     " let g:ale_sign_error = '»'
-"     let g:ale_sign_warning = '»'
-"     " let g:ale_lint_on_enter = 0
-"     " let g:ale_lint_on_text_changed = 'normal'
-"     let g:ale_linters = {'javascript': ['eslint']}
-"     let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
-"     " let g:ale_fix_on_save = 1
-"     " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
-"     " let g:ale_javascript_eslint_use_global = 1
-"     let g:ale_javascript_eslint_executable = 'eslint_d'
-" catch
-" endtry
+try
+    " 'cleancode,codesize,controversial,design,naming,unusedcode'
+    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " @link https://unicode-table.com/en/blocks/dingbats/
+    " let g:ale_sign_error = '✖'
+    let g:ale_sign_error = '⏺'
+    " let g:ale_sign_error = '🠶'
+    " let g:ale_sign_error = '❎'
+    " let g:ale_sign_error = '❌'
+    " let g:ale_sign_error = '✕'
+    " let g:ale_sign_error = '✘'
+    " let g:ale_sign_error = '✗'
+    " let g:ale_sign_error = '»'
+    let g:ale_sign_warning = '⏺'
+    " @link https://unicode-table.com/en/#control-character
+    " let g:ale_sign_warning = '»'
+    " let g:ale_lint_on_enter = 0
+    " let g:ale_lint_on_text_changed = 'normal'
+    " let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
+    let g:ale_linters = {'javascript': ['eslint'], 'reason': ['reason-language-server']}
+    " let g:ale_fixers = {'javascript': ['eslint']}
+    let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
+    " let g:ale_fix_on_save = 1
+    " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
+    " let g:ale_javascript_eslint_use_global = 1
+    " let g:ale_javascript_eslint_executable = 'eslint_d'
+    " set omnifunc=ale#completion#OmniFunc
+    highlight link ALEErrorSign WarningMsg
+    highlight link ALEWarningSign Type
+    let g:airline#extensions#ale#enabled = 1
+catch
+endtry
 
 " Neomake
 " try
@@ -292,7 +320,7 @@ endtry
 " Airline
 " override the default and turn off whitespace warnings
 try
-    let g:airline_theme = 'onehalflight'
+    " let g:airline_theme = 'onehalflight'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -496,9 +524,9 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    " colorscheme solarized8
+    colorscheme solarized8
     " colorscheme solarized
-    colorscheme onehalflight
+    " colorscheme onehalflight
     " Main problem with selenized is that the diff sucks
     " colorscheme selenized
     " Attempts at debugging lack of bold fonts in Konsole
