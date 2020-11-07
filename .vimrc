@@ -73,13 +73,13 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
 " Language Server Protocol
-Plug 'dense-analysis/ale' " use this just for linting not LSP
+Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
 " Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
 " install.sh', \ } Reasons for using COC:
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " https://bluz71.github.io/2019/10/16/lsp-in-vim-with-the-lsc-plugin.html
-Plug 'natebosch/vim-lsc'
+" Plug 'natebosch/vim-lsc'
 " distraction free mode
 " Plug 'junegunn/goyo.vim'
 " autocomplete matching
@@ -201,13 +201,13 @@ let g:mapleader = ","
 " endtry
 
 " LSC
-try
-    let g:lsc_server_commands = {
-      \ 'javascript.jsx': 'typescript-language-server --stdio',
-      \ 'reason': 'reason-language-server'
-      \ }
-catch
-endtry
+" try
+"     let g:lsc_server_commands = {
+"       \ 'javascript.jsx': 'typescript-language-server --stdio',
+"       \ 'reason': 'reason-language-server'
+"       \ }
+" catch
+" endtry
 
 " nnoremap <F5> :call LanguageClient_contextMenu()<cr>
 " map <leader>lk :call LanguageClient#textDocument_hover()<cr>
@@ -219,16 +219,16 @@ endtry
 " map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
 
 " LSP - COC
-" map <leader>ch :call CocAction('doHover')<cr>
-" map <leader>ci :call CocAction('diagnosticInfo')<cr>
-" map <leader>cp :call CocAction('diagnosticPreview')<cr>
-" map <leader>cr :call CocAction('rename')<cr>
-" map <leader>cf :call CocAction('format')<cr>
-" map <leader>cb :call CocAction('references')<cr>
-" map <leader>ca  <Plug>(coc-codeaction)
-" " map <leader>ca :call CocAction('codeAction')<cr>
-" map <leader>cs :call CocAction('documentSymbols')<cr>
-" map <leader>cd :call CocAction('jumpDefinition')<cr>
+map <leader>ch :call CocAction('doHover')<cr>
+map <leader>ci :call CocAction('diagnosticInfo')<cr>
+map <leader>cp :call CocAction('diagnosticPreview')<cr>
+map <leader>cr :call CocAction('rename')<cr>
+map <leader>cf :call CocAction('format')<cr>
+map <leader>cb :call CocAction('references')<cr>
+map <leader>ca  <Plug>(coc-codeaction)
+" map <leader>ca :call CocAction('codeAction')<cr>
+map <leader>cs :call CocAction('documentSymbols')<cr>
+map <leader>cd :call CocAction('jumpDefinition')<cr>
 
 " Vim Markdown
 try
@@ -266,7 +266,7 @@ endtry
 " ALE
 try
     " 'cleancode,codesize,controversial,design,naming,unusedcode'
-    let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
     " @link https://unicode-table.com/en/blocks/dingbats/
     " let g:ale_sign_error = '✖'
     let g:ale_sign_error = '⏺'
@@ -282,10 +282,13 @@ try
     " let g:ale_sign_warning = '»'
     " let g:ale_lint_on_enter = 0
     " let g:ale_lint_on_text_changed = 'normal'
-    " let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
-    let g:ale_linters = {'javascript': ['eslint'], 'reason': ['reason-language-server']}
+    let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
+    " CoC works better for linting with Reason
+    " let g:ale_linters = {'javascript': ['eslint'], 'reason': ['reason-language-server']}
     " let g:ale_fixers = {'javascript': ['eslint']}
-    let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
+    " refmt can't handle single line comments, need to use bsrefmt instead
+    " @link https://github.com/reasonml/reason-cli/issues/99
+    " let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
     " let g:ale_fix_on_save = 1
     " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
     " let g:ale_javascript_eslint_use_global = 1
@@ -312,6 +315,7 @@ endtry
 try
     autocmd FileType php setlocal commentstring=\/\/\ %s
     autocmd FileType javascript setlocal commentstring=\/\/\ %s
+    autocmd FileType reason setlocal commentstring=\/\/\ %s
     autocmd FileType dosbatch setlocal commentstring=rem\ %s
     autocmd FileType rust setlocal commentstring=//\ %s
 catch
@@ -492,6 +496,8 @@ endtry
 "     let g:syntastic_javascript_checkers = ['eslint']
 "     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
 "     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+    " try and prevent rope slowdown
+    " let g:pymode_rope_lookup_project = 0
 "     let g:syntastic_php_checkers = ['php']
 
 "     " Sillyness with unicode
@@ -638,7 +644,7 @@ autocmd BufWrite *.graphql :call DeleteTrailingWS()
 " create a work log file for today
 " if the file doesn't exist create it from a template
 function! OpenLog()
-    " We've switched from Dropbox to SparkleShare
+    " We've switched from Dropbox to SparkleShare to MEGA
     " let logdir = '~/Dropbox/log/'
     " let logdir = '~/SparkleShare/bitbucket.org/sparkle/log/'
     " Now symlinked
