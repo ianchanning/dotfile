@@ -1,84 +1,176 @@
-" Vundle "{{{
-" ======
+" Initially copied from https://github.com/amix/vimrc let
+" $NVIM_COC_LOG_LEVEL='debug' vim-plug "{{{ ======
+
+" Auto-install
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation Vim
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+" Neovim
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Enable completion where available.  This setting must be set before ALE is
+" loaded.
+"
+" You should not turn this setting on if you wish to use ALE as a completion
+" source for other completion plugins, like Deoplete.  let
+" g:ale_completion_enabled = 1
 
 set nocompatible              " be iMproved, required
-filetype off                  " required
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Match the Vundle plugin directory
+" https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
+call plug#begin('~/.vim/bundle')
 
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'altercation/vim-colors-solarized'
-" gives a reasonable linebar without plugins
-Plugin 'tpope/vim-sensible'
+" Colours
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'sickill/vim-monokai'
+" 24-bit, requires termguicolors
+" Plug 'ianchanning/vim-selenized'
+Plug 'lifepillar/vim-solarized8'
+" Plug 'sonph/onehalf', {'rtp': 'vim/'}
+" Sensible defaults
+Plug 'tpope/vim-sensible'
 " git
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " put quotes and brackets around expressions
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 " use [ / ] for next / previous with lots of options
-Plugin 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired'
+" Allow . to work with surround and unimpaired
+Plug 'tpope/vim-repeat'
 " store sessions that plays nicely with Airline and PDV
-Plugin 'tpope/vim-obsession'
+Plug 'tpope/vim-obsession'
 " improve the file explorer
-Plugin 'tpope/vim-vinegar'
+Plug 'tpope/vim-vinegar'
+" database explorer
+Plug 'tpope/vim-dadbod'
 " comment stuff
-Plugin 'tpope/vim-commentary'
-" status bar
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-commentary'
+" JSON pretty print - gqaj
+" Plug 'tpope/vim-jdaddy' " use jq instead status bar
+" - this is a good example for github README instructions
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 " Searching
-Plugin 'jremmen/vim-ripgrep'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-" Zeal
-Plugin 'KabbAmine/zeavim.vim'
+Plug 'jremmen/vim-ripgrep'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'mileszs/ack.vim'
+" Plug 'junegunn/vim-peekaboo' "Git
+Plug 'junegunn/gv.vim'
+" Plug 'gregsexton/gitv'
+" Plug 'idanarye/vim-merginal'
+" Plug 'KabbAmine/zeavim.vim' " Zeal
 " highlight tabs and spaces at the end of lines
-" Plugin 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
+Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " syntax checking
-" Plugin 'w0rp/ale'
-" Plugin 'vim-syntastic/syntastic'
+" Plug 'neomake/neomake'
+" Plug 'vim-syntastic/syntastic'
+" Language Server Protocol
+Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
+" Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
+" install.sh', \ } Reasons for using COC:
+" https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" https://bluz71.github.io/2019/10/16/lsp-in-vim-with-the-lsc-plugin.html
+" Plug 'natebosch/vim-lsc'
 " distraction free mode
-Plugin 'junegunn/goyo.vim'
-" autocomplete matching brackets and quotes
-" Plugin 'Raimondi/delimitMate' "this caused minor slowdown/refreshing issues on my Eee
-" Plugin 'vim-scripts/AutoClose' " delimitMate alternative
-Plugin 'ervandew/supertab'
+" Plug 'junegunn/goyo.vim'
+" autocomplete matching
+" brackets and quotes
+Plug 'Raimondi/delimitMate' " this caused minor slowdown/refreshing issues on my Eee
+" tab autocomplete has issues with YouCompleteMe @link
+" https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
+" Plug 'ervandew/supertab' " this isn't required now we have coc Plug
+" 'majutsushi/tagbar' " Browsing tags Asynchronous tasks - used for ctags
+Plug 'skywind3000/asyncrun.vim'
 " JavaScript
-Plugin 'mtscout6/syntastic-local-eslint.vim'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
+" Plug 'mtscout6/syntastic-local-eslint.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'jparise/vim-graphql'
+" ReasonML
+Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'amiralies/vim-rescript'
+" ReasonML recommended installing deoplete
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" " else
+" "  We're not installing deoplete for Vim
+" "  So comment this section out to prevent errors on starting Vim
+" "   Plug 'Shougo/deoplete.nvim'
+" "   Plug 'roxma/nvim-yarp'
+" "   Plug 'roxma/vim-hug-neovim-rpc'
+" endif
 " docblocks
-Plugin 'heavenshell/vim-jsdoc'
-" Plugin 'shawncplus/phpcomplete.vim'
+Plug 'heavenshell/vim-jsdoc'
+" PHP
+" Plug 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
-" Plugin 'godlygeek/tabular' "appeared to cause slowdown on Eee
-" Plugin 'tobyS/vmustache'
-" Plugin 'tobyS/pdv'
-" Plugin has problems with saving sessions
+" Plug 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
+" Plug 'tobyS/vmustache'
+" Plug 'tobyS/pdv'
+" Plug has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
 " It is useful to use this plugin with pdv to replicate functionality from ST
-" Plugin 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 " Python
-" Plugin 'davidhalter/jedi-vim'
-" Plugin 'cjrh/vim-conda'
+" Plug 'davidhalter/jedi-vim'
+" Plug 'cjrh/vim-conda'
 " @link https://www.youtube.com/watch?v=YhqsjUUHj6g
-" Plugin 'python-mode/python-mode'
-" Plugin 'Bogdanp/pyrepl.vim'
+" Plug 'python-mode/python-mode'
+" Plug 'Bogdanp/pyrepl.vim'
 " Align SQL
-" Plugin 'Align'
-" Plugin 'SQLUtilities'
-" Haskell
-" Plugin 'eagletmt/ghcmod-vim'
-" Plugin 'Shougo/vimproc'
+" Plug 'Align' " this creates lots of shortcuts which conflicts
+" Plug 'SQLUtilities'
+" Haskell @link https://monicalent.com/blog/2017/11/19/haskell-in-vim/
+" ghc-mod fails with the stack install :(
+" Plug 'eagletmt/ghcmod-vim'
+" Plug 'Shougo/vimproc'
+" Try intero-vim instead
+" Plug 'parsonsmatt/intero-neovim'
 " Markdown
-" Causes slow down when viewing a mardown page
-Plugin 'plasticboy/vim-markdown'
-" Asynchronous tasks
-" Plugin 'skywind3000/asyncrun.vim'
+" Causes slow down when viewing a markdown page
+Plug 'plasticboy/vim-markdown'
+function! BuildComposer(info)
+  if a:info.status != 'unchanged' || a:info.force
+    if has('nvim')
+      !cargo build --release
+    else
+      !cargo build --release --no-default-features --features json-rpc
+    endif
+  endif
+endfunction
+Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+" Plug 'euclio/vim-markdown-composer'
 " Powershell
-" Plugin 'PProvost/vim-ps1'
+" Plug 'PProvost/vim-ps1'
+Plug 'cespare/vim-toml'
+Plug 'preservim/nerdtree'
+Plug 'yegappan/mru'
+call plug#end()
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+" @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
+" let g:node_client_debug = 1
+
+" }}}
+" General"{{{
+" =======
+
+" Sets how many lines of history VIM has to remember (default=50)
+set history=500
+" Set to auto read when a file is changed from the outside
+set autoread
+
+" With a map leader it's possible to do extra key combinations
+let mapleader = ","
+let g:mapleader = ","
 
 
 " }}}
@@ -93,16 +185,154 @@ let g:mapleader = ","
 " Plugin config"{{{
 " =============
 
+" deoplete
+" try
+"     let g:deoplete#enable_at_startup = 1
+"     " " Use ALE and also some plugin 'foobar' as completion sources for all code.
+"     call deoplete#custom#option('sources', {
+"     \ '_': ['ale'],
+"     \})
+" catch
+" endtry
+
+" LSP - enable autozimu/LanguageClient-neovim above for this section
+" try
+"     " let g:LanguageClient_serverCommands = {
+"     "       \ 'haskell': ['hie-wrapper'],
+"     "       \ 'javascript': ['tcp://127.0.0.1:2089']
+"     "       \ }
+"     let g:LanguageClient_serverCommands = {
+"         \ 'reason': [expand('~/rls-linux/reason-language-server')],
+"         \ }
+"     let g:LanguageClient_diagnosticsList = 'Location'
+" catch
+" endtry
+
+" LSC
+" try
+"     let g:lsc_server_commands = {
+"       \ 'javascript.jsx': 'typescript-language-server --stdio',
+"       \ 'reason': 'reason-language-server'
+"       \ }
+" catch
+" endtry
+
+" nnoremap <F5> :call LanguageClient_contextMenu()<cr>
+" map <leader>lk :call LanguageClient#textDocument_hover()<cr>
+" map <leader>lg :call LanguageClient#textDocument_definition()<cr>
+" map <leader>lr :call LanguageClient#textDocument_rename()<cr>
+" map <leader>lf :call LanguageClient#textDocument_formatting()<cr>
+" map <leader>lb :call LanguageClient#textDocument_references()<cr>
+" map <leader>la :call LanguageClient#textDocument_codeAction()<cr>
+" map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
+
+" LSP - COC
+map <leader>ch :call CocAction('doHover')<cr>
+map <leader>ci :call CocAction('diagnosticInfo')<cr>
+map <leader>cp :call CocAction('diagnosticPreview')<cr>
+map <leader>cr :call CocAction('rename')<cr>
+map <leader>cf :call CocAction('format')<cr>
+map <leader>cb :call CocAction('references')<cr>
+map <leader>ca  <Plug>(coc-codeaction)
+" map <leader>ca :call CocAction('codeAction')<cr>
+map <leader>cs :call CocAction('documentSymbols')<cr>
+map <leader>cd :call CocAction('jumpDefinition')<cr>
+
 " Vim Markdown
 try
     let g:vim_markdown_folding_disabled = 1
+    let g:instant_markdown_autostart = 0
+catch
+endtry
+
+" ALE
+
+" *** failed attempt to figure out the correct path for ALE + javascript-typescript-langserver
+" I tried again and just installed typescript globally - magically ALE seems
+" to work with tsserver
+" @link https://stackoverflow.com/questions/61178344/configuring-vim-neovim-ale-plugin-to-support-alegotodefinition-in-javascript-fi
+" try
+"     call ale#Set('javascript_tsls_executable', 'javascript-typescript-langserver')
+"     call ale#Set('javascript_tsls_config_path', '')
+"     call ale#Set('javascript_tsls_use_global', get(g:, 'ale_use_global_executables', 0))
+
+"     call ale#linter#Define('javascript', {
+"     \   'name': 'javascript-typescript-langserver',
+"     \   'lsp': 'stdio',
+"     \   'executable_callback': ale#node#FindExecutableFunc('javascript_tsls', [
+"     \       'javascript-typescript-langserver',
+"     \   ]),
+"     \   'command': '%e',
+"     \   'project_root_callback': {-> ''},
+"     \   'language': '',
+"     \})
+
+  " let g:ale_reason_ls_executable = expand('~/rls-linux/reason-language-server')
+" catch
+" endtry
+
+" ALE
+try
+    " 'cleancode,codesize,controversial,design,naming,unusedcode'
+    " let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " @link https://unicode-table.com/en/blocks/dingbats/
+    " let g:ale_sign_error = '✖'
+    let g:ale_sign_error = '⏺'
+    " let g:ale_sign_error = '🠶'
+    " let g:ale_sign_error = '❎'
+    " let g:ale_sign_error = '❌'
+    " let g:ale_sign_error = '✕'
+    " let g:ale_sign_error = '✘'
+    " let g:ale_sign_error = '✗'
+    " let g:ale_sign_error = '»'
+    let g:ale_sign_warning = '⏺'
+    " @link https://unicode-table.com/en/#control-character
+    " let g:ale_sign_warning = '»'
+    " let g:ale_lint_on_enter = 0
+    " let g:ale_lint_on_text_changed = 'normal'
+    let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
+    " CoC works better for linting with Reason
+    " let g:ale_linters = {'javascript': ['eslint'], 'reason': ['reason-language-server']}
+    " let g:ale_fixers = {'javascript': ['eslint']}
+    " refmt can't handle single line comments, need to use bsrefmt instead
+    " @link https://github.com/reasonml/reason-cli/issues/99
+    " let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
+    " let g:ale_fix_on_save = 1
+    " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
+    " let g:ale_javascript_eslint_use_global = 1
+    " let g:ale_javascript_eslint_executable = 'eslint_d'
+    " set omnifunc=ale#completion#OmniFunc
+    highlight link ALEErrorSign WarningMsg
+    highlight link ALEWarningSign Type
+    let g:airline#extensions#ale#enabled = 1
+catch
+endtry
+
+" Neomake
+" try
+"     let g:neomake_javascript_enabled_makers = ['eslint_d']
+"     " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
+"     " Autofix entire buffer with eslint_d:
+"     nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
+"     " Autofix visual selection with eslint_d:
+"     vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<CR>gv
+" catch
+" endtry
+
+" vim-commentary
+try
+    autocmd FileType php setlocal commentstring=\/\/\ %s
+    autocmd FileType javascript setlocal commentstring=\/\/\ %s
+    autocmd FileType reason setlocal commentstring=\/\/\ %s
+    autocmd FileType dosbatch setlocal commentstring=rem\ %s
+    autocmd FileType rust setlocal commentstring=//\ %s
 catch
 endtry
 
 " Airline
 " override the default and turn off whitespace warnings
 try
-    let g:airline_section_warning = airline#section#create(['ycm_warning_count', 'syntastic-warn'])
+    " let g:airline_theme = 'onehalflight'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -143,35 +373,39 @@ try
 catch
 endtry
 
-" PHP doc block
-" @link https://github.com/tobyS/pdv
-try
-    let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
-catch
-endtry
-" nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<CR>
-map <leader>d :call pdv#DocumentWithSnip()<CR>
-
-" @link https://github.com/heavenshell/vim-jsdoc
-try
-    let g:jsdoc_allow_input_prompt = 1
-    let g:jsdoc_input_description = 1
-catch
-endtry
-
-" toggle distraction free
-map <leader>gg :Goyo<cr>
-
-" Javascript doc block
-" map <leader>// :JsDoc<cr>
-
 " vim-surround with quotes
 map <leader>' ysiw'
 map <leader>" ysiw"
 
+" PHP doc block
+" @link https://github.com/tobyS/pdv
+" try
+"     let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
+" catch
+" endtry
+" " nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<cr>
+" map <leader>d :call pdv#DocumentWithSnip()<cr>
+
+" vim-javascript
+try
+    " @link https://github.com/pangloss/vim-javascript#configuration-variables
+    let g:javascript_plugin_jsdoc = 1
+    " @link https://github.com/heavenshell/vim-jsdoc
+    let g:jsdoc_allow_input_prompt = 1
+    let g:jsdoc_input_description = 1
+    let g:jsdoc_enable_es6 = 1
+catch
+endtry
+
+" toggle distraction free
+" map <leader>gg :Goyo<cr>
+
+" Javascript doc block
+" map <leader>// :JsDoc<cr>
+
 " Tabularize PHP docblock at the $var
 " there was a conflict with tt in the Align plugin, so switched to td
-map <leader>td :Tabularize /\$\w*/l1<cr>
+" map <leader>td :Tabularize /\$\w*/l1<cr>
 
 " python-mode
 try
@@ -208,38 +442,36 @@ endtry
 " ripgrep
 try
     " remove a few directories from the search
-    " put PHP search in by default
-    let g:rg_command = 'rg --vimgrep -thtml -tjs -tphp --type-add "ctp:*.ctp" -tctp --glob !node_modules --glob !build --glob !*.log --glob !output'
-    " I can't figure out using variables in map commands - I'm guessing you can't
-    " let rg_opts = '--glob !node_modules --glob !build --glob !*.log --glob !tests'
-    " let rg_php = ' -tphp --type-add "ctp:*.ctp" -tctp ' . rg_opts
-    " let rg_web = '-tjs -tcss -thtml' 
-    " let rg_xml = '-Txml -Ttags'
+    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
+    " let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
+    " Ack adds some augmentation to the quickfix list
+    if executable('rg')
+        let g:ackprg = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
+    endif
 catch
 endtry
-" map <leader>rg :Rg -tphp expand("<cword>")<cr>
-map <leader>rg :Rg<cr>
+" Note: There is a reason why I switched to using Ack, I think it was to allow
+" specifying types... can't remember though
+map <leader>rg :Ack!<cr>
 " current word in the current buffer
-map <leader>rb :Rg <cword> %<cr>
+map <leader>rb :Ack! <cword> %<cr>
 " php
-map <leader>rp :Rg <cword><cr>
+map <leader>rp :Ack! -tphp --type-add "ctp:*.ctp" -tctp <cword><cr>
 " add a ( on the end to search for functions
-map <leader>rf :Rg <cword>\(<cr>
+map <leader>rf :Ack! <cword>\\\(<cr>
 " web
-map <leader>rw :Rg -tjs -tcss -thtml <cword><cr>
+map <leader>rw :Ack! -tjs -tcss -thtml <cword><cr>
 " xml
-map <leader>rx :Rg -Txml -Ttags <cword><cr>
+map <leader>rx :Ack! -Txml -Ttags <cword><cr>
+" javascript
+map <leader>rj :Ack! -tjs --type-add "jsx:*.jsx" -tjsx -tjson <cword><cr>
 
 " FZF
-if has("gui_running")
-    map <leader>f :Files!<cr>
-    map <leader>ft :BTags!<cr>
-    map <leader>fb :Buffers!<cr>
-else
-    map <leader>f :Files<cr>
-    map <leader>ft :BTags<cr>
-    map <leader>fb :Buffers<cr>
-endif
+map <leader>f :Files<cr>
+map <leader>ft :BTags<cr>
+map <leader>fb :Buffers<cr>
+map <leader>fl :Lines<cr>
+let g:fzf_layout = { 'left': '~70%' }
 
 " Async Tags
 map <leader>at :AsyncRun ctags -R .<cr>
@@ -251,35 +483,35 @@ endtry
 
 " SQL Formatter
 try
-    let g:sqlutil_align_comma = 1
+    " let g:sqlutil_align_comma = 1
 catch
 endtry
 
 " Syntastic + eslint
-try
-    if has('gui_running')
-        set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
-    endif
+" try
+"     if has('gui_running')
+"         set statusline+=%#warningmsg#
+"         set statusline+=%{SyntasticStatuslineFlag()}
+"         set statusline+=%*
+"     endif
 
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 0
-    let g:syntastic_check_on_wq = 1
-    " eslint
-    " @todo add link to where I got these from
-    let g:syntastic_javascript_checkers = ['eslint']
-    let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-    " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-    let g:syntastic_php_checkers = ['php']
-
-    " Sillyness with unicode
-    " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-    let g:syntastic_error_symbol = "✗"
-catch
-endtry
-
+"     let g:syntastic_always_populate_loc_list = 1
+"     let g:syntastic_auto_loc_list = 1
+"     let g:syntastic_check_on_open = 0
+"     let g:syntastic_check_on_wq = 1
+"     " eslint
+"     " @todo add link to where I got these from
+"     let g:syntastic_javascript_checkers = ['eslint']
+"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+    " try and prevent rope slowdown
+    " let g:pymode_rope_lookup_project = 0
+"     let g:syntastic_php_checkers = ['php']
+"     " Sillyness with unicode
+"     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
+"     let g:syntastic_error_symbol = "✗"
+" catch
+" endtry
 
 " }}}
 " Colors and Fonts"{{{
@@ -287,26 +519,40 @@ endtry
 
 " Enable syntax highlighting
 syntax enable
+
+" @link https://askubuntu.com/questions/67/how-do-i-enable-full-color-support-in-vim
+if (has("termguicolors"))
+    set termguicolors
+endif
+
 if &diff
     " setup for diff/cmd mode
     set background=light
 else
     " setup for non-diff/gui mode
-    set background=dark
+    set background=light
 endif
 
 try
-    " In a Gnome terminal, 
+    " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized
+    colorscheme solarized8
+    " colorscheme solarized
+    " colorscheme onehalflight
+    " Main problem with selenized is that the diff sucks
+    " colorscheme selenized
+    " Attempts at debugging lack of bold fonts in Konsole
+    " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
+    " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
 catch
 endtry
 
 " Get us some nice fonts for GVim
 if has("gui_running")
-    if has("gui_gtk2")
-        set guifont=Inconsolata\ 15
-    elseif has("gui_macvim")
+    set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
+    " set guifont=NovaMono\ for\ Powerline\ 8
+    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 8
+    if has("gui_macvim")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
         if &diff
@@ -317,6 +563,11 @@ if has("gui_running")
         endif
     endif
 endif
+" Match the terminal font for gnvim which doesn't have 'gui_running' set
+set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
+
+" Autocomplete menu for ed commands
+set wildmenu
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -327,14 +578,16 @@ else
 endif
 
 set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
-set ffs=unix,dos,mac " Use Unix as the standard file type
+set fileformats=unix,dos,mac " Use Unix as the standard file type
 set showmatch " Show matching brackets when text indicator is over them
 set matchtime=2 " How many tenths of a second to blink when matching brackets
+set backspace=indent,eol,start " allow backspace to delete characters
 set hidden " A buffer becomes hidden when it is abandoned
 set hlsearch " Highlight search results
-set incsearch " Makes search act like search in modern browsers 
+set incsearch " Makes search act like search in modern browsers
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
+set history=1000
 
 " No annoying sound on errors
 set noerrorbells
@@ -364,7 +617,7 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set number " line numbers
+set nonumber " no line numbers
 set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
@@ -389,16 +642,24 @@ autocmd BufWrite *.js :call DeleteTrailingWS()
 autocmd BufWrite *.jsx :call DeleteTrailingWS()
 autocmd BufWrite *.php :call DeleteTrailingWS()
 autocmd BufWrite *.ctp :call DeleteTrailingWS()
+autocmd BufWrite *.vimrc :call DeleteTrailingWS()
+autocmd BufWrite *.md :call DeleteTrailingWS()
+autocmd BufWrite *.sql :call DeleteTrailingWS()
+autocmd BufWrite *.graphql :call DeleteTrailingWS()
 
 " Logbook
 " create a work log file for today
 " if the file doesn't exist create it from a template
 function! OpenLog()
-    " @todo change this to ~/log
-    let logdir = 'C:\Users\Ian\SparkleShare\sparkleshare\work\log\'
+    " We've switched from Dropbox to SparkleShare to MEGA
+    " let logdir = '~/Dropbox/log/'
+    " let logdir = '~/SparkleShare/bitbucket.org/sparkle/log/'
+    " Now symlinked
+    let logdir = '~/log/'
     let logfile = logdir . strftime("%Y-%m-%d.md")
-    " @link https://stackoverflow.com/a/3098685/327074
-    if !filereadable(logfile)
+    " '~' doesn't work for the filereadable check, need `expand`
+    " @link https://stackoverflow.com/a/53205873/327074
+    if !filereadable(expand(logfile))
         execute ':!cp ' . logdir . 'template.md ' . logfile
     endif
     execute ':e ' . logfile
@@ -408,7 +669,7 @@ endfunction
 " GUI Options"{{{
 " ===========
 
-" Remove the menubar, toolbar and right scrollbar
+" Remove the menu bar, toolbar and right scrollbar
 " @link https://stackoverflow.com/a/13525844/327074
 function! ToggleGUICruft()
     if &guioptions=='i'
@@ -421,7 +682,7 @@ endfunction
 if has("gui_running")
     " F10 toggle
     map <F10> <Esc>:call ToggleGUICruft()<cr>
-    " by default, hide gui menus
+    " by default, hide GUI menus
     set guioptions=i
 endif
 
@@ -429,23 +690,32 @@ endif
 " PHP specific"{{{
 " ============
 
-" Add a ; to the end of the line
-map <leader>; A;<esc>
-
-" CakePHP navigation 
-map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
-map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
-map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
+" CakePHP navigation
+" map <leader>ct yiw<cr>:tag /^<C-R>"<cr>
+" map <leader>ch yiw<cr>:tag /^<C-R>"Helper<cr>
+" map <leader>cc yiw<cr>:tag /^<C-R>"Component<cr>
 
 " turn off the > beep
 " @link https://stackoverflow.com/a/24242461/327074
-au BufWinEnter *.php set mps-=<:>
-au BufWinEnter *.ctp set mps-=<:>
+autocmd BufWinEnter *.php set mps-=<:>
+autocmd BufWinEnter *.ctp set mps-=<:>
+autocmd BufWinEnter *.md set mps-=<:>
 
+" }}}
+" Tab settings"{{{
+" ============
+
+autocmd FileType javascript set softtabstop=2 | set shiftwidth=2
+autocmd FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+autocmd FileType yaml set softtabstop=2 | set shiftwidth=2
+autocmd FileType reason set softtabstop=2 | set shiftwidth=2
 
 " }}}
 " Plugin independent shortcuts"{{{
 " ============================
+
+" Add a ; to the end of the line
+map <leader>; A;<esc>
 
 " better file finder
 " @link http://vim.wikia.com/wiki/Easier_buffer_switching
@@ -454,15 +724,24 @@ au BufWinEnter *.ctp set mps-=<:>
 " I prefer to allow the 'more' so you can see the previous pages of buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
 
-" hide/show the quickfix lists
-" similar bracket syntax to vim-unimpaired 
-map [qq :cclose<cr>
-map ]qq :copen<cr>
-map [ll :lclose<cr>
-map ]ll :lopen<cr>
-map [pp :pclose<cr>
-map ]pp :popen<cr>
+nnoremap <leader>tt :tags<cr>
 
+" hide/show the quickfix lists
+" similar bracket syntax to vim-unimpaired
+nnoremap [qq :cclose<cr>
+nnoremap ]qq :copen<cr>
+nnoremap [ll :lclose<cr>
+nnoremap ]ll :lopen<cr>
+nnoremap [pp :pclose<cr>
+nnoremap ]pp :popen<cr>
+" tag stack
+nnoremap [ts :pop<cr>
+nnoremap ]ts :tag<cr>
+
+" terminal easy escape
+" It's actually useful to have this complex escape sequence for when you need
+" Esc in your terminal session - e.g. opening Vim in your terminal session
+" tnoremap <Esc> <C-\><C-n>
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
@@ -484,11 +763,46 @@ map <leader>v "+p
 nnoremap <leader>gp yiw<cr>:g/<C-R>"/p<cr>
 nnoremap <leader>gr yiw<cr>:lvimgrep <C-R>" %<cr>:lopen<cr>
 " copy of SublimeText's @
-nnoremap @ :lvimgrep function %<cr>:lopen<cr>
+" this conflicts with registers, and it's not really used
+" use FZF :Lines instead
+" nnoremap @ :lvimgrep function %<cr>:lopen<cr>
+
 
 " }}}
 " Diff"{{{
 " ====
 
-set diffopt+=iwhite " ignore whitespace for diff
+set diffopt+=iwhite " ignore white space for diff
+
+
+" }}}
+" Git"{{{
+" ====
+
+map <leader>gl :Git log --graph --oneline --decorate<cr>
+map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative<cr>
+
+
+" }}}
+" Spelling"{{{
+" ====
+
+setlocal spell
+set spelllang=en_gb
+
+
+" }}}
+" Other"{{{
+" ====
+
+" include PHP/JavaScript syntax in omnicomplete <c-x><c-o>
+" autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+
+" Variable to highlight markdown fenced code properly -- uses tpope's
+" vim-markdown plugin (which is bundled with vim7.4 now)
+" There are more syntaxes, but checking for them makes editing md very slow
+let g:vim_markdown_fenced_languages = ['js=javascript']
+
+
 " }}}
