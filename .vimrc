@@ -174,6 +174,14 @@ let g:mapleader = ","
 
 
 " }}}
+" General"{{{
+" =======
+" With a map leader it's possible to do extra key combinations
+let mapleader = ","
+let g:mapleader = ","
+
+
+" }}}
 " Plugin config"{{{
 " =============
 
@@ -499,13 +507,11 @@ endtry
     " try and prevent rope slowdown
     " let g:pymode_rope_lookup_project = 0
 "     let g:syntastic_php_checkers = ['php']
-
 "     " Sillyness with unicode
 "     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
 "     let g:syntastic_error_symbol = "✗"
 " catch
 " endtry
-
 
 " }}}
 " Colors and Fonts"{{{
@@ -552,7 +558,8 @@ if has("gui_running")
         if &diff
             set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
         else
-            set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
+            " set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
+            set guifont=Source_Code_Pro_Light:h15:cANSI
         endif
     endif
 endif
