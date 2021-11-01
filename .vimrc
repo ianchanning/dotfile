@@ -5,6 +5,8 @@
 
 " Auto-install
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+" Note: This does not work with curl installed via snap
+" https://askubuntu.com/a/1372732/8989
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -49,7 +51,7 @@ Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-commentary'
 " JSON pretty print - gqaj
 " Plug 'tpope/vim-jdaddy' " use jq instead status bar
-" - this is a good example for github README instructions
+" Note: this is a good example for github README instructions
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " Searching
@@ -71,8 +73,11 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " Language Server Protocol
 " Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
 " Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
-" install.sh', \ } Reasons for using COC:
+" install.sh', \ }
+" Note: Reasons for using COC:
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
+" Note: coc does not work with node installed via snap
+" https://github.com/neoclide/coc.nvim/issues/1830
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " https://bluz71.github.io/2019/10/16/lsp-in-vim-with-the-lsc-plugin.html
 " Plug 'natebosch/vim-lsc'
@@ -95,7 +100,7 @@ Plug 'heavenshell/vim-jsdoc'
 " ReasonML
 " Plug 'reasonml-editor/vim-reason-plus'
 " Plug 'amiralies/vim-rescript'
-" ReasonML recommended installing deoplete
+" Note: ReasonML recommended installing deoplete
 " if has('nvim')
 "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " " else
@@ -112,9 +117,9 @@ Plug 'heavenshell/vim-jsdoc'
 " Plug 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
 " Plug 'tobyS/vmustache'
 " Plug 'tobyS/pdv'
-" Plug has problems with saving sessions
+" Note: Plug has problems with saving sessions
 " This is fixed by using the vim-obsession plugin
-" It is useful to use this plugin with pdv to replicate functionality from ST
+" Note: It is useful to use this plugin with pdv to replicate functionality from ST
 " Plug 'SirVer/ultisnips'
 " Python
 " Plug 'davidhalter/jedi-vim'
@@ -132,7 +137,7 @@ Plug 'heavenshell/vim-jsdoc'
 " Try intero-vim instead
 " Plug 'parsonsmatt/intero-neovim'
 " Markdown
-" Causes slow down when viewing a markdown page
+" Note: Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
 function! BuildComposer(info)
   if a:info.status != 'unchanged' || a:info.force
@@ -240,7 +245,8 @@ endtry
 
 " ALE
 
-" *** failed attempt to figure out the correct path for ALE + javascript-typescript-langserver
+" Note: *** failed attempt to figure out the correct path
+" for ALE + javascript-typescript-langserver
 " I tried again and just installed typescript globally - magically ALE seems
 " to work with tsserver
 " @link https://stackoverflow.com/questions/61178344/configuring-vim-neovim-ale-plugin-to-support-alegotodefinition-in-javascript-fi
@@ -329,6 +335,7 @@ try
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
+    " https://ianchanning.wordpress.com/2018/06/18/vim-airline-powerline-fonts-on-fedora-ubuntu-and-windows/
     let g:airline_powerline_fonts = 1
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
@@ -397,7 +404,7 @@ endtry
 " map <leader>// :JsDoc<cr>
 
 " Tabularize PHP docblock at the $var
-" there was a conflict with tt in the Align plugin, so switched to td
+" Note: there was a conflict with tt in the Align plugin, so switched to td
 " map <leader>td :Tabularize /\$\w*/l1<cr>
 
 " python-mode
