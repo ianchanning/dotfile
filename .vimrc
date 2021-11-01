@@ -1,18 +1,14 @@
-" Initially copied from https://github.com/amix/vimrc let
-" $NVIM_COC_LOG_LEVEL='debug' vim-plug "{{{ ======
+" Initially copied from https://github.com/amix/vimrc
+" let $NVIM_COC_LOG_LEVEL='debug'
+" vim-plug"{{{
+" ======
 
 " Auto-install
-" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation Vim
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-" Neovim
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Enable completion where available.  This setting must be set before ALE is
@@ -31,7 +27,6 @@ call plug#begin('~/.vim/bundle')
 " Plug 'altercation/vim-colors-solarized'
 " Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
-" Plug 'ianchanning/vim-selenized'
 Plug 'lifepillar/vim-solarized8'
 " Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
@@ -62,7 +57,8 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mileszs/ack.vim'
-" Plug 'junegunn/vim-peekaboo' "Git
+" Plug 'junegunn/vim-peekaboo'
+"Git
 Plug 'junegunn/gv.vim'
 " Plug 'gregsexton/gitv'
 " Plug 'idanarye/vim-merginal'
@@ -73,7 +69,7 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
 " Language Server Protocol
-Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
+" Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
 " Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
 " install.sh', \ } Reasons for using COC:
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
@@ -95,8 +91,9 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'jparise/vim-graphql'
+Plug 'heavenshell/vim-jsdoc'
 " ReasonML
-Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'reasonml-editor/vim-reason-plus'
 " Plug 'amiralies/vim-rescript'
 " ReasonML recommended installing deoplete
 " if has('nvim')
@@ -109,7 +106,6 @@ Plug 'reasonml-editor/vim-reason-plus'
 " "   Plug 'roxma/vim-hug-neovim-rpc'
 " endif
 " docblocks
-Plug 'heavenshell/vim-jsdoc'
 " PHP
 " Plug 'shawncplus/phpcomplete.vim'
 " Formatting docblocks
@@ -147,7 +143,7 @@ function! BuildComposer(info)
     endif
   endif
 endfunction
-Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+" Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 " Plug 'euclio/vim-markdown-composer'
 " Powershell
 " Plug 'PProvost/vim-ps1'
@@ -158,6 +154,7 @@ call plug#end()
 
 " @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
 " let g:node_client_debug = 1
+
 
 " }}}
 " General"{{{
@@ -172,10 +169,6 @@ set autoread
 let mapleader = ","
 let g:mapleader = ","
 
-
-" }}}
-" General"{{{
-" =======
 " With a map leader it's possible to do extra key combinations
 let mapleader = ","
 let g:mapleader = ","
@@ -527,10 +520,10 @@ endif
 
 if &diff
     " setup for diff/cmd mode
-    set background=light
+    set background=dark
 else
     " setup for non-diff/gui mode
-    set background=light
+    set background=dark
 endif
 
 try
