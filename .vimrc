@@ -29,7 +29,7 @@ call plug#begin('~/.vim/bundle')
 
 " Colours
 " Plug 'altercation/vim-colors-solarized'
-" Plug 'sickill/vim-monokai'
+Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 " Plug 'ianchanning/vim-selenized'
 Plug 'lifepillar/vim-solarized8'
@@ -73,7 +73,7 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 " Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
 " Language Server Protocol
-Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
+" Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
 " Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
 " install.sh', \ } Reasons for using COC:
 " https://www.reddit.com/r/neovim/comments/8xn0aj/cocnvim_intellisense_engine_for_neovim_featured/e2clg6i/
@@ -138,22 +138,14 @@ Plug 'heavenshell/vim-jsdoc'
 " Markdown
 " Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
-function! BuildComposer(info)
-  if a:info.status != 'unchanged' || a:info.force
-    if has('nvim')
-      !cargo build --release
-    else
-      !cargo build --release --no-default-features --features json-rpc
-    endif
-  endif
-endfunction
-Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
-" Plug 'euclio/vim-markdown-composer'
+" Plug 'davidgranstrom/nvim-markdown-preview'
+Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
 " Powershell
 " Plug 'PProvost/vim-ps1'
 Plug 'cespare/vim-toml'
-Plug 'preservim/nerdtree'
+" Plug 'preservim/nerdtree'
 Plug 'yegappan/mru'
+Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
 " @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
@@ -242,6 +234,13 @@ map <leader>cd :call CocAction('jumpDefinition')<cr>
 try
     let g:vim_markdown_folding_disabled = 1
     let g:instant_markdown_autostart = 0
+catch
+endtry
+
+try
+    let g:nvim_markdown_preview_theme = 'solarized-dark'
+    " let g:nvim_markdown_preview_theme = 'solarized-light'
+    " let g:nvim_markdown_preview_theme = 'github'
 catch
 endtry
 
@@ -527,16 +526,17 @@ endif
 
 if &diff
     " setup for diff/cmd mode
-    set background=light
+    set background=dark
 else
     " setup for non-diff/gui mode
-    set background=light
+    set background=dark
 endif
 
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized8
+    colorscheme monokai
+    " colorscheme solarized8
     " colorscheme solarized
     " colorscheme onehalflight
     " Main problem with selenized is that the diff sucks
@@ -549,9 +549,14 @@ endtry
 
 " Get us some nice fonts for GVim
 if has("gui_running")
-    set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
+    " set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
     " set guifont=NovaMono\ for\ Powerline\ 8
-    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 8
+    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
+    " set guifont=Fira\ Mono\ for\ Powerline\ 14
+    " set guifont=Cousine\ for\ Powerline\ 14
+    " set guifont=Inconsolata-g\ for\ Powerline\ 14
+    " set guifont=Latin\ Modern\ Mono\ 14
+    set guifont=Iosevka\ Fixed\ 16
     if has("gui_macvim")
         set guifont=Menlo\ Regular:h15
     elseif has("gui_win32")
@@ -562,9 +567,10 @@ if has("gui_running")
             set guifont=Source_Code_Pro_Light:h15:cANSI
         endif
     endif
+else
+    " Match the terminal font for gnvim which doesn't have 'gui_running' set
+    set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
 endif
-" Match the terminal font for gnvim which doesn't have 'gui_running' set
-set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
 
 " Autocomplete menu for ed commands
 set wildmenu
@@ -617,7 +623,9 @@ set tabstop=4
 set autoindent "Auto indent
 set smartindent "Smart indent
 
-set nonumber " no line numbers
+" set nonumber " no line numbers
+set number " line numbers (match VS Code)
+set nowrap " no line wrapping (match VS Code)
 set colorcolumn=80 " highlight when text gets too long
 
 " Disable highlight when <leader><cr> is pressed
@@ -741,7 +749,7 @@ nnoremap ]ts :tag<cr>
 " terminal easy escape
 " It's actually useful to have this complex escape sequence for when you need
 " Esc in your terminal session - e.g. opening Vim in your terminal session
-" tnoremap <Esc> <C-\><C-n>
+tnoremap <leader><Esc> <C-\><C-n>
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
