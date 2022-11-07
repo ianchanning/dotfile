@@ -629,6 +629,7 @@ endtry
 " catch
 " endtry
 
+
 " }}}
 " Functions"{{{
 " =========
@@ -670,6 +671,7 @@ function! OpenLog()
     execute ':e ' . logfile
 endfunction
 
+
 " }}}
 " GUI Options"{{{
 " ===========
@@ -691,6 +693,7 @@ if has("gui_running")
     set guioptions=i
 endif
 
+
 " }}}
 " PHP specific"{{{
 " ============
@@ -706,14 +709,13 @@ autocmd BufWinEnter *.php set mps-=<:>
 autocmd BufWinEnter *.ctp set mps-=<:>
 autocmd BufWinEnter *.md set mps-=<:>
 
+
 " }}}
 " Indent settings"{{{
 " ============
 
-autocmd FileType javascript set softtabstop=2 | set shiftwidth=2
-autocmd FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
-autocmd FileType yaml set softtabstop=2 | set shiftwidth=2
 autocmd FileType reason set softtabstop=2 | set shiftwidth=2
+
 
 " }}}
 " Plugin independent shortcuts"{{{
@@ -747,6 +749,7 @@ nnoremap ]ts :tag<cr>
 " It's actually useful to have this complex escape sequence for when you need
 " Esc in your terminal session - e.g. opening Vim in your terminal session
 tnoremap <leader><Esc> <C-\><C-n>
+
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
