@@ -168,11 +168,124 @@ let g:mapleader = ","
 
 
 " }}}
-" General"{{{
-" =======
-" With a map leader it's possible to do extra key combinations
-let mapleader = ","
-let g:mapleader = ","
+" Colors and Fonts"{{{
+" ================
+
+" Enable syntax highlighting
+syntax enable
+
+" @link https://askubuntu.com/questions/67/how-do-i-enable-full-color-support-in-vim
+if (has("termguicolors"))
+    set termguicolors
+endif
+
+if &diff
+    " setup for diff/cmd mode
+    set background=dark
+else
+    " setup for non-diff/gui mode
+    set background=dark
+endif
+
+try
+    " In a Gnome terminal,
+    " Edit | Preferences | [Profile] | Colors | Palette = Solarized
+    colorscheme monokai
+    " colorscheme solarized8
+    " colorscheme solarized
+    " colorscheme onehalflight
+    " Main problem with selenized is that the diff sucks
+    " colorscheme selenized
+    " Attempts at debugging lack of bold fonts in Konsole
+    " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
+    " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
+catch
+endtry
+
+" Get us some nice fonts for GVim
+if has("gui_running")
+    " set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
+    " set guifont=NovaMono\ for\ Powerline\ 8
+    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
+    " set guifont=Fira\ Mono\ for\ Powerline\ 14
+    " set guifont=Cousine\ for\ Powerline\ 14
+    " set guifont=Inconsolata-g\ for\ Powerline\ 14
+    " set guifont=Latin\ Modern\ Mono\ 14
+    set guifont=Iosevka\ Fixed\ 16
+    if has("gui_macvim")
+        set guifont=Menlo\ Regular:h15
+    elseif has("gui_win32")
+        if &diff
+            set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
+        else
+            " set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
+            set guifont=Source_Code_Pro_Light:h15:cANSI
+        endif
+    endif
+else
+    " Match the terminal font for gnvim which doesn't have 'gui_running' set
+    set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
+endif
+
+" Autocomplete menu for ed commands
+set wildmenu
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+
+set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
+set fileformats=unix,dos,mac " Use Unix as the standard file type
+set showmatch " Show matching brackets when text indicator is over them
+set matchtime=2 " How many tenths of a second to blink when matching brackets
+set backspace=indent,eol,start " allow backspace to delete characters
+set hidden " A buffer becomes hidden when it is abandoned
+set hlsearch " Highlight search results
+set incsearch " Makes search act like search in modern browsers
+set lazyredraw " Don't redraw while executing macros (good performance config)
+set magic " For regular expressions turn magic on
+set history=1000
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set timeoutlen=500
+
+
+" }}}
+" Files, backups and undo"{{{
+" =======================
+
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
+set nobackup
+set nowb
+set noswapfile
+
+
+" }}}
+" Text, tab and indent related"{{{
+" ============================
+
+set expandtab " Use spaces instead of tabs
+" 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+set autoindent "Auto indent
+set smartindent "Smart indent
+
+" set nonumber " no line numbers
+set number " line numbers (match VS Code)
+set nowrap " no line wrapping (match VS Code)
+set colorcolumn=80 " highlight when text gets too long
+set foldmethod=marker " use vim fold markers
+
+" Disable highlight when <leader><cr> is pressed
+map <silent> <leader><cr> :nohlsearch<cr>
 
 
 " }}}
@@ -517,126 +630,6 @@ endtry
 " endtry
 
 " }}}
-" Colors and Fonts"{{{
-" ================
-
-" Enable syntax highlighting
-syntax enable
-
-" @link https://askubuntu.com/questions/67/how-do-i-enable-full-color-support-in-vim
-if (has("termguicolors"))
-    set termguicolors
-endif
-
-if &diff
-    " setup for diff/cmd mode
-    set background=dark
-else
-    " setup for non-diff/gui mode
-    set background=dark
-endif
-
-try
-    " In a Gnome terminal,
-    " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme monokai
-    " colorscheme solarized8
-    " colorscheme solarized
-    " colorscheme onehalflight
-    " Main problem with selenized is that the diff sucks
-    " colorscheme selenized
-    " Attempts at debugging lack of bold fonts in Konsole
-    " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
-    " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
-catch
-endtry
-
-" Get us some nice fonts for GVim
-if has("gui_running")
-    " set guifont=Noto\ Mono\ for\ Powerline\ Regular:h13.5
-    " set guifont=NovaMono\ for\ Powerline\ 8
-    " set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
-    " set guifont=Fira\ Mono\ for\ Powerline\ 14
-    " set guifont=Cousine\ for\ Powerline\ 14
-    " set guifont=Inconsolata-g\ for\ Powerline\ 14
-    " set guifont=Latin\ Modern\ Mono\ 14
-    set guifont=Iosevka\ Fixed\ 16
-    if has("gui_macvim")
-        set guifont=Menlo\ Regular:h15
-    elseif has("gui_win32")
-        if &diff
-            set guifont=Source\ Code\ Pro\ for\ Powerline:h11:cANSI
-        else
-            " set guifont=Source\ Code\ Pro\ for\ Powerline:h15:cANSI
-            set guifont=Source_Code_Pro_Light:h15:cANSI
-        endif
-    endif
-else
-    " Match the terminal font for gnvim which doesn't have 'gui_running' set
-    set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
-endif
-
-" Autocomplete menu for ed commands
-set wildmenu
-
-" Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=.git\*,.hg\*,.svn\*
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-endif
-
-set encoding=utf8 " Set utf8 as standard encoding and en_US as the standard language
-set fileformats=unix,dos,mac " Use Unix as the standard file type
-set showmatch " Show matching brackets when text indicator is over them
-set matchtime=2 " How many tenths of a second to blink when matching brackets
-set backspace=indent,eol,start " allow backspace to delete characters
-set hidden " A buffer becomes hidden when it is abandoned
-set hlsearch " Highlight search results
-set incsearch " Makes search act like search in modern browsers
-set lazyredraw " Don't redraw while executing macros (good performance config)
-set magic " For regular expressions turn magic on
-set history=1000
-
-" No annoying sound on errors
-set noerrorbells
-set novisualbell
-set t_vb=
-set timeoutlen=500
-
-
-" }}}
-" Files, backups and undo"{{{
-" =======================
-
-" Turn backup off, since most stuff is in SVN, git etc. anyway...
-set nobackup
-set nowb
-set noswapfile
-
-
-" }}}
-" Text, tab and indent related"{{{
-" ============================
-
-set expandtab " Use spaces instead of tabs
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
-set autoindent "Auto indent
-set smartindent "Smart indent
-
-" set nonumber " no line numbers
-set number " line numbers (match VS Code)
-set nowrap " no line wrapping (match VS Code)
-set colorcolumn=80 " highlight when text gets too long
-
-" Disable highlight when <leader><cr> is pressed
-map <silent> <leader><cr> :nohlsearch<cr>
-
-
-" }}}
 " Functions"{{{
 " =========
 
@@ -714,7 +707,7 @@ autocmd BufWinEnter *.ctp set mps-=<:>
 autocmd BufWinEnter *.md set mps-=<:>
 
 " }}}
-" Tab settings"{{{
+" Indent settings"{{{
 " ============
 
 autocmd FileType javascript set softtabstop=2 | set shiftwidth=2
