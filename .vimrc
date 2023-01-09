@@ -1,7 +1,7 @@
 " Initially copied from https://github.com/amix/vimrc
 " Good tips from https://github.com/nelstrom/dotfiles/blob/master/vimrc
-" Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
 " let $NVIM_COC_LOG_LEVEL='debug'
+
 " vim-plug"{{{
 " ======
 
@@ -9,7 +9,7 @@
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
 " Note: This does not work with curl installed via snap
 " https://askubuntu.com/a/1372732/8989
-let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+let data_dir=has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
@@ -19,8 +19,8 @@ endif
 " loaded.
 "
 " You should not turn this setting on if you wish to use ALE as a completion
-" source for other completion plugins, like Deoplete.  let
-" g:ale_completion_enabled = 1
+" source for other completion plugins, like Deoplete.
+" let g:ale_completion_enabled=1
 
 set nocompatible              " be iMproved, required
 " Match the Vundle plugin directory
@@ -30,9 +30,10 @@ call plug#begin('~/.vim/bundle')
 " Colours
 " Plug 'altercation/vim-colors-solarized'
 Plug 'sickill/vim-monokai'
+Plug 'tomasr/molokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
-" Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'ayu-theme/ayu-vim'
 " Sensible defaults
 Plug 'tpope/vim-sensible'
@@ -157,7 +158,7 @@ Plug 'AndrewRadev/switch.vim'
 call plug#end()
 
 " @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
-" let g:node_client_debug = 1
+" let g:node_client_debug=1
 
 
 " }}}
@@ -165,13 +166,13 @@ call plug#end()
 " =======
 
 " Sets how many lines of history VIM has to remember (default=50)
-set history=500
+set history=5000
 " Set to auto read when a file is changed from the outside
 set autoread
 
 " With a map leader it's possible to do extra key combinations
-" let mapleader = ","
-" let g:mapleader = ","
+" let mapleader=','
+" let g:mapleader=','
 " @link https://superuser.com/questions/693528/vim-is-there-a-downside-to-using-space-as-your-leader-key
 " Vim-which-key inspired me to try 'space' instead of ','
 " @link https://liuchengxu.github.io/vim-which-key/
@@ -181,8 +182,8 @@ nnoremap <space> <nop>
 " This doesn't work with vim-which-key
 " map <space> <leader>
 " Need to use these instead
-let mapleader = "\<space>"
-let g:mapleader = "\<space>"
+let mapleader="\<space>"
+let g:mapleader="\<space>"
 
 
 " }}}
@@ -197,6 +198,7 @@ if (has("termguicolors"))
     set termguicolors
 endif
 
+" @deprecated I think
 if &diff
     " setup for diff/cmd mode
 else
@@ -204,25 +206,25 @@ else
 endif
 
 try
+    " set background=dark
+    set background=light
+
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    " colorscheme solarized8
+    colorscheme solarized8
     " colorscheme onehalflight
-    " Main problem with selenized is that the diff sucks
-    " colorscheme selenized
-    " Attempts at debugging lack of bold fonts in Konsole
-    " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
-    " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
+    " let g:airline_theme='onehalfdark' " gets set automatically it seems
+    " I prefered monokai as it appears to match https://monokai.pro better
+    " let g:molokai_original=1
+    " let g:rehash256=1
+    " colorscheme molokai
+    " let g:airline_theme='molokai' " gets set to molokai by default
+    " colorscheme monokai
+    " let g:airline_theme='base16_monokai' " gets set to molokai by default
 
-    set background=dark
-    colorscheme monokai
-
-    " set background=light
-    " let ayucolor="light"  " for light version of theme
-    " let ayucolor="mirage" " for mirage version of theme
-    " let ayucolor="dark"   " for dark version of theme
+    " let ayucolor="light"  " this must be set before colorscheme
     " colorscheme ayu
-    " let g:airline_theme = 'ayu_light'
+    " let g:airline_theme='ayu_light' " gets set to ayu by default
 catch
 endtry
 
@@ -274,7 +276,6 @@ set hlsearch " Highlight search results
 set incsearch " Makes search act like search in modern browsers
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
-set history=5000
 
 " No annoying sound on errors
 set noerrorbells
@@ -320,7 +321,7 @@ map <silent> <leader><cr> :nohlsearch<cr>
 
 " deoplete
 " try
-"     let g:deoplete#enable_at_startup = 1
+"     let g:deoplete#enable_at_startup=1
 "     " " Use ALE and also some plugin 'foobar' as completion sources for all code.
 "     call deoplete#custom#option('sources', {
 "     \ '_': ['ale'],
@@ -330,20 +331,20 @@ map <silent> <leader><cr> :nohlsearch<cr>
 
 " LSP - enable autozimu/LanguageClient-neovim above for this section
 " try
-"     " let g:LanguageClient_serverCommands = {
+"     " let g:LanguageClient_serverCommands={
 "     "       \ 'haskell': ['hie-wrapper'],
 "     "       \ 'javascript': ['tcp://127.0.0.1:2089']
 "     "       \ }
-"     let g:LanguageClient_serverCommands = {
+"     let g:LanguageClient_serverCommands={
 "         \ 'reason': [expand('~/rls-linux/reason-language-server')],
 "         \ }
-"     let g:LanguageClient_diagnosticsList = 'Location'
+"     let g:LanguageClient_diagnosticsList='Location'
 " catch
 " endtry
 
 " LSC
 " try
-"     let g:lsc_server_commands = {
+"     let g:lsc_server_commands={
 "       \ 'javascript.jsx': 'typescript-language-server --stdio',
 "       \ 'reason': 'reason-language-server'
 "       \ }
@@ -374,7 +375,7 @@ map <leader>cd :call CocAction('jumpDefinition')<cr>
 " coc recommendations
 " @link https://github.com/neoclide/coc.nvim#example-vim-configuration
 
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" Having longer updatetime (default is 4000 ms) leads to noticeable
 " delays and poor user experience.
 set updatetime=300
 
@@ -399,7 +400,7 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! CheckBackspace() abort
-  let col = col('.') - 1
+  let col=col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
@@ -526,15 +527,15 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " Vim Markdown
 try
-    let g:vim_markdown_folding_disabled = 1
-    let g:instant_markdown_autostart = 0
+    let g:vim_markdown_folding_disabled=1
+    let g:instant_markdown_autostart=0
 catch
 endtry
 
 try
-    " let g:nvim_markdown_preview_theme = 'solarized-dark'
-    " let g:nvim_markdown_preview_theme = 'solarized-light'
-    let g:nvim_markdown_preview_theme = 'github'
+    " let g:nvim_markdown_preview_theme='solarized-dark'
+    " let g:nvim_markdown_preview_theme='solarized-light'
+    let g:nvim_markdown_preview_theme='github'
 catch
 endtry
 
@@ -561,50 +562,50 @@ endtry
 "     \   'language': '',
 "     \})
 
-  " let g:ale_reason_ls_executable = expand('~/rls-linux/reason-language-server')
+  " let g:ale_reason_ls_executable=expand('~/rls-linux/reason-language-server')
 " catch
 " endtry
 
 " ALE
 try
     " 'cleancode,codesize,controversial,design,naming,unusedcode'
-    " let g:ale_php_phpmd_ruleset = "cleancode,codesize,design"
+    " let g:ale_php_phpmd_ruleset='cleancode,codesize,design'
     " @link https://unicode-table.com/en/blocks/dingbats/
-    " let g:ale_sign_error = '✖'
-    let g:ale_sign_error = '⏺'
-    " let g:ale_sign_error = '🠶'
-    " let g:ale_sign_error = '❎'
-    " let g:ale_sign_error = '❌'
-    " let g:ale_sign_error = '✕'
-    " let g:ale_sign_error = '✘'
-    " let g:ale_sign_error = '✗'
-    " let g:ale_sign_error = '»'
-    let g:ale_sign_warning = '⏺'
+    " let g:ale_sign_error='✖'
+    let g:ale_sign_error='⏺'
+    " let g:ale_sign_error='🠶'
+    " let g:ale_sign_error='❎'
+    " let g:ale_sign_error='❌'
+    " let g:ale_sign_error='✕'
+    " let g:ale_sign_error='✘'
+    " let g:ale_sign_error='✗'
+    " let g:ale_sign_error='»'
+    let g:ale_sign_warning='⏺'
     " @link https://unicode-table.com/en/#control-character
-    " let g:ale_sign_warning = '»'
-    " let g:ale_lint_on_enter = 0
-    " let g:ale_lint_on_text_changed = 'normal'
-    let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
+    " let g:ale_sign_warning='»'
+    " let g:ale_lint_on_enter=0
+    " let g:ale_lint_on_text_changed='normal'
+    let g:ale_linters={'javascript': ['eslint', 'tsserver']}
     " CoC works better for linting with Reason
-    " let g:ale_linters = {'javascript': ['eslint'], 'reason': ['reason-language-server']}
-    " let g:ale_fixers = {'javascript': ['eslint']}
+    " let g:ale_linters={'javascript': ['eslint'], 'reason': ['reason-language-server']}
+    " let g:ale_fixers={'javascript': ['eslint']}
     " refmt can't handle single line comments, need to use bsrefmt instead
     " @link https://github.com/reasonml/reason-cli/issues/99
-    " let g:ale_fixers = {'javascript': ['eslint'], 'reason': ['refmt']}
-    " let g:ale_fix_on_save = 1
+    " let g:ale_fixers={'javascript': ['eslint'], 'reason': ['refmt']}
+    " let g:ale_fix_on_save=1
     " @link https://github.com/w0rp/ale/issues/1224#issuecomment-352248157
-    " let g:ale_javascript_eslint_use_global = 1
-    " let g:ale_javascript_eslint_executable = 'eslint_d'
+    " let g:ale_javascript_eslint_use_global=1
+    " let g:ale_javascript_eslint_executable='eslint_d'
     " set omnifunc=ale#completion#OmniFunc
     highlight link ALEErrorSign WarningMsg
     highlight link ALEWarningSign Type
-    let g:airline#extensions#ale#enabled = 1
+    let g:airline#extensions#ale#enabled=1
 catch
 endtry
 
 " Neomake
 " try
-"     let g:neomake_javascript_enabled_makers = ['eslint_d']
+"     let g:neomake_javascript_enabled_makers=['eslint_d']
 "     " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
 "     " Autofix entire buffer with eslint_d:
 "     nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
@@ -627,43 +628,43 @@ endtry
 " override the default and turn off whitespace warnings
 try
     if exists("g:asyncrun_status")
-        let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
+        let g:airline_section_error=airline#section#create_right(['%{g:asyncrun_status}'])
     endif
     " https://ianchanning.wordpress.com/2018/06/18/vim-airline-powerline-fonts-on-fedora-ubuntu-and-windows/
-    let g:airline_powerline_fonts = 1
+    let g:airline_powerline_fonts=1
     if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
+      let g:airline_symbols={}
     endif
 
     " unicode symbols
-    let g:airline_left_sep = '»'
-    let g:airline_left_sep = '▶'
-    let g:airline_right_sep = '«'
-    let g:airline_right_sep = '◀'
-    let g:airline_symbols.crypt = '🔒'
-    let g:airline_symbols.linenr = '☰'
-    let g:airline_symbols.linenr = '␊'
-    let g:airline_symbols.linenr = '␤'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.maxlinenr = ''
-    let g:airline_symbols.maxlinenr = '㏑'
-    let g:airline_symbols.branch = '⎇'
-    let g:airline_symbols.paste = 'ρ'
-    let g:airline_symbols.paste = 'Þ'
-    let g:airline_symbols.paste = '∥'
-    let g:airline_symbols.spell = 'Ꞩ'
-    let g:airline_symbols.notexists = 'Ɇ'
-    let g:airline_symbols.whitespace = 'Ξ'
+    let g:airline_left_sep='»'
+    let g:airline_left_sep='▶'
+    let g:airline_right_sep='«'
+    let g:airline_right_sep='◀'
+    let g:airline_symbols.crypt='🔒'
+    let g:airline_symbols.linenr='☰'
+    let g:airline_symbols.linenr='␊'
+    let g:airline_symbols.linenr='␤'
+    let g:airline_symbols.linenr='¶'
+    let g:airline_symbols.maxlinenr=''
+    let g:airline_symbols.maxlinenr='㏑'
+    let g:airline_symbols.branch='⎇'
+    let g:airline_symbols.paste='ρ'
+    let g:airline_symbols.paste='Þ'
+    let g:airline_symbols.paste='∥'
+    let g:airline_symbols.spell='Ꞩ'
+    let g:airline_symbols.notexists='Ɇ'
+    let g:airline_symbols.whitespace='Ξ'
 
     " powerline symbols
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
-    let g:airline_symbols.linenr = '☰'
-    let g:airline_symbols.maxlinenr = ''
+    let g:airline_left_sep=''
+    let g:airline_left_alt_sep=''
+    let g:airline_right_sep=''
+    let g:airline_right_alt_sep=''
+    let g:airline_symbols.branch=''
+    let g:airline_symbols.readonly=''
+    let g:airline_symbols.linenr='☰'
+    let g:airline_symbols.maxlinenr=''
 catch
 endtry
 
@@ -674,7 +675,7 @@ map <leader>" ysiw"
 " PHP doc block
 " @link https://github.com/tobyS/pdv
 " try
-"     let g:pdv_template_dir = $HOME ."\\.vim\\bundle\\pdv\\templates_snip"
+"     let g:pdv_template_dir=$HOME . '\.vim\bundle\pdv\templates_snip'
 " catch
 " endtry
 " " nnoremap <buffer> <C-d> :call pdv#DocumentWithSnip()<cr>
@@ -683,11 +684,11 @@ map <leader>" ysiw"
 " vim-javascript
 try
     " @link https://github.com/pangloss/vim-javascript#configuration-variables
-    let g:javascript_plugin_jsdoc = 1
+    let g:javascript_plugin_jsdoc=1
     " @link https://github.com/heavenshell/vim-jsdoc
-    let g:jsdoc_allow_input_prompt = 1
-    let g:jsdoc_input_description = 1
-    let g:jsdoc_enable_es6 = 1
+    let g:jsdoc_allow_input_prompt=1
+    let g:jsdoc_input_description=1
+    let g:jsdoc_enable_es6=1
 catch
 endtry
 
@@ -701,46 +702,22 @@ endtry
 " Note: there was a conflict with tt in the Align plugin, so switched to td
 " map <leader>td :Tabularize /\$\w*/l1<cr>
 
-" python-mode
-try
-    " try and prevent rope slowdown
-    " let g:pymode_rope_lookup_project = 0
-    " Override go-to.definition key shortcut to Ctrl-]
-    " let g:pymode_rope_goto_definition_bind = "<C-]>"
-
-    " Override run current python file key shortcut to Ctrl-Shift-e
-    " let g:pymode_run_bind = "<C-S-e>"
-
-    " Override view python doc key shortcut to Ctrl-Shift-d
-    " let g:pymode_doc_bind = "<C-S-d>"
-
-    " let g:pymode_python = 'python3'
-    " PEP-8 options
-    " let g:pymode_options = 1
-    " let g:pymode_indent = 1
-    " let g:pymode_run = 1
-    " let g:pymode_run_bind = '<leader>r'
-    " let g:pymode_lint = 1
-    " let g:pymode_syntax = 1
-catch
-endtry
-
 " jedi-vim
 try
     " turn off preview
     " autocmd FileType python setlocal completeopt-=preview
-    " let g:jedi#popup_on_dot = 0
+    " let g:jedi#popup_on_dot=0
 catch
 endtry
 
 " ripgrep
 try
     " remove a few directories from the search
-    let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
-    " let g:rg_command = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
+    let g:rg_command='rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
+    " let g:rg_command='rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags'
     " Ack adds some augmentation to the quickfix list
     if executable('rg')
-        let g:ackprg = 'rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
+        let g:ackprg='rg --vimgrep --glob !node_modules --glob !build --glob !*.log --glob !output --glob !tags --glob !Session.vim --glob !_volumes* --glob !innovatrix-publish'
     endif
 catch
 endtry
@@ -767,19 +744,19 @@ map <leader>ff :Files<cr>
 map <leader>ft :BTags<cr>
 map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
-let g:fzf_layout = { 'left': '~70%' }
+let g:fzf_layout={ 'left': '~70%' }
 
 " Async Tags
 map <leader>at :AsyncRun ctags -R .<cr>
 
 try
-    let g:SuperTabDefaultCompletionType = "context"
+    let g:SuperTabDefaultCompletionType='context'
 catch
 endtry
 
 " SQL Formatter
 try
-    " let g:sqlutil_align_comma = 1
+    " let g:sqlutil_align_comma=1
 catch
 endtry
 
@@ -791,21 +768,21 @@ endtry
 "         set statusline+=%*
 "     endif
 
-"     let g:syntastic_always_populate_loc_list = 1
-"     let g:syntastic_auto_loc_list = 1
-"     let g:syntastic_check_on_open = 0
-"     let g:syntastic_check_on_wq = 1
+"     let g:syntastic_always_populate_loc_list=1
+"     let g:syntastic_auto_loc_list=1
+"     let g:syntastic_check_on_open=0
+"     let g:syntastic_check_on_wq=1
 "     " eslint
 "     " @todo add link to where I got these from
-"     let g:syntastic_javascript_checkers = ['eslint']
-"     let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-"     " let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+"     let g:syntastic_javascript_checkers=['eslint']
+"     let g:syntastic_javascript_eslint_exe='npm run lint --'
+"     " let g:syntastic_php_checkers=['php', 'phpcs', 'phpmd']
     " try and prevent rope slowdown
-    " let g:pymode_rope_lookup_project = 0
-"     let g:syntastic_php_checkers = ['php']
+    " let g:pymode_rope_lookup_project=0
+"     let g:syntastic_php_checkers=['php']
 "     " Sillyness with unicode
 "     " @link https://codeyarns.com/2014/11/06/how-to-use-syntastic-plugin-for-vim/
-"     let g:syntastic_error_symbol = "✗"
+"     let g:syntastic_error_symbol='✗'
 " catch
 " endtry
 
@@ -844,11 +821,11 @@ autocmd BufWrite *.graphql :call DeleteTrailingWS()
 " if the file doesn't exist create it from a template
 function! OpenLog()
     " We've switched from Dropbox to SparkleShare to MEGA
-    " let logdir = '~/Dropbox/log/'
-    " let logdir = '~/SparkleShare/bitbucket.org/sparkle/log/'
+    " let logdir='~/Dropbox/log/'
+    " let logdir='~/SparkleShare/bitbucket.org/sparkle/log/'
     " Now symlinked
-    let logdir = '~/log/'
-    let logfile = logdir . strftime("%Y-%m-%d.md")
+    let logdir='~/log/'
+    let logfile=logdir . strftime("%Y-%m-%d.md")
     " '~' doesn't work for the filereadable check, need `expand`
     " @link https://stackoverflow.com/a/53205873/327074
     if !filereadable(expand(logfile))
@@ -1034,18 +1011,19 @@ set spelllang=en_gb
 " Variable to highlight markdown fenced code properly -- uses tpope's
 " vim-markdown plugin (which is bundled with vim7.4 now)
 " There are more syntaxes, but checking for them makes editing md very slow
-let g:vim_markdown_fenced_languages = ['js=javascript']
+let g:vim_markdown_fenced_languages=['js=javascript']
 
 " which-key
-let g:which_key_fallback_to_native_key = 1
+let g:which_key_fallback_to_native_key=1
 
 " match this to the <leader>
 " @link https://liuchengxu.github.io/vim-which-key/#special-keys
 nnoremap <silent> <leader> :<c-u>WhichKey '<space>'<cr>
 
-if !exists('g:goto_key_map') | let g:goto_key_map = {} | endif
+if !exists('g:goto_key_map') | let g:goto_key_map={} | endif
 
 call which_key#register('g', "g:goto_key_map")
 nnoremap <silent> g :<c-u>WhichKey 'g'<CR>
+
 
 " }}}
