@@ -34,7 +34,6 @@ Plug 'sickill/vim-monokai'
 Plug 'lifepillar/vim-solarized8'
 " Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'ayu-theme/ayu-vim'
-" Plug 'rakr/vim-two-firewatch'
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -171,11 +170,19 @@ set history=500
 set autoread
 
 " With a map leader it's possible to do extra key combinations
+" let mapleader = ","
+" let g:mapleader = ","
 " @link https://superuser.com/questions/693528/vim-is-there-a-downside-to-using-space-as-your-leader-key
 " Vim-which-key inspired me to try 'space' instead of ','
 " @link https://liuchengxu.github.io/vim-which-key/
-let mapleader = "\<Space>"
-let g:mapleader = "\<Space>"
+" @link
+" https://stackoverflow.com/questions/446269/can-i-use-space-as-mapleader-in-vim
+nnoremap <space> <nop>
+" This doesn't work with vim-which-key
+" map <space> <leader>
+" Need to use these instead
+let mapleader = "\<space>"
+let g:mapleader = "\<space>"
 
 
 " }}}
@@ -192,17 +199,14 @@ endif
 
 if &diff
     " setup for diff/cmd mode
-    set background=light
 else
     " setup for non-diff/gui mode
-    set background=light
 endif
 
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     " colorscheme solarized8
-    colorscheme monokai
     " colorscheme onehalflight
     " Main problem with selenized is that the diff sucks
     " colorscheme selenized
@@ -210,13 +214,15 @@ try
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
 
-    let ayucolor="light"  " for light version of theme
+    set background=dark
+    colorscheme monokai
+
+    " set background=light
+    " let ayucolor="light"  " for light version of theme
     " let ayucolor="mirage" " for mirage version of theme
     " let ayucolor="dark"   " for dark version of theme
-    colorscheme ayu
-
-    " let g:two_firewatch_italics=1
-    " colorscheme two-firewatch
+    " colorscheme ayu
+    " let g:airline_theme = 'ayu_light'
 catch
 endtry
 
@@ -620,9 +626,6 @@ endtry
 " Airline
 " override the default and turn off whitespace warnings
 try
-    " let g:airline_theme = 'onehalflight'
-    let g:airline_theme = 'ayu_light'
-    " let g:airline_theme = 'twofirewatch'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -812,6 +815,7 @@ map b  <Plug>(smartword-b)
 map e  <Plug>(smartword-e)
 map ge  <Plug>(smartword-ge)
 
+
 " }}}
 " Functions"{{{
 " =========
@@ -896,6 +900,9 @@ autocmd BufWinEnter *.md set mps-=<:>
 " Indent settings"{{{
 " ============
 
+autocmd FileType javascript set softtabstop=2 | set shiftwidth=2
+autocmd FileType javascript.jsx set softtabstop=2 | set shiftwidth=2
+autocmd FileType yaml set softtabstop=2 | set shiftwidth=2
 autocmd FileType reason set softtabstop=2 | set shiftwidth=2
 
 
@@ -971,6 +978,7 @@ endif
 
 " MRU Buffer
 map <leader><tab> :b#<cr>
+map <leader>mm :MRUToggle<cr>
 " Ctrl-S baby
 map <leader>s :w<cr>
 
@@ -1028,5 +1036,16 @@ set spelllang=en_gb
 " There are more syntaxes, but checking for them makes editing md very slow
 let g:vim_markdown_fenced_languages = ['js=javascript']
 
+" which-key
+let g:which_key_fallback_to_native_key = 1
+
+" match this to the <leader>
+" @link https://liuchengxu.github.io/vim-which-key/#special-keys
+nnoremap <silent> <leader> :<c-u>WhichKey '<space>'<cr>
+
+if !exists('g:goto_key_map') | let g:goto_key_map = {} | endif
+
+call which_key#register('g', "g:goto_key_map")
+nnoremap <silent> g :<c-u>WhichKey 'g'<CR>
 
 " }}}
