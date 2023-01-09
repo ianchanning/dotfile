@@ -1,4 +1,6 @@
 " Initially copied from https://github.com/amix/vimrc
+" Good tips from https://github.com/nelstrom/dotfiles/blob/master/vimrc
+" Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
 " let $NVIM_COC_LOG_LEVEL='debug'
 " vim-plug"{{{
 " ======
@@ -31,6 +33,8 @@ Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
 " Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'ayu-theme/ayu-vim'
+" Plug 'rakr/vim-two-firewatch'
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -86,8 +90,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " autocomplete matching
 " brackets and quotes
 Plug 'Raimondi/delimitMate' " this caused minor slowdown/refreshing issues on my Eee
-" tab autocomplete has issues with YouCompleteMe @link
-" https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
+" tab autocomplete has issues with YouCompleteMe
+" @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 " Plug 'ervandew/supertab' " this isn't required now we have coc Plug
 " 'majutsushi/tagbar' " Browsing tags Asynchronous tasks - used for ctags
 Plug 'skywind3000/asyncrun.vim'
@@ -139,14 +143,18 @@ Plug 'heavenshell/vim-jsdoc'
 " Markdown
 " Note: Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
-" Plug 'davidgranstrom/nvim-markdown-preview'
-Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
+Plug 'davidgranstrom/nvim-markdown-preview'
 " Powershell
 " Plug 'PProvost/vim-ps1'
 Plug 'cespare/vim-toml'
 " Plug 'preservim/nerdtree'
 Plug 'yegappan/mru'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'tommcdo/vim-exchange'
+Plug 'liuchengxu/vim-which-key'
+Plug 'kana/vim-smartword'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/switch.vim'
 call plug#end()
 
 " @link https://github.com/neoclide/coc-eslint/issues/72#issuecomment-710038391
@@ -163,8 +171,11 @@ set history=500
 set autoread
 
 " With a map leader it's possible to do extra key combinations
-let mapleader = ","
-let g:mapleader = ","
+" @link https://superuser.com/questions/693528/vim-is-there-a-downside-to-using-space-as-your-leader-key
+" Vim-which-key inspired me to try 'space' instead of ','
+" @link https://liuchengxu.github.io/vim-which-key/
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
 
 
 " }}}
@@ -181,24 +192,31 @@ endif
 
 if &diff
     " setup for diff/cmd mode
-    set background=dark
+    set background=light
 else
     " setup for non-diff/gui mode
-    set background=dark
+    set background=light
 endif
 
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme monokai
     " colorscheme solarized8
-    " colorscheme solarized
+    colorscheme monokai
     " colorscheme onehalflight
     " Main problem with selenized is that the diff sucks
     " colorscheme selenized
     " Attempts at debugging lack of bold fonts in Konsole
     " highlight htmlBold gui=bold guifg=#af0000 ctermfg=124
     " highlight htmlItalic gui=italic guifg=#ff8700 ctermfg=214
+
+    let ayucolor="light"  " for light version of theme
+    " let ayucolor="mirage" " for mirage version of theme
+    " let ayucolor="dark"   " for dark version of theme
+    colorscheme ayu
+
+    " let g:two_firewatch_italics=1
+    " colorscheme two-firewatch
 catch
 endtry
 
@@ -229,6 +247,8 @@ endif
 
 " Autocomplete menu for ed commands
 set wildmenu
+" @link https://web.archive.org/web/20090213130939/http://items.sjbach.com/319/configuring-vim-right
+" set wildmode=list:longest
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -248,7 +268,7 @@ set hlsearch " Highlight search results
 set incsearch " Makes search act like search in modern browsers
 set lazyredraw " Don't redraw while executing macros (good performance config)
 set magic " For regular expressions turn magic on
-set history=1000
+set history=5000
 
 " No annoying sound on errors
 set noerrorbells
@@ -263,7 +283,7 @@ set timeoutlen=500
 
 " Turn backup off, since most stuff is in SVN, git etc. anyway...
 set nobackup
-set nowb
+set nowritebackup
 set noswapfile
 
 
@@ -345,6 +365,159 @@ map <leader>ca  <Plug>(coc-codeaction)
 map <leader>cs :call CocAction('documentSymbols')<cr>
 map <leader>cd :call CocAction('jumpDefinition')<cr>
 
+" coc recommendations
+" @link https://github.com/neoclide/coc.nvim#example-vim-configuration
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+" Match vscode
+nmap <silent> <F12> <Plug>(coc-definition)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code - confict with :GFiles
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+" nmap <silent> <C-s> <Plug>(coc-range-select)
+" xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+
 " Vim Markdown
 try
     let g:vim_markdown_folding_disabled = 1
@@ -353,9 +526,9 @@ catch
 endtry
 
 try
-    let g:nvim_markdown_preview_theme = 'solarized-dark'
+    " let g:nvim_markdown_preview_theme = 'solarized-dark'
     " let g:nvim_markdown_preview_theme = 'solarized-light'
-    " let g:nvim_markdown_preview_theme = 'github'
+    let g:nvim_markdown_preview_theme = 'github'
 catch
 endtry
 
@@ -448,6 +621,8 @@ endtry
 " override the default and turn off whitespace warnings
 try
     " let g:airline_theme = 'onehalflight'
+    let g:airline_theme = 'ayu_light'
+    " let g:airline_theme = 'twofirewatch'
     if exists("g:asyncrun_status")
         let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
     endif
@@ -583,9 +758,11 @@ map <leader>rx :Ack! -Txml -Ttags <cword><cr>
 map <leader>rj :Ack! -tjs --type-add "jsx:*.jsx" -tjsx -tjson <cword><cr>
 
 " FZF
-map <leader>f :Files<cr>
+" GFiles is useful because it respects .gitignore
+map <leader>f :GFiles<cr>
+map <leader>ff :Files<cr>
 map <leader>ft :BTags<cr>
-map <leader>fb :Buffers<cr>
+map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
 let g:fzf_layout = { 'left': '~70%' }
 
@@ -629,6 +806,11 @@ endtry
 " catch
 " endtry
 
+" vim-smartword
+map w  <Plug>(smartword-w)
+map b  <Plug>(smartword-b)
+map e  <Plug>(smartword-e)
+map ge  <Plug>(smartword-ge)
 
 " }}}
 " Functions"{{{
@@ -750,6 +932,38 @@ nnoremap ]ts :tag<cr>
 " Esc in your terminal session - e.g. opening Vim in your terminal session
 tnoremap <leader><Esc> <C-\><C-n>
 
+" @link https://github.com/nelstrom/dotfiles/blob/master/vimrc
+cnoremap <expr> %%  getcmdtype() == ':' ? fnameescape(expand('%:h')).'/' : '%%'
+
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
+
+" https://github.com/neovim/neovim/pull/2076#issuecomment-76998265
+nnoremap <a-h> <c-w>h
+nnoremap <a-j> <c-w>j
+nnoremap <a-k> <c-w>k
+nnoremap <a-l> <c-w>l
+vnoremap <a-h> <c-\><c-n><c-w>h
+vnoremap <a-j> <c-\><c-n><c-w>j
+vnoremap <a-k> <c-\><c-n><c-w>k
+vnoremap <a-l> <c-\><c-n><c-w>l
+inoremap <a-h> <c-\><c-n><c-w>h
+inoremap <a-j> <c-\><c-n><c-w>j
+inoremap <a-k> <c-\><c-n><c-w>k
+inoremap <a-l> <c-\><c-n><c-w>l
+cnoremap <a-h> <c-\><c-n><c-w>h
+cnoremap <a-j> <c-\><c-n><c-w>j
+cnoremap <a-k> <c-\><c-n><c-w>k
+cnoremap <a-l> <c-\><c-n><c-w>l
+if has('nvim')
+    tnoremap <a-h> <c-\><c-n><c-w>h
+    tnoremap <a-j> <c-\><c-n><c-w>j
+    tnoremap <a-k> <c-\><c-n><c-w>k
+    tnoremap <a-l> <c-\><c-n><c-w>l
+    tnoremap <Esc> <C-\><C-n>
+endif
 
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
@@ -766,6 +980,8 @@ map <leader>s :w<cr>
 " Clipboard paste
 map <leader>V "+P
 map <leader>v "+p
+map <leader>p "0p
+map <leader>P "0P
 
 " current buffer grep
 nnoremap <leader>gp yiw<cr>:g/<C-R>"/p<cr>
