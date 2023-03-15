@@ -27,54 +27,68 @@ set nocompatible              " be iMproved, required
 " https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
 call plug#begin('~/.vim/bundle')
 
-" Colours
+" --- Colours
 " Plug 'altercation/vim-colors-solarized'
-Plug 'sickill/vim-monokai'
-Plug 'tomasr/molokai'
+" Plug 'sickill/vim-monokai'
+" Plug 'tomasr/molokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'ayu-theme/ayu-vim'
-" Sensible defaults
+" Plug 'ayu-theme/ayu-vim'
+" --- Sensible defaults
 Plug 'tpope/vim-sensible'
-" git
+" --- Git
 Plug 'tpope/vim-fugitive'
-" put quotes and brackets around expressions
+" --- Put quotes and brackets around expressions
 Plug 'tpope/vim-surround'
-" use [ / ] for next / previous with lots of options
+" --- Use [ / ] for next / previous with lots of options
 Plug 'tpope/vim-unimpaired'
-" Allow . to work with surround and unimpaired
+" --- Allow . to work with surround and unimpaired
 Plug 'tpope/vim-repeat'
-" store sessions that plays nicely with Airline and PDV
+" --- Store sessions that plays nicely with Airline and PDV
 Plug 'tpope/vim-obsession'
-" improve the file explorer
+" --- Improve the file explorer
 Plug 'tpope/vim-vinegar'
-" database explorer
+" --- Database explorer
 Plug 'tpope/vim-dadbod'
-" comment stuff
+" --- Comment stuff
 Plug 'tpope/vim-commentary'
-" JSON pretty print - gqaj
+" --- JSON pretty print - gqaj
 " Plug 'tpope/vim-jdaddy' " use jq instead status bar
 " Note: this is a good example for github README instructions
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Searching
+" --- Searching
 Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mileszs/ack.vim'
 " Plug 'junegunn/vim-peekaboo'
-"Git
+" --- Git
 Plug 'junegunn/gv.vim'
+Plug 'idanarye/vim-merginal' " extension of fugitive
 " Plug 'gregsexton/gitv'
-" Plug 'idanarye/vim-merginal'
-" Plug 'KabbAmine/zeavim.vim' " Zeal
-" highlight tabs and spaces at the end of lines
-Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
-" syntax checking
+" --- Syntax
+Plug 'heavenshell/vim-jsdoc', {
+  \ 'for': ['javascript', 'javascript.jsx', 'typescript'],
+  \ 'do': 'make install'
+\}
+" Replace all the below with polyglot
+Plug 'sheerun/vim-polyglot'
+" Plug 'pangloss/vim-javascript'
+" Plug 'mxw/vim-jsx' " @deprecated broke vim-javascript
+" Plug 'jparise/vim-graphql'
+" Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'amiralies/vim-rescript'
+" Plug 'shawncplus/phpcomplete.vim'
+" Note: Causes slow down when viewing a markdown page
+" Plug 'plasticboy/vim-markdown'
+" Plug 'PProvost/vim-ps1'
+" Plug 'cespare/vim-toml'
+" --- Syntax checking
 " Plug 'neomake/neomake'
 " Plug 'vim-syntastic/syntastic'
-" Language Server Protocol
+" --- Language Server Protocol
 " Plug 'dense-analysis/ale' " use this just for linting/fixing not LSP
 " Plug 'autozimu/LanguageClient-neovim', { \ 'branch': 'next', \ 'do': 'bash
 " install.sh', \ }
@@ -85,25 +99,22 @@ Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " https://bluz71.github.io/2019/10/16/lsp-in-vim-with-the-lsc-plugin.html
 " Plug 'natebosch/vim-lsc'
-" distraction free mode
+" --- Distraction free mode
 " Plug 'junegunn/goyo.vim'
-" autocomplete matching
-" brackets and quotes
+" Plug 'KabbAmine/zeavim.vim' " Zeal
+" --- Highlight tabs and spaces at the end of lines
+Plug 'vim-scripts/cream-showinvisibles' "appeared to cause slowdown on Eee
+" --- Autocomplete matching
+" --- Brackets and quotes
 Plug 'Raimondi/delimitMate' " this caused minor slowdown/refreshing issues on my Eee
 " tab autocomplete has issues with YouCompleteMe
 " @link https://github.com/Valloric/YouCompleteMe#nasty-bugs-happen-if-i-have-the-vim-autoclose-plugin-installed
 " Plug 'ervandew/supertab' " this isn't required now we have coc Plug
 " 'majutsushi/tagbar' " Browsing tags Asynchronous tasks - used for ctags
-Plug 'skywind3000/asyncrun.vim'
-" JavaScript
+" Plug 'skywind3000/asyncrun.vim'
+" --- JavaScript
 " Plug 'mtscout6/syntastic-local-eslint.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'jparise/vim-graphql'
-Plug 'heavenshell/vim-jsdoc'
-" ReasonML
-" Plug 'reasonml-editor/vim-reason-plus'
-" Plug 'amiralies/vim-rescript'
+" --- ReasonML
 " Note: ReasonML recommended installing deoplete
 " if has('nvim')
 "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -115,9 +126,8 @@ Plug 'heavenshell/vim-jsdoc'
 " "   Plug 'roxma/vim-hug-neovim-rpc'
 " endif
 " docblocks
-" PHP
-" Plug 'shawncplus/phpcomplete.vim'
-" Formatting docblocks
+" --- PHP
+" --- Formatting docblocks
 " Plug 'godlygeek/tabular' "slowdown on Eee, suggested for vim-markdown
 " Plug 'tobyS/vmustache'
 " Plug 'tobyS/pdv'
@@ -125,33 +135,30 @@ Plug 'heavenshell/vim-jsdoc'
 " This is fixed by using the vim-obsession plugin
 " Note: It is useful to use this plugin with pdv to replicate functionality from ST
 " Plug 'SirVer/ultisnips'
-" Python
+" --- Python
 " Plug 'davidhalter/jedi-vim'
 " Plug 'cjrh/vim-conda'
 " @link https://www.youtube.com/watch?v=YhqsjUUHj6g
 " Plug 'python-mode/python-mode'
 " Plug 'Bogdanp/pyrepl.vim'
-" Align SQL
+" --- Align SQL
 " Plug 'Align' " this creates lots of shortcuts which conflicts
 " Plug 'SQLUtilities'
-" Haskell @link https://monicalent.com/blog/2017/11/19/haskell-in-vim/
+" --- Haskell @link https://monicalent.com/blog/2017/11/19/haskell-in-vim/
 " ghc-mod fails with the stack install :(
 " Plug 'eagletmt/ghcmod-vim'
 " Plug 'Shougo/vimproc'
 " Try intero-vim instead
 " Plug 'parsonsmatt/intero-neovim'
-" Markdown
-" Note: Causes slow down when viewing a markdown page
-Plug 'plasticboy/vim-markdown'
+" --- Markdown
 Plug 'davidgranstrom/nvim-markdown-preview'
-" Powershell
-" Plug 'PProvost/vim-ps1'
-Plug 'cespare/vim-toml'
 " Plug 'preservim/nerdtree'
 Plug 'yegappan/mru'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'tommcdo/vim-exchange'
 Plug 'liuchengxu/vim-which-key'
+Plug 'wakatime/vim-wakatime'
+" @link http://vimcasts.org/blog/2014/08/doing-more-with-each-change/
+Plug 'tommcdo/vim-exchange'
 Plug 'kana/vim-smartword'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
@@ -171,19 +178,19 @@ set history=5000
 set autoread
 
 " With a map leader it's possible to do extra key combinations
-" let mapleader=','
-" let g:mapleader=','
+let mapleader=','
+let g:mapleader=','
 " @link https://superuser.com/questions/693528/vim-is-there-a-downside-to-using-space-as-your-leader-key
 " Vim-which-key inspired me to try 'space' instead of ','
 " @link https://liuchengxu.github.io/vim-which-key/
 " @link
 " https://stackoverflow.com/questions/446269/can-i-use-space-as-mapleader-in-vim
-nnoremap <space> <nop>
+" nnoremap <space> <nop>
 " This doesn't work with vim-which-key
 " map <space> <leader>
 " Need to use these instead
-let mapleader="\<space>"
-let g:mapleader="\<space>"
+" let mapleader="\<space>"
+" let g:mapleader="\<space>"
 
 
 " }}}
@@ -211,9 +218,10 @@ try
 
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme solarized8
-    " colorscheme onehalflight
-    " let g:airline_theme='onehalfdark' " gets set automatically it seems
+    " colorscheme solarized8
+    " let g:airline_theme='solarized' " gets set to molokai by default
+    colorscheme onehalflight
+    let g:airline_theme='onehalflight' " gets set automatically it seems
     " I prefered monokai as it appears to match https://monokai.pro better
     " let g:molokai_original=1
     " let g:rehash256=1
@@ -394,10 +402,10 @@ inoremap <silent><expr> <TAB>
       \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
+" Make <cr> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <cr> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<cr>"
 
 function! CheckBackspace() abort
   let col=col('.') - 1
@@ -419,13 +427,15 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " GoTo code navigation.
 " Match vscode
 nmap <silent> <F12> <Plug>(coc-definition)
+nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
+" Others
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call ShowDocumentation()<CR>
+nnoremap <silent> K :call ShowDocumentation()<cr>
 
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
@@ -437,9 +447,6 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code - confict with :GFiles
 " xmap <leader>f  <Plug>(coc-format-selected)
@@ -518,11 +525,11 @@ nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols.
 nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<cr>
 " Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<cr>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<cr>
 
 
 " Vim Markdown
@@ -608,9 +615,9 @@ endtry
 "     let g:neomake_javascript_enabled_makers=['eslint_d']
 "     " @link https://github.com/mantoni/eslint_d.js#automatic-fixing
 "     " Autofix entire buffer with eslint_d:
-"     nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<CR>`F
+"     nnoremap <leader>nm mF:%!eslint_d --stdin --fix-to-stdout<cr>`F
 "     " Autofix visual selection with eslint_d:
-"     vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<CR>gv
+"     vnoremap <leader>nm :!eslint_d --stdin --fix-to-stdout<cr>gv
 " catch
 " endtry
 
@@ -744,7 +751,7 @@ map <leader>ff :Files<cr>
 map <leader>ft :BTags<cr>
 map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
-let g:fzf_layout={ 'left': '~70%' }
+let g:fzf_layout={ 'up': '~50%' }
 
 " Async Tags
 map <leader>at :AsyncRun ctags -R .<cr>
@@ -896,6 +903,13 @@ map <leader>; A;<esc>
 " nnoremap <leader>bb :set nomore<bar>:ls<bar>:set more<cr>:b<space>
 " I prefer to allow the 'more' so you can see the previous pages of buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
+nnoremap <c-p> :buffers<cr>:b<space>
+
+" @link https://stackoverflow.com/a/5563142/327074
+" nnoremap <silent> <tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bnext<cr>
+" nnoremap <silent> <s-tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bprevious<cr>
+nnoremap <silent> <tab> :bnext<cr>
+nnoremap <silent> <s-tab> :bprevious<cr>
 
 nnoremap <leader>tt :tags<cr>
 
@@ -949,13 +963,20 @@ if has('nvim')
     tnoremap <Esc> <C-\><C-n>
 endif
 
+nnoremap <leader>dt :windo diffthis<cr>
+nnoremap <leader>do :windo diffoff<cr>
+
+nnoremap <leader>jj :!jira sprint ls --current --plain<cr>
+
+
 " }}}
 " Windows/Browser/ST3 familiarity"{{{
 " ===============================
 
 " MRU Buffer
 map <leader><tab> :b#<cr>
-map <leader>mm :MRUToggle<cr>
+" map <leader>mm :MRUToggle<cr>
+map <leader>m :FZFMru<cr>
 " Ctrl-S baby
 map <leader>s :w<cr>
 
@@ -988,6 +1009,7 @@ set diffopt+=iwhite " ignore white space for diff
 " Git"{{{
 " ====
 
+map <leader>gg :Git<cr>
 map <leader>gl :Git log --graph --oneline --decorate<cr>
 map <leader>gll :Git log --graph --abbrev-commit --decorate --date=relative<cr>
 
@@ -1023,7 +1045,7 @@ nnoremap <silent> <leader> :<c-u>WhichKey '<space>'<cr>
 if !exists('g:goto_key_map') | let g:goto_key_map={} | endif
 
 call which_key#register('g', "g:goto_key_map")
-nnoremap <silent> g :<c-u>WhichKey 'g'<CR>
+nnoremap <silent> g :<c-u>WhichKey 'g'<cr>
 
 
 " }}}
