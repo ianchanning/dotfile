@@ -28,13 +28,10 @@ set nocompatible              " be iMproved, required
 call plug#begin('~/.vim/bundle')
 
 " --- Colours
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'sickill/vim-monokai'
-" Plug 'tomasr/molokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
-" Plug 'ayu-theme/ayu-vim'
+Plug 'olimorris/onedarkpro.nvim'
 " --- Sensible defaults
 Plug 'tpope/vim-sensible'
 " --- Git
@@ -220,19 +217,11 @@ try
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
     " colorscheme solarized8
     " let g:airline_theme='solarized' " gets set to molokai by default
-    colorscheme onehalflight
-    let g:airline_theme='onehalflight' " gets set automatically it seems
-    " I prefered monokai as it appears to match https://monokai.pro better
-    " let g:molokai_original=1
-    " let g:rehash256=1
-    " colorscheme molokai
-    " let g:airline_theme='molokai' " gets set to molokai by default
-    " colorscheme monokai
-    " let g:airline_theme='base16_monokai' " gets set to molokai by default
-
-    " let ayucolor="light"  " this must be set before colorscheme
-    " colorscheme ayu
-    " let g:airline_theme='ayu_light' " gets set to ayu by default
+    " colorscheme onehalflight
+    " gets set automatically if sonph/onehalf is installed
+    let g:airline_theme='onehalflight'
+    " onedarkpro
+    colorscheme onelight
 catch
 endtry
 
@@ -369,16 +358,7 @@ map <silent> <leader><cr> :nohlsearch<cr>
 " map <leader>ls :call LanguageClient#textDocument_documentSymbol()<cr>
 
 " LSP - COC
-map <leader>ch :call CocAction('doHover')<cr>
-map <leader>ci :call CocAction('diagnosticInfo')<cr>
-map <leader>cp :call CocAction('diagnosticPreview')<cr>
-map <leader>cr :call CocAction('rename')<cr>
-map <leader>cf :call CocAction('format')<cr>
-map <leader>cb :call CocAction('references')<cr>
-map <leader>ca  <Plug>(coc-codeaction)
-" map <leader>ca :call CocAction('codeAction')<cr>
-map <leader>cs :call CocAction('documentSymbols')<cr>
-map <leader>cd :call CocAction('jumpDefinition')<cr>
+map <leader>cc  <Plug>(coc-codeaction)
 
 " coc recommendations
 " @link https://github.com/neoclide/coc.nvim#example-vim-configuration
