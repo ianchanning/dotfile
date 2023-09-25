@@ -359,6 +359,7 @@ map <silent> <leader><cr> :nohlsearch<cr>
 
 " LSP - COC
 map <leader>cc  <Plug>(coc-codeaction)
+map <leader>ch  <Plug>(coc-hover)
 
 " coc recommendations
 " @link https://github.com/neoclide/coc.nvim#example-vim-configuration
