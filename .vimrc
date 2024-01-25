@@ -102,10 +102,28 @@ set updatetime=300
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
 " GoTo code navigation.
 " Match vscode
 nmap <silent> <F12> <Plug>(coc-definition)
 nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
+
 " vim-commentary
 try
     autocmd FileType php setlocal commentstring=\/\/\ %s
@@ -166,7 +184,6 @@ map <leader>" ysiw"
 " GFiles is useful because it respects .gitignore
 map <leader>f :GFiles<cr>
 map <leader>ff :Files<cr>
-map <leader>ft :BTags<cr>
 map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
 map <leader>m :FZFMru<cr>
@@ -197,15 +214,6 @@ map <leader>; A;<esc>
 " nnoremap <leader>bb :set nomore<bar>:ls<bar>:set more<cr>:b<space>
 " I prefer to allow the 'more' so you can see the previous pages of buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
-nnoremap <c-p> :buffers<cr>:b<space>
-
-" @link https://stackoverflow.com/a/5563142/327074
-" nnoremap <silent> <tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bnext<cr>
-" nnoremap <silent> <s-tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bprevious<cr>
-nnoremap <silent> <tab> :bnext<cr>
-nnoremap <silent> <s-tab> :bprevious<cr>
-
-nnoremap <leader>tt :tags<cr>
 
 " hide/show the quickfix lists
 " similar bracket syntax to vim-unimpaired
@@ -215,22 +223,11 @@ nnoremap [ll :lclose<cr>
 nnoremap ]ll :lopen<cr>
 nnoremap [pp :pclose<cr>
 nnoremap ]pp :popen<cr>
-" tag stack
-nnoremap [ts :pop<cr>
-nnoremap ]ts :tag<cr>
 
 " terminal easy escape
 " It's actually useful to have this complex escape sequence for when you need
 " Esc in your terminal session - e.g. opening Vim in your terminal session
 tnoremap <leader><Esc> <C-\><C-n>
-
-" @link https://github.com/nelstrom/dotfiles/blob/master/vimrc
-cnoremap <expr> %%  getcmdtype() == ':' ? fnameescape(expand('%:h')).'/' : '%%'
-
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
 
 nnoremap <leader>dt :windo diffthis<cr>
 nnoremap <leader>do :windo diffoff<cr>
