@@ -129,6 +129,19 @@ function mdn() {
     open https://mdn.io/$1
 }
 export -f mdn
+
+# @link https://gist.github.com/srsholmes/5607e26c187922878943c50edfb245ef
+function grecent() {
+    local branches branch
+    branches=$(git branch --sort=-committerdate --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]') \
+    && branch=$(echo "$branches" | fzf --ansi) \
+    && branch=$(echo "$branch" | awk '{print $1}' | tr -d '*') \
+    && git checkout "$branch"
+}
+export -f grecent
+
+alias gr='grecent'
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -143,7 +156,7 @@ fi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # @link https://github.com/ankitpokhrel/jira-cli#cloud-server
-export JIRA_API_TOKEN=tJUrsf1rW9WXfbxaicRh2090
+# export JIRA_API_TOKEN=tJUrsf1rW9WXfbxaicRh2090
 # @link https://github.com/MONA-Health/ya-react-input-mask
 # I needed this to run karma headlesschrome tests
 export CHROME_BIN=~/.local/share/flatpak/app/com.google.Chrome/current/active/export/bin/com.google.Chrome
@@ -152,3 +165,15 @@ complete -C /usr/bin/terraform terraform
 
 # https://github.com/jlevy/the-art-of-command-line#basics
 set -o vi
+
+# pnpm
+export PNPM_HOME="/home/charp/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+if [ -d "/opt/mssql-tools18/bin" ] ; then
+    PATH="$PATH:/opt/mssql-tools18/bin"
+fi
