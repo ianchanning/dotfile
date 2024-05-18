@@ -170,11 +170,9 @@ map <leader>" ysiw"
 
 " FZF
 " GFiles is useful because it respects .gitignore
-map <leader>f :Files<cr>
+map <leader>ff :Files<cr>
 map <leader>fg :GFiles<cr>
-map <leader>ft :BTags<cr>
-map <leader>fb :BLines<cr>
-map <leader>fl :Lines<cr>
+map <leader>fl :BLines<cr>
 let g:fzf_layout={ 'up': '~50%' }
 
 
