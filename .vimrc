@@ -49,9 +49,6 @@ set history=5000
 let mapleader=','
 let g:mapleader=','
 
-" turn off the > beep
-" @link https://stackoverflow.com/a/24242461/327074
-autocmd BufWinEnter *.md set mps-=<:>
 
 " }}}
 " Colors and Fonts"{{{
@@ -65,8 +62,10 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme onelight
-    " colorscheme onehalflight
+    " onelight doesn't have italic comments which I kinda like
+    " also could then simplify this down completely to just onehalflight
+    " colorscheme onelight
+    colorscheme onehalflight
     " gets set automatically if sonph/onehalf is installed
     let g:airline_theme='onehalflight'
 catch
