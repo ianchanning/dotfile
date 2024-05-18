@@ -62,10 +62,10 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    " onelight doesn't have italic comments which I kinda like
-    " also could then simplify this down completely to just onehalflight
-    " colorscheme onelight
-    colorscheme onehalflight
+    " I use onelight over onehalflight because that has better diff
+    " highlighting
+    colorscheme onelight
+    " colorscheme onehalflight
     " gets set automatically if sonph/onehalf is installed
     let g:airline_theme='onehalflight'
 catch
