@@ -65,11 +65,10 @@ endif
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
+    colorscheme onelight
     " colorscheme onehalflight
     " gets set automatically if sonph/onehalf is installed
     let g:airline_theme='onehalflight'
-    " onedarkpro
-    colorscheme onelight
 catch
 endtry
 
@@ -106,6 +105,12 @@ set signcolumn=yes
 " Match vscode
 nmap <silent> <F12> <Plug>(coc-definition)
 nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
+
+" Use <cr> to confirm completion
+" @link
+" https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources#use-cr-to-confirm-completion
+inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+
 " vim-commentary
 try
     autocmd FileType php setlocal commentstring=\/\/\ %s
@@ -164,12 +169,11 @@ map <leader>" ysiw"
 
 " FZF
 " GFiles is useful because it respects .gitignore
-map <leader>f :GFiles<cr>
-map <leader>ff :Files<cr>
+map <leader>f :Files<cr>
+map <leader>ff :GFiles<cr>
 map <leader>ft :BTags<cr>
 map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
-map <leader>m :FZFMru<cr>
 let g:fzf_layout={ 'up': '~50%' }
 
 
@@ -199,12 +203,6 @@ map <leader>; A;<esc>
 nnoremap <leader>bb :buffers<cr>:b<space>
 nnoremap <c-p> :buffers<cr>:b<space>
 
-" @link https://stackoverflow.com/a/5563142/327074
-" nnoremap <silent> <tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bnext<cr>
-" nnoremap <silent> <s-tab>  :if &modifiable && !&readonly && &modified <cr> :write<cr> :endif<cr>:bprevious<cr>
-nnoremap <silent> <tab> :bnext<cr>
-nnoremap <silent> <s-tab> :bprevious<cr>
-
 nnoremap <leader>tt :tags<cr>
 
 " hide/show the quickfix lists
@@ -223,14 +221,6 @@ nnoremap ]ts :tag<cr>
 " It's actually useful to have this complex escape sequence for when you need
 " Esc in your terminal session - e.g. opening Vim in your terminal session
 tnoremap <leader><Esc> <C-\><C-n>
-
-" @link https://github.com/nelstrom/dotfiles/blob/master/vimrc
-cnoremap <expr> %%  getcmdtype() == ':' ? fnameescape(expand('%:h')).'/' : '%%'
-
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
 
 nnoremap <leader>dt :windo diffthis<cr>
 nnoremap <leader>do :windo diffoff<cr>
