@@ -101,15 +101,16 @@ set updatetime=300
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 set signcolumn=yes
-" GoTo code navigation.
-" Match vscode
-nmap <silent> <F12> <Plug>(coc-definition)
-nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
 
 " Use <cr> to confirm completion
 " @link
 " https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources#use-cr-to-confirm-completion
 inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+
+" GoTo code navigation.
+" Match vscode
+nmap <silent> <F12> <Plug>(coc-definition)
+nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
 
 " vim-commentary
 try
@@ -170,7 +171,7 @@ map <leader>" ysiw"
 " FZF
 " GFiles is useful because it respects .gitignore
 map <leader>f :Files<cr>
-map <leader>ff :GFiles<cr>
+map <leader>fg :GFiles<cr>
 map <leader>ft :BTags<cr>
 map <leader>fb :BLines<cr>
 map <leader>fl :Lines<cr>
@@ -213,9 +214,6 @@ nnoremap [ll :lclose<cr>
 nnoremap ]ll :lopen<cr>
 nnoremap [pp :pclose<cr>
 nnoremap ]pp :popen<cr>
-" tag stack
-nnoremap [ts :pop<cr>
-nnoremap ]ts :tag<cr>
 
 " terminal easy escape
 " It's actually useful to have this complex escape sequence for when you need
