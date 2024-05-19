@@ -159,7 +159,7 @@ fi
 # export JIRA_API_TOKEN=tJUrsf1rW9WXfbxaicRh2090
 # @link https://github.com/MONA-Health/ya-react-input-mask
 # I needed this to run karma headlesschrome tests
-export CHROME_BIN=~/.local/share/flatpak/app/com.google.Chrome/current/active/export/bin/com.google.Chrome
+export CHROME_BIN=~/.local/share/flatpak/app/org.chromium.Chromium/current/active/export/bin/org.chromium.Chromium
 
 complete -C /usr/bin/terraform terraform
 
@@ -177,3 +177,17 @@ esac
 if [ -d "/opt/mssql-tools18/bin" ] ; then
     PATH="$PATH:/opt/mssql-tools18/bin"
 fi
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/charp/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/charp/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/charp/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/charp/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
