@@ -20,6 +20,7 @@ set nocompatible              " be iMproved, required
 " https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
 call plug#begin('~/.vim/bundle')
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'olimorris/onedarkpro.nvim'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive'
@@ -58,6 +59,14 @@ lua<<EOF
     }
   })
   -- print("aaaaaaaa")
+EOF
+
+lua<<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  },
+}
 EOF
 
 " }}}
