@@ -38,6 +38,28 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
+" {@link https://github.com/olimorris/onedarkpro.nvim/issues/236#issuecomment-2121202478}
+lua<<EOF
+  require("onedarkpro").setup({
+    styles = {
+      types = "NONE",
+      methods = "NONE",
+      numbers = "NONE",
+      strings = "NONE",
+      comments = "italic",
+      keywords = "bold,italic",
+      constants = "NONE",
+      functions = "italic",
+      operators = "NONE",
+      variables = "NONE",
+      parameters = "NONE",
+      conditionals = "italic",
+      virtual_text = "NONE",
+    }
+  })
+  -- print("aaaaaaaa")
+EOF
+
 " }}}
 " General"{{{
 " =======
@@ -70,7 +92,6 @@ try
     let g:airline_theme='onehalflight'
 catch
 endtry
-
 
 
 " }}}
