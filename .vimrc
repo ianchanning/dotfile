@@ -19,9 +19,6 @@ set nocompatible              " be iMproved, required
 " Match the Vundle plugin directory
 " https://github.com/junegunn/vim-plug/wiki/tips#migrating-from-other-plugin-managers
 call plug#begin('~/.vim/bundle')
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'olimorris/onedarkpro.nvim'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -31,12 +28,21 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-commentary'
+" Forgive me tim for I have sinned and installed extra plugins
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'olimorris/onedarkpro.nvim'
 " Note: this is a good example for github README instructions
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'idanarye/vim-merginal'
+" GitHub CLI integration
+Plug 'ldelossa/litee.nvim'
+Plug 'ldelossa/gh.nvim'
+Plug 'joshuavial/aider.nvim'
 call plug#end()
 
 " {@link https://github.com/olimorris/onedarkpro.nvim/issues/236#issuecomment-2121202478}
@@ -58,7 +64,6 @@ lua<<EOF
       virtual_text = "NONE",
     }
   })
-  -- print("aaaaaaaa")
 EOF
 
 lua<<EOF
@@ -67,6 +72,15 @@ require'nvim-treesitter.configs'.setup {
     enable = true,
   },
 }
+EOF
+
+lua<<EOF
+vim.diagnostic.config({
+  virtual_text = true,  -- Show inline errors
+  signs = true,         -- Show sign column errors
+})
+require('litee.lib').setup()
+require('litee.gh').setup()
 EOF
 
 " }}}
@@ -112,6 +126,10 @@ endtry
 " Text, tab and indent related"{{{
 " ============================
 
+" @link https://vim.fandom.com/wiki/Converting_tabs_to_spaces
+:set tabstop=2 shiftwidth=2 expandtab
+" this is in vim-sensible
+" filetype plugin indent on
 
 
 " }}}
@@ -140,6 +158,9 @@ inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 " Match vscode
 nmap <silent> <F12> <Plug>(coc-definition)
 nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
+
+
+let g:coc_node_path = '/home/charp/.nvm/versions/node/v20.16.0/bin/node'  " Use the path from `which node` in Neovim terminal
 
 " vim-commentary
 try
@@ -209,7 +230,53 @@ let g:fzf_layout={ 'up': '~50%' }
 " Functions"{{{
 " =========
 
+" Function to save markdown file using first line as kebab-case filename
+function! SaveMarkdownWithSlugName()
+  " Get the first line of the buffer
+  let first_line = getline(1)
+  
+  " Clean up the line - remove markdown formatting and special characters
+  let title = first_line
+  let title = substitute(title, '\*\+', '', 'g')       " Remove asterisks
+  let title = substitute(title, '#\+', '', 'g')        " Remove hashtags
+  let title = substitute(title, '[^0-9A-Za-z ]', '', 'g') " Remove special chars
+  let title = substitute(title, '\s\+', ' ', 'g')      " Normalize whitespace
+  let title = tolower(title)                           " Convert to lowercase
+  let title = substitute(title, '\s', '-', 'g')        " Replace spaces with hyphens
+  let title = substitute(title, '^-\+', '', '')        " Remove leading hyphens
+  let title = substitute(title, '-\+$', '', '')        " Remove trailing hyphens
+  
+  " Default to a generic name if title is empty
+  if title == ""
+    let title = "untitled"
+  endif
+  
+  " Get current directory
+  let dir = expand('%:p:h')
+  
+  " Create base filename
+  let base_filename = title . ".md"
+  let full_path = dir . "/" . base_filename
+  
+  " Check if file exists and increment if needed
+  let counter = 1
+  while filereadable(full_path)
+    let counter = counter + 1
+    let base_filename = title . "-" . counter . ".md"
+    let full_path = dir . "/" . base_filename
+  endwhile
+  
+  " Save the file with new name
+  execute 'silent! write ' . fnameescape(full_path)
+  
+  " Rename the buffer to match the file
+  execute 'file ' . fnameescape(full_path)
+  
+  echo "Saved as: " . base_filename
+endfunction
 
+" Map the function to a key combination
+nnoremap <leader>sm :call SaveMarkdownWithSlugName()<CR>
 
 " }}}
 " Indent settings"{{{
