@@ -1,1 +1,42 @@
 .bash_secrets
+# === IGNORE EVERYTHING IN HERE ===
+# This is the fortress gatekeeper.
+
+# Neovim Transient/Cache Files (These are volatile and machine-specific)
+*.swp
+*.swo
+*.un~     # Undo files if stored directly in the nvim dir
+Session.vim # Session files
+
+# Plugin Manager specific directories (These contain the downloaded plugin code)
+# lazy.nvim (default location)
+nvim/lazy/
+
+# packer.nvim (if you ever switch or used it previously)
+nvim/pack/
+nvim/plugin/packer_compiled.lua
+
+# Common build/cache/state directories created by plugins (adjust paths if different)
+nvim/build/
+nvim/parser/ # Tree-sitter parsers might land here
+nvim/.lsp/   # LSP specific cache
+nvim/.cache/ # General plugin cache
+nvim/.local/state/ # Some plugins store state here
+
+# === Files Containing Potentially Sensitive OR Machine-Specific Config ===
+# Your CoC settings file (RECOMMENDED TO IGNORE FOR PORTABILITY/SECRETS)
+nvim/coc-settings.json
+
+# If you had local override files for specific machines (e.g. sourced from init.lua)
+# nvim/local_machine_settings.lua
+
+# Secrets files (if you ever use them, make sure they are ignored wherever they live)
+# nvim/my_api_keys.lua
+# secrets/
+
+# OS specific junk files
+.DS_Store
+Thumbs.db
+
+# You *could* ignore nyx_utils.lua if you really wanted, but it would break init.lua without manual intervention
+# nvim/lua/nyx_utils.lua
