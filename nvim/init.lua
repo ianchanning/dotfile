@@ -36,9 +36,7 @@ vim.opt.diffopt:append('iwhite')
 -- Spelling
 vim.opt.spell = true
 vim.opt.spelllang = {'en_gb'}
--- Set Node path for CoC
--- vim.g.coc_node_path = '/home/charp/.nvm/versions/node/v20.16.0/bin/node'
-
+      
 --[[ ======================================================================
      Plugin Setup: lazy.nvim
      ====================================================================== ]]
@@ -168,13 +166,48 @@ require("lazy").setup({
      },
   },
 
-  { 'neoclide/coc.nvim', branch = 'release', config = function()
+  {
+    'neoclide/coc.nvim',
+    branch = 'release', -- Use the 'release' branch
+    -- The 'init' function runs *BEFORE* lazy.nvim loads this plugin.
+    -- This is the correct place to set global variables that plugins read early.
+    init = function()
+      -- π/0K/0R/0M/30 Node path setup for CoC
+      -- Find the node executable in the inherited PATH using Neovim's built-in function.
+      -- This automatically picks up nvm's node if nvm is configured in the shell starting nvim.
+      local node_path = vim.fn.exepath('node')
+
+      -- Set coc_node_path if an executable path was found.
+      -- CoC will automatically check the version of Node at this path.
+      -- If the version is too old (like v12), CoC will show a warning message.
+      -- This warning is the signal that the 'node' found *first* in the PATH inherited by Neovim
+      -- is not the required version.
+      -- The fix for the old version is EXTERNAL: ensure the correct Node version's bin directory
+      -- (e.g., from nvm, via `nvm use <version>` or correct shell init) is at the beginning
+      -- of your shell's PATH *before* you launch nvim.
+      if node_path and node_path ~= '' then
+        vim.g.coc_node_path = node_path
+        -- Optional debug notification (only if it was found)
+        -- vim.notify("NYX: CoC Node path found dynamically: " .. node_path, vim.log.levels.DEBUG)
+      else
+        -- Optional warning if no 'node' executable was found anywhere in the inherited PATH.
+        vim.notify("NYX: 'node' executable not found in PATH. CoC may not function correctly. Ensure Node.js is installed and in your shell's PATH.", vim.log.levels.WARN, { title = "CoC Node Missing " })
+      end
+    end,
+    -- The 'config' function runs *AFTER* lazy.nvim has loaded this plugin.
+    config = function()
+      -- Place your existing CoC keymaps and other configuration here.
+      -- These configurations depend on CoC being loaded, so they go in 'config'.
       vim.keymap.set('n', '<F12>', '<Plug>(coc-definition)', { silent = true, noremap = true })
       vim.keymap.set('n', '<F2>', '<Plug>(coc-rename)', { silent = true, noremap = true })
       local function check_backspace() local col = vim.fn.col('.') - 1; return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') end
       _G.coc_pum_confirm = function() if vim.fn.pumvisible() ~= 0 then return vim.fn['coc#pum#confirm']() else return vim.api.nvim_replace_termcodes("<CR>", true, false, true) end end
       vim.keymap.set('i', '<cr>', 'v:lua.coc_pum_confirm()', { expr = true, noremap = true })
-    end },
+
+      -- CoC notifications indicate successful setup (after init/load/config)
+      vim.notify("NYX: CoC.nvim loaded and configured.", vim.log.levels.INFO, { title = "CoC Setup ⊕" })
+    end
+  },
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate', -- Command to run after install/update

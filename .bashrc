@@ -256,3 +256,11 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 # Check if pyenv command exists in PATH, then initialize if found.
 command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
+
+# --- nvm setup (π/0K/0R/0M/30) ---
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Activate default nvm Node version and update PATH (0M, 0R).
+nvm use default >/dev/null 2>&1 || true
