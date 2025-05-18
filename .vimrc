@@ -141,6 +141,8 @@ inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 nmap <silent> <F12> <Plug>(coc-definition)
 nmap <silent> <F2> <Plug>(coc-rename) " Symbol renaming.
 
+let g:coc_node_path = expand('$HOME/.nvm/versions/node/v22.11.0/bin/node')
+
 " vim-commentary
 try
     autocmd FileType php setlocal commentstring=\/\/\ %s
