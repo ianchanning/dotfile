@@ -251,7 +251,8 @@ alias ugk=use_gemini_key
 
 export AIDER_EDITOR=nvim
 
-# pyenv
+# pyenv setup (π/0K/0R/0M/30)
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
+export PATH="$PYENV_ROOT/bin:$PATH"
+# Check if pyenv command exists in PATH, then initialize if found.
+command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
