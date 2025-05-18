@@ -56,10 +56,16 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# current git branch for prompt
+# get current branch and strip off '* ' at the beginning (replace with a # separator)
+function parse_git_branch() {
+    git branch 2>/dev/null | grep '*' | sed 's/* / /' | sed 's/$/ /'
+}
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]$(parse_git_branch)\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}$(parse_git_branch)\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -164,6 +170,7 @@ export CHROME_BIN=~/.local/share/flatpak/app/org.chromium.Chromium/current/activ
 complete -C /usr/bin/terraform terraform
 
 # https://github.com/jlevy/the-art-of-command-line#basics
+export EDITOR=nvim
 set -o vi
 
 # pnpm
@@ -177,17 +184,62 @@ esac
 if [ -d "/opt/mssql-tools18/bin" ] ; then
     PATH="$PATH:/opt/mssql-tools18/bin"
 fi
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/charp/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# Add to ~/.bashrc or ~/.zshrc
+
+# Load personal secrets if the file exists
+if [ -f ~/.bash_secrets ]; then
+    source ~/.bash_secrets
 else
-    if [ -f "/home/charp/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/charp/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/charp/anaconda3/bin:$PATH"
-    fi
+    # Optional: Print a warning if the file is missing on a new setup
+    echo "Warning: ~/.bash_secrets not found. Some API keys may be missing." >&2
 fi
-unset __conda_setup
-# <<< conda initialize <<<
+
+# Function to activate a specific Gemini API key loaded from secrets
+# Assumes _GEMINI_KEY_1, _GEMINI_KEY_2, etc., are loaded from ~/.bash_secrets
+use_gemini_key() {
+  local key_num="$1"
+  local target_var_name="GEMINI_API_KEY" # The variable the application uses
+  local source_var_name=""               # Will hold the name like _GEMINI_KEY_1
+
+  # Determine the source variable name based on the input number
+  case "$key_num" in
+    1) source_var_name="_GEMINI_KEY_1" ;;
+    2) source_var_name="_GEMINI_KEY_2" ;;
+    3) source_var_name="_GEMINI_KEY_3" ;;
+    4) source_var_name="_GEMINI_KEY_4" ;;
+    *)
+      echo "Error: Unknown key number '$key_num'. Please use 1, 2, 3, or 4." >&2
+      return 1
+      ;;
+  esac
+
+  # Check if the source variable is actually set and non-empty
+  # Uses indirect parameter expansion: ${!var_name} gets the value of the variable whose name is stored in var_name
+  if [ -z "${!source_var_name}" ]; then
+      echo "Error: Secret variable '$source_var_name' is not set or is empty." >&2
+      echo "       Ensure ~/.bash_secrets exists, is sourced correctly, and contains a value for this key." >&2
+      return 1
+  fi
+
+  # Export the chosen key to the variable expected by applications
+  # Again, using indirect expansion to get the value
+  export "$target_var_name"="${!source_var_name}"
+
+  # Confirmation message
+  echo "$target_var_name set using Key #$key_num."
+}
+
+# Example Usage (after sourcing .bash_secrets):
+# use_gemini_key 2
+# echo $GEMINI_API_KEY # Should output the value of _GEMINI_KEY_2
+
+# Optional: Alias for convenience
+alias ugk=use_gemini_key
+
+export AIDER_EDITOR=nvim
