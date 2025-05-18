@@ -59,7 +59,7 @@ fi
 # current git branch for prompt
 # get current branch and strip off '* ' at the beginning (replace with a # separator)
 function parse_git_branch() {
-    git branch 2>/dev/null | grep '*' | sed 's/* / /' | sed 's/$/ /'
+    git branch 2>/dev/null | grep '*' | sed 's/* /Ψ /' | sed 's/$/ /'
 }
 
 if [ "$color_prompt" = yes ]; then
@@ -218,8 +218,10 @@ use_gemini_key() {
     2) source_var_name="_GEMINI_KEY_2" ;;
     3) source_var_name="_GEMINI_KEY_3" ;;
     4) source_var_name="_GEMINI_KEY_4" ;;
+    5) source_var_name="_GEMINI_KEY_5" ;;
+    6) source_var_name="_GEMINI_KEY_6" ;;
     *)
-      echo "Error: Unknown key number '$key_num'. Please use 1, 2, 3, or 4." >&2
+      echo "Error: Unknown key number '$key_num'. Please use 1, 2, 3, 4, 5 or 6." >&2
       return 1
       ;;
   esac
@@ -248,3 +250,8 @@ use_gemini_key() {
 alias ugk=use_gemini_key
 
 export AIDER_EDITOR=nvim
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
