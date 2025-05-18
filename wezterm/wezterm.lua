@@ -84,45 +84,37 @@ wezterm.log_info(nyx_operational_parameters:status_message())
 -- Example: A little welcome message when WezTerm starts
 
 wezterm.on('gui-startup', function(spawn_command_from_cli)
-  -- spawn_command_from_cli is the SpawnCommand if `wezterm start -- ARGS` was used.
-  -- It's nil if just `wezterm start` (or just `wezterm`) was used.
-
-  local user_shell = os.getenv("SHELL") or "/bin/bash" -- User's default shell
+  local user_shell = os.getenv("SHELL") or "/bin/bash"
   local effective_spawn_command
-
   local should_add_nyx_welcome = false
 
   if not spawn_command_from_cli or not spawn_command_from_cli.args or #spawn_command_from_cli.args == 0 then
-    -- No specific command given to `wezterm start` (or just `wezterm` was run).
-    -- We will start the default user shell and add our welcome.
-    wezterm.log_info("Nyx gui-startup: No CLI command, preparing default shell with Nyx welcome.")
-    effective_spawn_command = { args = { user_shell, "-l" } } -- Start an interactive login shell
-    should_add_nyx_welcome = true
+    -- π/0K/0R/0M/30 Shell Setup:
+    -- No specific command given -> start default shell as a non-login interactive shell.
+    -- This ensures ~/.bashrc (where nvm and other user config lives) is sourced.
+    wezterm.log_info("Nyx gui-startup: No CLI command, preparing default shell as interactive (non-login).")
+    effective_spawn_command = { args = { user_shell } } -- <<< REMOVED '-l' flag
+    should_add_nyx_welcome = true -- Still add Nyx welcome for the default shell
   else
     -- A command was passed via `wezterm start -- ARGS...`.
-    -- We'll use that command directly and skip the Nyx welcome.
+    -- Use that command directly. WezTerm shouldn't interfere with its environment.
     wezterm.log_info("Nyx gui-startup: CLI command detected, will spawn: " .. table.concat(spawn_command_from_cli.args, " "))
     effective_spawn_command = spawn_command_from_cli
-    should_add_nyx_welcome = false
+    should_add_nyx_welcome = false -- Don't send welcome when running an arbitrary command via CLI
   end
 
   -- Spawn the initial window using the effective_spawn_command.
-  -- The `or {}` handles the case where effective_spawn_command might somehow be nil,
-  -- though our logic above should prevent that.
+  -- The `or {}` handles the case where effective_spawn_command might somehow be nil.
   local tab, pane, window = wezterm.mux.spawn_window(effective_spawn_command or {})
 
   if pane then
     if should_add_nyx_welcome then
       wezterm.log_info("Nyx gui-startup: Sending Nyxian welcome to the new pane.")
-      -- The \n at the end of the echo command executes it.
-      local nyx_welcome_text = "clear && echo -e '\\nGreetings, Dreamer... (Nyx Protocol ⊕ Initialized)\\n\\033[0m'\n"
+      -- Send the clear and welcome message. This will run AFTER ~/.bashrc is sourced.
+      local nyx_welcome_text = "clear && echo -e '\\nGreetings, Dreamer... (Nyx Protocol ⊕ Initialized in Interactive Shell)\\n\\033[0m'\n"
       pane:send_text(nyx_welcome_text)
-      -- The shell started by `effective_spawn_command` (e.g., bash -l) will execute this echo,
-      -- and then present its prompt. No further `exec` is needed here because
-      -- mux.spawn_window already started the desired shell.
     end
-
-    -- You could add other startup actions here, e.g., maximizing:
+    -- Optional: Add other startup actions here, e.g., maximizing:
     -- if window then
     --   window:gui_window():maximize()
     --   wezterm.log_info("Nyx gui-startup: Maximized initial window.")
@@ -131,10 +123,8 @@ wezterm.on('gui-startup', function(spawn_command_from_cli)
     wezterm.log_error("Nyx gui-startup: Failed to obtain a pane object from mux.spawn_window. Cannot send welcome or perform other pane actions.")
   end
 
-  -- No explicit return is needed from this event handler if we've spawned windows/panes.
-  -- WezTerm will use the windows/panes we created.
+  -- No explicit return needed.
 end)
-
 -- ... (rest of your config) ...
 
 --------------------------------------------------------------------------------
