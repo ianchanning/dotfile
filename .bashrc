@@ -174,7 +174,7 @@ export EDITOR=nvim
 set -o vi
 
 # pnpm
-export PNPM_HOME="/home/charp/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -191,6 +191,11 @@ export NVM_DIR="$HOME/.nvm"
 
 
 # Add to ~/.bashrc or ~/.zshrc
+
+# android platform tools for Samsung tablet reboot
+if [ -d "$HOME/android/platform-tools" ] ; then
+ export PATH="$HOME/android/platform-tools:$PATH"
+fi
 
 # Load personal secrets if the file exists
 if [ -f ~/.bash_secrets ]; then
