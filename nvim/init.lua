@@ -19,6 +19,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ','
 vim.opt.history = 5000
 vim.opt.encoding = 'utf-8'
+vim.opt.number = true
 -- Appearance / UI
 vim.opt.termguicolors = true
 vim.opt.signcolumn = 'yes'
@@ -37,7 +38,16 @@ vim.opt.diffopt:append('iwhite')
 vim.opt.spell = true
 vim.opt.spelllang = {'en_gb'}
 -- Set Node path for CoC
--- vim.g.coc_node_path = '/home/charp/.nvm/versions/node/v20.16.0/bin/node'
+-- Find the nvm-managed node executable and set it for Neovim
+local nvm_node_path = vim.fn.trim(vim.fn.system('bash -c "source ~/.nvm/nvm.sh && which node"'))
+-- Check if the command was successful and the path exists
+if vim.v.shell_error == 0 and vim.fn.executable(nvm_node_path) == 1 then
+  -- This is the general variable for the node host provider, used by many plugins
+  vim.g.node_host_prog = nvm_node_path
+  -- You might also need to set it for specific plugins if they don't respect the host provider.
+  -- For example, for coc.nvim you would uncomment the following line:
+  vim.g.coc_node_path = nvm_node_path
+end
 
 --[[ ======================================================================
      Plugin Setup: lazy.nvim
@@ -224,96 +234,97 @@ require("lazy").setup({
   },
   -- GitHub Copilot Core (REQUIRED by CopilotChat.nvim for auth/requests)
   -- ... (Keep github/copilot.vim as is, maybe add lazy=true or event='VeryLazy' too if desired) ...
-  {
-    "github/copilot.vim",
-    -- cmd = "Copilot", -- Example: Load only when :Copilot command is used
-    event = "VeryLazy", -- Or load after startup
-    -- config = function() ... end -- Optional config for copilot.vim itself
-  },
+  -- REMOVED - not using it, aider is good enough
+  -- {
+  --   "github/copilot.vim",
+  --   -- cmd = "Copilot", -- Example: Load only when :Copilot command is used
+  --   event = "VeryLazy", -- Or load after startup
+  --   -- config = function() ... end -- Optional config for copilot.vim itself
+  -- },
 
-  -- AI Chat Interface (CopilotChat.nvim) - CONFIGURED FOR OLLAMA
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    -- Load after startup, but config happens via lazy's config function
-    event = "VeryLazy",
-    dependencies = {
-      -- REQUIRED: Keep the core Copilot plugin dependency
-      { "github/copilot.vim" },
-      -- REQUIRED: Plenary for async/utils
-      { "nvim-lua/plenary.nvim" },
-      -- Optional: For picker UI, e.g., telescope-ui-select or fzf-lua (add if you use them)
-      -- { "nvim-telescope/telescope.nvim" }, -- Example if using Telescope
-      -- { "ibhagwan/fzf-lua" }, -- Example if using fzf-lua
-    },
-    -- REMOVED: build = "make tiktoken", -- Not needed for basic functionality
-    opts = {
-      -- Provider Configuration: Tell it to use Ollama!
-      provider = "ollama",
-      providers = {
-        ollama = {
-          -- Ensure this URL matches your running Ollama instance
-          url = "http://localhost:11434",
-          -- *** IMPORTANT: Change 'llama3' to a model you have downloaded! ***
-          -- Run `ollama list` in your terminal to see available models.
-          model = "llama3", -- e.g., "mistral", "codellama:7b", etc.
-          -- Optional: Specify format if needed (e.g., 'json' for some models)
-          -- format = "json",
-          -- Optional: Keep alive setting for the connection
-          -- keep_alive = "5m",
-          -- Add other Ollama-specific options here if needed.
-          -- Check the plugin's documentation or "providers discussion page" for exact options.
-        }
-        -- We are disabling the default copilot provider implicitly by setting provider = "ollama"
-        -- If you needed both, you might configure them here side-by-side and switch via commands/prompts.
-      },
+  -- -- AI Chat Interface (CopilotChat.nvim) - CONFIGURED FOR OLLAMA
+  -- {
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   -- Load after startup, but config happens via lazy's config function
+  --   event = "VeryLazy",
+  --   dependencies = {
+  --     -- REQUIRED: Keep the core Copilot plugin dependency
+  --     { "github/copilot.vim" },
+  --     -- REQUIRED: Plenary for async/utils
+  --     { "nvim-lua/plenary.nvim" },
+  --     -- Optional: For picker UI, e.g., telescope-ui-select or fzf-lua (add if you use them)
+  --     -- { "nvim-telescope/telescope.nvim" }, -- Example if using Telescope
+  --     -- { "ibhagwan/fzf-lua" }, -- Example if using fzf-lua
+  --   },
+  --   -- REMOVED: build = "make tiktoken", -- Not needed for basic functionality
+  --   opts = {
+  --     -- Provider Configuration: Tell it to use Ollama!
+  --     provider = "ollama",
+  --     providers = {
+  --       ollama = {
+  --         -- Ensure this URL matches your running Ollama instance
+  --         url = "http://localhost:11434",
+  --         -- *** IMPORTANT: Change 'llama3' to a model you have downloaded! ***
+  --         -- Run `ollama list` in your terminal to see available models.
+  --         model = "llama3", -- e.g., "mistral", "codellama:7b", etc.
+  --         -- Optional: Specify format if needed (e.g., 'json' for some models)
+  --         -- format = "json",
+  --         -- Optional: Keep alive setting for the connection
+  --         -- keep_alive = "5m",
+  --         -- Add other Ollama-specific options here if needed.
+  --         -- Check the plugin's documentation or "providers discussion page" for exact options.
+  --       }
+  --       -- We are disabling the default copilot provider implicitly by setting provider = "ollama"
+  --       -- If you needed both, you might configure them here side-by-side and switch via commands/prompts.
+  --     },
 
-      -- General Options
-      debug = true, -- ENABLE DEBUGGING INITIALLY! Check logs later.
-      -- Keep your preferred window layout
-      window = {
-        layout = "vertical",
-        width = 0.4,
-        height = 0.9,
-        border = "single", -- Example: Add a border
-        title = "CopilotChat (Ollama)", -- Customize title
-      },
-      -- You can add other general opts from the README here if desired
-      -- e.g., show_help = false, auto_insert_mode = true, etc.
-    },
-    config = function(_, opts)
-      -- This function runs when lazy.nvim loads the plugin
-      local ok, copilot_chat = pcall(require, "CopilotChat") -- Use "CopilotChat", not "copilot_chat"
-      if not ok then
-        vim.notify("Failed to require CopilotChat.nvim during config", vim.log.levels.ERROR)
-        return
-      end
+  --     -- General Options
+  --     debug = true, -- ENABLE DEBUGGING INITIALLY! Check logs later.
+  --     -- Keep your preferred window layout
+  --     window = {
+  --       layout = "vertical",
+  --       width = 0.4,
+  --       height = 0.9,
+  --       border = "single", -- Example: Add a border
+  --       title = "CopilotChat (Ollama)", -- Customize title
+  --     },
+  --     -- You can add other general opts from the README here if desired
+  --     -- e.g., show_help = false, auto_insert_mode = true, etc.
+  --   },
+  --   config = function(_, opts)
+  --     -- This function runs when lazy.nvim loads the plugin
+  --     local ok, copilot_chat = pcall(require, "CopilotChat") -- Use "CopilotChat", not "copilot_chat"
+  --     if not ok then
+  --       vim.notify("Failed to require CopilotChat.nvim during config", vim.log.levels.ERROR)
+  --       return
+  --     end
 
-      -- Setup the plugin using the 'opts' table defined above
-      local setup_ok, setup_err = pcall(copilot_chat.setup, opts)
-      if not setup_ok then
-         vim.notify("CopilotChat.nvim setup failed: " .. tostring(setup_err), vim.log.levels.ERROR)
-         return
-      end
+  --     -- Setup the plugin using the 'opts' table defined above
+  --     local setup_ok, setup_err = pcall(copilot_chat.setup, opts)
+  --     if not setup_ok then
+  --        vim.notify("CopilotChat.nvim setup failed: " .. tostring(setup_err), vim.log.levels.ERROR)
+  --        return
+  --     end
 
-      -- Define keymaps *after* successful setup
-      local map = vim.keymap.set
-      local map_opts = { noremap = true, silent = true }
+  --     -- Define keymaps *after* successful setup
+  --     local map = vim.keymap.set
+  --     local map_opts = { noremap = true, silent = true }
 
-      -- Your existing keymaps - these should now work correctly
-      map('n', '<leader>cc', ':CopilotChat<CR>', { noremap=true, silent=true, desc="CopilotChat: Open Chat Window" })
-      map('v', '<leader>cc', '<Cmd>CopilotChat<CR>', { noremap=true, silent=true, desc="CopilotChat: Chat with Selection" })
-      map('v', '<leader>cce', '<Cmd>CopilotChatExplain<CR>', { noremap=true, silent=true, desc="CopilotChat: Explain Code" })
-      map('v', '<leader>ccf', '<Cmd>CopilotChatFix<CR>', { noremap=true, silent=true, desc="CopilotChat: Suggest Fix" })
-      map('v', '<leader>cct', '<Cmd>CopilotChatTests<CR>', { noremap=true, silent=true, desc="CopilotChat: Generate Tests" })
-      map('v', '<leader>ccd', '<Cmd>CopilotChatDocs<CR>', { noremap=true, silent=true, desc="CopilotChat: Generate Docs" })
-      map('v', '<leader>ccr', '<Cmd>CopilotChatReview<CR>', { noremap=true, silent=true, desc="CopilotChat: Review Code" })
-      map('n', '<leader>ccq', ':CopilotChatQuick<CR>', { noremap=true, silent=true, desc="CopilotChat: Quick Prompt" })
-      map('n', '<leader>cctoggle', ':CopilotChatToggle<CR>', { noremap=true, silent=true, desc="CopilotChat: Toggle Window" })
+  --     -- Your existing keymaps - these should now work correctly
+  --     map('n', '<leader>cc', ':CopilotChat<CR>', { noremap=true, silent=true, desc="CopilotChat: Open Chat Window" })
+  --     map('v', '<leader>cc', '<Cmd>CopilotChat<CR>', { noremap=true, silent=true, desc="CopilotChat: Chat with Selection" })
+  --     map('v', '<leader>cce', '<Cmd>CopilotChatExplain<CR>', { noremap=true, silent=true, desc="CopilotChat: Explain Code" })
+  --     map('v', '<leader>ccf', '<Cmd>CopilotChatFix<CR>', { noremap=true, silent=true, desc="CopilotChat: Suggest Fix" })
+  --     map('v', '<leader>cct', '<Cmd>CopilotChatTests<CR>', { noremap=true, silent=true, desc="CopilotChat: Generate Tests" })
+  --     map('v', '<leader>ccd', '<Cmd>CopilotChatDocs<CR>', { noremap=true, silent=true, desc="CopilotChat: Generate Docs" })
+  --     map('v', '<leader>ccr', '<Cmd>CopilotChatReview<CR>', { noremap=true, silent=true, desc="CopilotChat: Review Code" })
+  --     map('n', '<leader>ccq', ':CopilotChatQuick<CR>', { noremap=true, silent=true, desc="CopilotChat: Quick Prompt" })
+  --     map('n', '<leader>cctoggle', ':CopilotChatToggle<CR>', { noremap=true, silent=true, desc="CopilotChat: Toggle Window" })
 
-      vim.notify("CopilotChat.nvim configured for Ollama!", vim.log.levels.INFO, { title = "Nyx Setup" })
-      vim.notify("Nyx has resurrected the mappings! The fog on the config lifts... slightly.", vim.log.levels.INFO, { title = "Nyx Setup" })
-    end,
-  },
+  --     vim.notify("CopilotChat.nvim configured for Ollama!", vim.log.levels.INFO, { title = "Nyx Setup" })
+  --     vim.notify("Nyx has resurrected the mappings! The fog on the config lifts... slightly.", vim.log.levels.INFO, { title = "Nyx Setup" })
+  --   end,
+  -- },
 
   -- ... (rest of your plugins) ...
  { 'joshuavial/aider.nvim', opts = { auto_manage_context = true, default_bindings = true, debug = false, }, },
@@ -809,6 +820,12 @@ vim.api.nvim_create_autocmd("FileType", {
     -- vim.notify("NYX: Markdown set to 4 spaces locally!", vim.log.levels.INFO, { title = "Markdown FTW" })
   end,
   desc = "NYX: Set 4-space indentation for Markdown files",
+})
+
+-- Force a check for file changes when buffer is entered or vim gains focus
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+  pattern = "*",
+  command = "checktime",
 })
 
 --[[ ======================================================================
