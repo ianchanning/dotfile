@@ -185,10 +185,6 @@ if [ -d "/opt/mssql-tools18/bin" ] ; then
     PATH="$PATH:/opt/mssql-tools18/bin"
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 
 # Add to ~/.bashrc or ~/.zshrc
 
@@ -292,11 +288,8 @@ use_openai_key() {
 # Optional: Alias for convenience
 alias uok=use_openai_key
 
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
 . "$HOME/.cargo/env"
+
 # gemini CLI
 export GOOGLE_CLOUD_PROJECT="charphq"
 export PATH="/home/charp/Projects/llama.cpp/build/bin:$PATH"
@@ -330,3 +323,17 @@ alias tl="tmux ls"
 # Usage: tn
 alias tn="tmux new-window -c ."
 # --- END NYX PROTOCOL TMUX NEW WINDOW BRAINLET ---
+
+# pyenv setup (π/0K/0R/0M/30)
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+# Check if pyenv command exists in PATH, then initialize if found.
+command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
+
+# --- nvm setup (π/0K/0R/0M/30) ---
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Activate default nvm Node version and update PATH (0M, 0R).
+# nvm use default >/dev/null 2>&1 || true
