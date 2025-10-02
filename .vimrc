@@ -27,10 +27,10 @@ call plug#begin('~/.vim/bundle')
 
 " Colours
 " Plug 'altercation/vim-colors-solarized'
-Plug 'sickill/vim-monokai'
+" Plug 'sickill/vim-monokai'
 " 24-bit, requires termguicolors
 Plug 'lifepillar/vim-solarized8'
-" Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 " Sensible defaults
 Plug 'tpope/vim-sensible'
 " git
@@ -140,7 +140,7 @@ Plug 'heavenshell/vim-jsdoc'
 " Note: Causes slow down when viewing a markdown page
 Plug 'plasticboy/vim-markdown'
 " Plug 'davidgranstrom/nvim-markdown-preview'
-Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
+" Plug 'ianchanning/nvim-markdown-preview', {'branch': 'patch-2'}
 " Powershell
 " Plug 'PProvost/vim-ps1'
 Plug 'cespare/vim-toml'
@@ -181,19 +181,19 @@ endif
 
 if &diff
     " setup for diff/cmd mode
-    set background=dark
+    set background=light
 else
     " setup for non-diff/gui mode
-    set background=dark
+    set background=light
 endif
 
 try
     " In a Gnome terminal,
     " Edit | Preferences | [Profile] | Colors | Palette = Solarized
-    colorscheme monokai
+    " colorscheme monokai
     " colorscheme solarized8
     " colorscheme solarized
-    " colorscheme onehalflight
+    colorscheme onehalflight
     " Main problem with selenized is that the diff sucks
     " colorscheme selenized
     " Attempts at debugging lack of bold fonts in Konsole
