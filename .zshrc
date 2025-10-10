@@ -115,7 +115,8 @@ alias uok=use_openai_key
 
 # nvm setup
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This script is smart enough to detect zsh
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 export MOONSHOT_API_KEY=$_MOONSHOT_KEY
 export ANTHROPIC_AUTH_TOKEN=$_MOONSHOT_KEY
