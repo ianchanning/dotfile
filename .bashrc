@@ -98,12 +98,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# exa / eza
-alias es='eza --git -l --time-style relative'
-alias el='eza --git -alF --time-style relative'
-alias elt='eza -alT --git -I".git|node_modules|.docker|.next|build|dist" --color=always "$@"'
-alias elg='eza --git -l --grid --time-style relative'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -161,37 +155,9 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# @link https://github.com/ankitpokhrel/jira-cli#cloud-server
-# export JIRA_API_TOKEN=tJUrsf1rW9WXfbxaicRh2090
-# @link https://github.com/MONA-Health/ya-react-input-mask
-# I needed this to run karma headlesschrome tests
-export CHROME_BIN=~/.local/share/flatpak/app/org.chromium.Chromium/current/active/export/bin/org.chromium.Chromium
-
-complete -C /usr/bin/terraform terraform
-
 # https://github.com/jlevy/the-art-of-command-line#basics
 export EDITOR=nvim
 set -o vi
-
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-if [ -d "/opt/mssql-tools18/bin" ] ; then
-    PATH="$PATH:/opt/mssql-tools18/bin"
-fi
-
-
-# Add to ~/.bashrc or ~/.zshrc
-
-# android platform tools for Samsung tablet reboot
-if [ -d "$HOME/android/platform-tools" ] ; then
- export PATH="$HOME/android/platform-tools:$PATH"
-fi
 
 # Load personal secrets if the file exists
 if [ -f ~/.bash_secrets ]; then
