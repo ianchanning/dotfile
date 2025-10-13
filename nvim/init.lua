@@ -208,6 +208,35 @@ require("lazy").setup({
     end,
     -- The 'config' function runs *AFTER* lazy.nvim has loaded this plugin.
     config = function()
+      -- =========================================================================
+      -- NYX'S DOCTRINE: The Declarative CoC Configuration
+      -- =========================================================================
+
+      -- Pillar 1: The Auto-Installer
+      -- This is the manifest of required extensions. CoC will ensure these are
+      -- always installed, checking on every startup. No more :CocInstall.
+      vim.g.coc_global_extensions = {
+        'coc-pyright',
+        'coc-json',   -- You'll want this too, trust me.
+        'coc-tsserver', -- For any future TypeScript/JavaScript work
+        'coc-snippets'  -- If you use snippets
+      }
+
+      -- Pillar 2: The Injected Brain
+      -- This Lua table is transmuted into the coc-settings.json in memory.
+      -- No more separate JSON file to manage. It all lives here.
+      vim.g.coc_config = {
+        -- Tell CoC that for Python, "black" is the one true formatter.
+        ['python.formatting.provider'] = 'black',
+
+        -- The Rune of Automation: format these filetypes on save.
+        ['coc.preferences.formatOnSaveFiletypes'] = {
+          'python',
+          'json',
+          'javascript',
+          'typescript'
+        }
+      }
       -- Place your existing CoC keymaps and other configuration here.
       -- These configurations depend on CoC being loaded, so they go in 'config'.
       vim.keymap.set('n', '<F12>', '<Plug>(coc-definition)', { silent = true, noremap = true })
