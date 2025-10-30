@@ -31,7 +31,7 @@ config.font_size = 16.0
 -- Enable ligatures if Latin Modern Mono has them and you desire them
 -- (Many mono fonts don't have extensive ligatures beyond basics like fi, fl)
 -- You can comment this out if you don't want/need them or if the font doesn't support them well.
-config.harfbuzz_features = {'calt=1', 'clig=1', 'liga=1'}
+-- config.harfbuzz_features = {'calt=1', 'clig=1', 'liga=1'}
 
 -- Color Scheme: Catppuccin Latte
 config.color_scheme = 'Catppuccin Latte'
