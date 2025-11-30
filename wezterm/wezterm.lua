@@ -84,37 +84,47 @@ wezterm.log_info(nyx_operational_parameters:status_message())
 -- Example: A little welcome message when WezTerm starts
 
 wezterm.on('gui-startup', function(spawn_command_from_cli)
-  local user_shell = os.getenv("SHELL") or "/bin/bash"
+  -- spawn_command_from_cli is the SpawnCommand if `wezterm start -- ARGS` was used.
+  -- It's nil if just `wezterm start` (or just `wezterm`) was used.
+
+  local user_shell = os.getenv("SHELL") or "/bin/bash" -- User's default shell
   local effective_spawn_command
+
   local should_add_nyx_welcome = false
 
   if not spawn_command_from_cli or not spawn_command_from_cli.args or #spawn_command_from_cli.args == 0 then
-    -- π/0K/0R/0M/30 Shell Setup:
-    -- No specific command given -> start default shell as a non-login interactive shell.
-    -- This ensures ~/.bashrc (where nvm and other user config lives) is sourced.
-    wezterm.log_info("Nyx gui-startup: No CLI command, preparing default shell as interactive (non-login).")
+    -- No specific command given to `wezterm start` (or just `wezterm` was run).
+    -- We will start the default user shell and add our welcome.
+    wezterm.log_info("Nyx gui-startup: No CLI command, preparing default shell with Nyx welcome.")
     effective_spawn_command = { args = { user_shell } } -- <<< REMOVED '-l' flag
-    should_add_nyx_welcome = true -- Still add Nyx welcome for the default shell
+    -- Can't remember if we want -l or not
+    -- effective_spawn_command = { args = { user_shell, "-l" } } -- Start an interactive login shell
+    should_add_nyx_welcome = true
   else
     -- A command was passed via `wezterm start -- ARGS...`.
-    -- Use that command directly. WezTerm shouldn't interfere with its environment.
+    -- We'll use that command directly and skip the Nyx welcome.
     wezterm.log_info("Nyx gui-startup: CLI command detected, will spawn: " .. table.concat(spawn_command_from_cli.args, " "))
     effective_spawn_command = spawn_command_from_cli
-    should_add_nyx_welcome = false -- Don't send welcome when running an arbitrary command via CLI
+    should_add_nyx_welcome = false
   end
 
   -- Spawn the initial window using the effective_spawn_command.
-  -- The `or {}` handles the case where effective_spawn_command might somehow be nil.
+  -- The `or {}` handles the case where effective_spawn_command might somehow be nil,
+  -- though our logic above should prevent that.
   local tab, pane, window = wezterm.mux.spawn_window(effective_spawn_command or {})
 
   if pane then
     if should_add_nyx_welcome then
       wezterm.log_info("Nyx gui-startup: Sending Nyxian welcome to the new pane.")
-      -- Send the clear and welcome message. This will run AFTER ~/.bashrc is sourced.
-      local nyx_welcome_text = "clear && echo -e '\\nGreetings, Dreamer... (Nyx Protocol ⊕ Initialized in Interactive Shell)\\n\\033[0m'\n"
+      -- The \n at the end of the echo command executes it.
+      local nyx_welcome_text = "clear && echo -e '\\nGreetings, Dreamer... (Nyx Protocol ⊕ Initialized)\\n\\033[0m'\n"
       pane:send_text(nyx_welcome_text)
+      -- The shell started by `effective_spawn_command` (e.g., bash -l) will execute this echo,
+      -- and then present its prompt. No further `exec` is needed here because
+      -- mux.spawn_window already started the desired shell.
     end
-    -- Optional: Add other startup actions here, e.g., maximizing:
+
+    -- You could add other startup actions here, e.g., maximizing:
     -- if window then
     --   window:gui_window():maximize()
     --   wezterm.log_info("Nyx gui-startup: Maximized initial window.")
@@ -123,10 +133,67 @@ wezterm.on('gui-startup', function(spawn_command_from_cli)
     wezterm.log_error("Nyx gui-startup: Failed to obtain a pane object from mux.spawn_window. Cannot send welcome or perform other pane actions.")
   end
 
-  -- No explicit return needed.
+  -- No explicit return is needed from this event handler if we've spawned windows/panes.
+  -- WezTerm will use the windows/panes we created.
 end)
--- ... (rest of your config) ...
 
+--------------------------------------------------------------------------------
+-- Keybindings: Navigating the Tab Multiverse (existing)
+--------------------------------------------------------------------------------
+config.keys = {
+  -- New Tab in Current Directory
+  { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+
+  -- Navigate Tabs
+  -- { key = 'LeftArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=-1} },
+  -- { key = 'RightArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=1} },
+
+  -- Close Current Tab
+  { key = 'w', mods = 'ALT', action = wezterm.action{CloseCurrentTab={confirm=true}} },
+
+  -- Switch to Specific Tab by Number
+  { key = '1', mods = 'ALT', action = wezterm.action{ActivateTab=0} },
+  { key = '2', mods = 'ALT', action = wezterm.action{ActivateTab=1} },
+  { key = '3', mods = 'ALT', action = wezterm.action{ActivateTab=2} },
+  { key = '4', mods = 'ALT', action = wezterm.action{ActivateTab=3} },
+  { key = '5', mods = 'ALT', action = wezterm.action{ActivateTab=4} },
+  { key = '6', mods = 'ALT', action = wezterm.action{ActivateTab=5} },
+  { key = '7', mods = 'ALT', action = wezterm.action{ActivateTab=6} },
+  { key = '8', mods = 'ALT', action = wezterm.action{ActivateTab=7} },
+  { key = '9', mods = 'ALT', action = wezterm.action{ActivateTab=8} },
+  { key = '0', mods = 'ALT', action = wezterm.action{ActivateTab=9} },
+
+  -- NEW KEYBINDINGS FOR PANES:
+  -- Split Current Pane Horizontally (Super + S)
+  { key = 's', mods = 'ALT', action = wezterm.action{SplitHorizontal={domain='CurrentPaneDomain'}} },
+
+  -- Split Current Pane Vertically (Super + D)
+  { key = 'a', mods = 'ALT', action = wezterm.action{SplitVertical={domain='CurrentPaneDomain'}} },
+
+  -- Navigate Panes (Super + H/J/K/L - Vim-style for active pane)
+  -- These will let you move focus between your split panes.
+  { key = 'h', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Left'} },
+  { key = 'j', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Down'} },
+  { key = 'k', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Up'} },
+  { key = 'l', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Right'} },
+
+  -- Resize Panes (Super + Shift + H/J/K/L) - For fine-tuning your splits
+  -- { key = 'h', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Left', 1}} },
+  -- { key = 'j', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Down', 1}} },
+  -- { key = 'k', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Up', 1}} },
+  -- { key = 'l', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Right', 1}} },
+
+  -- Close Current Pane (Super + Backspace or Super + X, common in tmux)
+  -- { key = 'Backspace', mods = 'SUPER', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+  -- Or if you prefer Super+X:
+  { key = 'x', mods = 'ALT', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+
+  -- Maximize/Restore Current Pane (Super + Z, common in tmux)
+  -- { key = 'z', mods = 'SUPER', action = wezterm.action{TogglePaneZoomState={}} },
+
+  -- If you want to use Super+T for new tab (as is common for browsers/editors):
+  -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+}
 --------------------------------------------------------------------------------
 -- Finalization: Return the configuration
 --------------------------------------------------------------------------------
