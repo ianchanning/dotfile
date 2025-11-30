@@ -248,7 +248,7 @@ alias ugk=use_gemini_key
 export AIDER_EDITOR=nvim
 
 # default
-ugk 3
+ugk 4
 
 use_openai_key() {
   local key_num="$1"
@@ -337,3 +337,10 @@ export NVM_DIR="$HOME/.nvm"
 
 # Activate default nvm Node version and update PATH (0M, 0R).
 # nvm use default >/dev/null 2>&1 || true
+
+# click CLI auto-completion
+# {@link https://click.palletsprojects.com/en/stable/shell-completion/}
+# eval "$(_BAMF_COMPLETE=bash_source bamf)"
+# optimised version of the above command
+. ~/.bamf-complete.bash
+export PYTHON_GIL=0
