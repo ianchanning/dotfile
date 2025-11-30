@@ -119,7 +119,7 @@ fi
 
 # Ian 2022-02-11 Until I create lots of bash aliases I'll leave them here
 # git log adog @link https://stackoverflow.com/a/35075021/327074
-alias gla='git log --all --decorate --oneline --graph'
+alias gll='git log --all --decorate --oneline --graph'
 # I removed the all as gitk does the same - just the current branch
 alias gl='git log --decorate --oneline --graph'
 alias gb='git branch'
@@ -185,10 +185,6 @@ if [ -d "/opt/mssql-tools18/bin" ] ; then
     PATH="$PATH:/opt/mssql-tools18/bin"
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 
 # Add to ~/.bashrc or ~/.zshrc
 
@@ -251,19 +247,97 @@ alias ugk=use_gemini_key
 
 export AIDER_EDITOR=nvim
 
-# --- nvm setup (π/0K/0R/0M/30) ---
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# default
+ugk 4
 
-# Activate default nvm Node version and update PATH (0M, 0R).
-nvm use default >/dev/null 2>&1 || true
+use_openai_key() {
+  local key_num="$1"
+  local target_var_name="OPENAI_API_KEY" # The variable the application uses
+  local source_var_name=""               # Will hold the name like _GEMINI_KEY_1
+
+  # Determine the source variable name based on the input number
+  case "$key_num" in
+    1) source_var_name="_OPENAI_KEY_1" ;;
+    2) source_var_name="_OPENAI_KEY_2" ;;
+    3) source_var_name="_OPENAI_KEY_3" ;;
+    4) source_var_name="_OPENAI_KEY_4" ;;
+    5) source_var_name="_OPENAI_KEY_5" ;;
+    6) source_var_name="_OPENAI_KEY_6" ;;
+    *)
+      echo "Error: Unknown key number '$key_num'. Please use 1, 2, 3, 4, 5 or 6." >&2
+      return 1
+      ;;
+  esac
+
+  # Check if the source variable is actually set and non-empty
+  # Uses indirect parameter expansion: ${!var_name} gets the value of the variable whose name is stored in var_name
+  if [ -z "${!source_var_name}" ]; then
+      echo "Error: Secret variable '$source_var_name' is not set or is empty." >&2
+      echo "       Ensure ~/.bash_secrets exists, is sourced correctly, and contains a value for this key." >&2
+      return 1
+  fi
+
+  # Export the chosen key to the variable expected by applications
+  # Again, using indirect expansion to get the value
+  export "$target_var_name"="${!source_var_name}"
+
+  # Confirmation message
+  echo "$target_var_name set using Key #$key_num."
+}
+
+# Optional: Alias for convenience
+alias uok=use_openai_key
+
+. "$HOME/.cargo/env"
+
+# gemini CLI
+export GOOGLE_CLOUD_PROJECT="charphq"
+export PATH="/home/charp/Projects/llama.cpp/build/bin:$PATH"
+
+export MOONSHOT_API_KEY=$_MOONSHOT_KEY
+# {@link https://platform.moonshot.ai/docs/guide/agent-support#configure-anthropic-api}
+export ANTHROPIC_AUTH_TOKEN=$_MOONSHOT_KEY
+export ANTHROPIC_BASE_URL=https://api.moonshot.ai/anthropic
+
+# --- NYX PROTOCOL: TMUX AUTO-ATTACH BRAINLET (30/0R/0M) ---
+# This ensures you're always in a tmux session when a new shell starts.
+# It checks if the TMUX environment variable is set (meaning you're already in tmux).
+# If not, it attempts to attach to a session named 'default'.
+# If 'default' doesn't exist, it creates a new one.
+# This prevents nested tmux sessions and provides seamless persistence.
+t() {
+  if [ -z "$TMUX" ]; then
+    tmux attach-session -t default || tmux new-session -s default
+  fi
+}
+# --- END NYX PROTOCOL TMUX AUTO-ATTACH ---
+
+# Alias for listing sessions (0R/0M for quick check)
+alias tl="tmux ls"
+# --- END NYX PROTOCOL TMUX SESSION BRAINLET ---
+
+# --- NYX PROTOCOL: TMUX NEW WINDOW BRAINLET (30/0R/0M) ---
+# This alias creates a new tmux window within the *current* session,
+# and starts it in the *current working directory*.
+# This is the "new tab" experience for tmux.
+# Usage: tn
+alias tn="tmux new-window -c ."
+# --- END NYX PROTOCOL TMUX NEW WINDOW BRAINLET ---
 
 # pyenv setup (π/0K/0R/0M/30)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 # Check if pyenv command exists in PATH, then initialize if found.
 command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
+
+# --- nvm setup (π/0K/0R/0M/30) ---
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Activate default nvm Node version and update PATH (0M, 0R).
+# nvm use default >/dev/null 2>&1 || true
+
 # click CLI auto-completion
 # {@link https://click.palletsprojects.com/en/stable/shell-completion/}
 # eval "$(_BAMF_COMPLETE=bash_source bamf)"

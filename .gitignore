@@ -40,3 +40,4 @@ Thumbs.db
 
 # You *could* ignore nyx_utils.lua if you really wanted, but it would break init.lua without manual intervention
 # nvim/lua/nyx_utils.lua
+.aider*
