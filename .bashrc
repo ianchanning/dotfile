@@ -251,12 +251,6 @@ alias ugk=use_gemini_key
 
 export AIDER_EDITOR=nvim
 
-# pyenv setup (π/0K/0R/0M/30)
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-# Check if pyenv command exists in PATH, then initialize if found.
-command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
-
 # --- nvm setup (π/0K/0R/0M/30) ---
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -264,3 +258,15 @@ export NVM_DIR="$HOME/.nvm"
 
 # Activate default nvm Node version and update PATH (0M, 0R).
 nvm use default >/dev/null 2>&1 || true
+
+# pyenv setup (π/0K/0R/0M/30)
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+# Check if pyenv command exists in PATH, then initialize if found.
+command -v pyenv &>/dev/null && eval "$(pyenv init - bash)"
+# click CLI auto-completion
+# {@link https://click.palletsprojects.com/en/stable/shell-completion/}
+# eval "$(_BAMF_COMPLETE=bash_source bamf)"
+# optimised version of the above command
+. ~/.bamf-complete.bash
+export PYTHON_GIL=0
