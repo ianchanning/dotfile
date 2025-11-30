@@ -288,7 +288,9 @@ use_openai_key() {
 # Optional: Alias for convenience
 alias uok=use_openai_key
 
-. "$HOME/.cargo/env"
+if [ -d "$HOME/.cargo" ] ; then
+  . "$HOME/.cargo/env"
+fi
 
 # gemini CLI
 export GOOGLE_CLOUD_PROJECT="charphq"
@@ -336,7 +338,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Activate default nvm Node version and update PATH (0M, 0R).
-# nvm use default >/dev/null 2>&1 || true
+nvm use default >/dev/null 2>&1 || true
 
 # click CLI auto-completion
 # {@link https://click.palletsprojects.com/en/stable/shell-completion/}
