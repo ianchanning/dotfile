@@ -140,60 +140,61 @@ end)
 --------------------------------------------------------------------------------
 -- Keybindings: Navigating the Tab Multiverse (existing)
 --------------------------------------------------------------------------------
-config.keys = {
-  -- New Tab in Current Directory
-  { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+-- Let tmux handle the panes and tabs
+-- config.keys = {
+--   -- New Tab in Current Directory
+--   { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
 
-  -- Navigate Tabs
-  -- { key = 'LeftArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=-1} },
-  -- { key = 'RightArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=1} },
+--   -- Navigate Tabs
+--   -- { key = 'LeftArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=-1} },
+--   -- { key = 'RightArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=1} },
 
-  -- Close Current Tab
-  { key = 'w', mods = 'ALT', action = wezterm.action{CloseCurrentTab={confirm=true}} },
+--   -- Close Current Tab
+--   { key = 'w', mods = 'ALT', action = wezterm.action{CloseCurrentTab={confirm=true}} },
 
-  -- Switch to Specific Tab by Number
-  { key = '1', mods = 'ALT', action = wezterm.action{ActivateTab=0} },
-  { key = '2', mods = 'ALT', action = wezterm.action{ActivateTab=1} },
-  { key = '3', mods = 'ALT', action = wezterm.action{ActivateTab=2} },
-  { key = '4', mods = 'ALT', action = wezterm.action{ActivateTab=3} },
-  { key = '5', mods = 'ALT', action = wezterm.action{ActivateTab=4} },
-  { key = '6', mods = 'ALT', action = wezterm.action{ActivateTab=5} },
-  { key = '7', mods = 'ALT', action = wezterm.action{ActivateTab=6} },
-  { key = '8', mods = 'ALT', action = wezterm.action{ActivateTab=7} },
-  { key = '9', mods = 'ALT', action = wezterm.action{ActivateTab=8} },
-  { key = '0', mods = 'ALT', action = wezterm.action{ActivateTab=9} },
+--   -- Switch to Specific Tab by Number
+--   { key = '1', mods = 'ALT', action = wezterm.action{ActivateTab=0} },
+--   { key = '2', mods = 'ALT', action = wezterm.action{ActivateTab=1} },
+--   { key = '3', mods = 'ALT', action = wezterm.action{ActivateTab=2} },
+--   { key = '4', mods = 'ALT', action = wezterm.action{ActivateTab=3} },
+--   { key = '5', mods = 'ALT', action = wezterm.action{ActivateTab=4} },
+--   { key = '6', mods = 'ALT', action = wezterm.action{ActivateTab=5} },
+--   { key = '7', mods = 'ALT', action = wezterm.action{ActivateTab=6} },
+--   { key = '8', mods = 'ALT', action = wezterm.action{ActivateTab=7} },
+--   { key = '9', mods = 'ALT', action = wezterm.action{ActivateTab=8} },
+--   { key = '0', mods = 'ALT', action = wezterm.action{ActivateTab=9} },
 
-  -- NEW KEYBINDINGS FOR PANES:
-  -- Split Current Pane Horizontally (Super + S)
-  { key = 's', mods = 'ALT', action = wezterm.action{SplitHorizontal={domain='CurrentPaneDomain'}} },
+--   -- NEW KEYBINDINGS FOR PANES:
+--   -- Split Current Pane Horizontally (Super + S)
+--   { key = 's', mods = 'ALT', action = wezterm.action{SplitHorizontal={domain='CurrentPaneDomain'}} },
 
-  -- Split Current Pane Vertically (Super + D)
-  { key = 'a', mods = 'ALT', action = wezterm.action{SplitVertical={domain='CurrentPaneDomain'}} },
+--   -- Split Current Pane Vertically (Super + D)
+--   { key = 'a', mods = 'ALT', action = wezterm.action{SplitVertical={domain='CurrentPaneDomain'}} },
 
-  -- Navigate Panes (Super + H/J/K/L - Vim-style for active pane)
-  -- These will let you move focus between your split panes.
-  { key = 'h', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Left'} },
-  { key = 'j', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Down'} },
-  { key = 'k', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Up'} },
-  { key = 'l', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Right'} },
+--   -- Navigate Panes (Super + H/J/K/L - Vim-style for active pane)
+--   -- These will let you move focus between your split panes.
+--   { key = 'h', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Left'} },
+--   { key = 'j', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Down'} },
+--   { key = 'k', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Up'} },
+--   { key = 'l', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Right'} },
 
-  -- Resize Panes (Super + Shift + H/J/K/L) - For fine-tuning your splits
-  -- { key = 'h', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Left', 1}} },
-  -- { key = 'j', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Down', 1}} },
-  -- { key = 'k', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Up', 1}} },
-  -- { key = 'l', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Right', 1}} },
+--   -- Resize Panes (Super + Shift + H/J/K/L) - For fine-tuning your splits
+--   -- { key = 'h', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Left', 1}} },
+--   -- { key = 'j', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Down', 1}} },
+--   -- { key = 'k', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Up', 1}} },
+--   -- { key = 'l', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Right', 1}} },
 
-  -- Close Current Pane (Super + Backspace or Super + X, common in tmux)
-  -- { key = 'Backspace', mods = 'SUPER', action = wezterm.action{CloseCurrentPane={confirm=true}} },
-  -- Or if you prefer Super+X:
-  { key = 'x', mods = 'ALT', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+--   -- Close Current Pane (Super + Backspace or Super + X, common in tmux)
+--   -- { key = 'Backspace', mods = 'SUPER', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+--   -- Or if you prefer Super+X:
+--   { key = 'x', mods = 'ALT', action = wezterm.action{CloseCurrentPane={confirm=true}} },
 
-  -- Maximize/Restore Current Pane (Super + Z, common in tmux)
-  -- { key = 'z', mods = 'SUPER', action = wezterm.action{TogglePaneZoomState={}} },
+--   -- Maximize/Restore Current Pane (Super + Z, common in tmux)
+--   -- { key = 'z', mods = 'SUPER', action = wezterm.action{TogglePaneZoomState={}} },
 
-  -- If you want to use Super+T for new tab (as is common for browsers/editors):
-  -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
-}
+--   -- If you want to use Super+T for new tab (as is common for browsers/editors):
+--   -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+-- }
 --------------------------------------------------------------------------------
 -- Finalization: Return the configuration
 --------------------------------------------------------------------------------
