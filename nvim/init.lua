@@ -38,17 +38,18 @@ vim.opt.diffopt:append('iwhite')
 vim.opt.spell = true
 vim.opt.spelllang = {'en_gb'}
 -- Set Node path for CoC
--- Find the nvm-managed node executable and set it for Neovim
-local nvm_node_path = vim.fn.trim(vim.fn.system('bash -c "source ~/.nvm/nvm.sh && which node"'))
--- Check if the command was successful and the path exists
-if vim.v.shell_error == 0 and vim.fn.executable(nvm_node_path) == 1 then
-  -- This is the general variable for the node host provider, used by many plugins
-  vim.g.node_host_prog = nvm_node_path
-  -- You might also need to set it for specific plugins if they don't respect the host provider.
-  -- For example, for coc.nvim you would uncomment the following line:
-  vim.g.coc_node_path = nvm_node_path
+-- Find the node executable 
+local node_path = vim.fn.exepath('node')
+if node_path == '' then
+    -- Fallback to the common Termux/NVM path if exepath fails
+    node_path = vim.fn.expand('~/.nvm/versions/node/v20.x.x/bin/node') -- Update version as needed
 end
-      
+
+if vim.fn.executable(node_path) == 1 then
+  vim.g.coc_node_path = node_path
+  vim.g.node_host_prog = node_path
+end
+
 --[[ ======================================================================
      Plugin Setup: lazy.nvim
      ====================================================================== ]]
@@ -220,42 +221,31 @@ require("lazy").setup({
       vim.notify("NYX: CoC.nvim loaded and configured.", vim.log.levels.INFO, { title = "CoC Setup ⊕" })
     end
   },
-  {
+{
     'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate', -- Command to run after install/update
-    config = function()
-      require 'nvim-treesitter.configs'.setup {
-        highlight = { enable = true },
-        indent = { enable = true }, -- Optional: enable treesitter based indent
-
-        -- Ensure parsers are installed for languages you use <<< ADD THIS
-        ensure_installed = {
-          "c",
-          "lua", -- Make sure lua is listed!
-          "vim",
-          "vimdoc",
-          "query", -- Treesitter's own query language, often useful
-          "javascript",
-          "typescript",
-          "python",
-          "bash",
-          "html",
-          "css",
-          "json",
-          "yaml",
-          "markdown",
-          "markdown_inline", -- Required for markdown code blocks highlighting
-          -- Add other languages you frequently use (e.g., "rust", "go", "php", etc.)
-        },
-
-        -- Optional: Auto install parsers when entering a buffer for a new language
-        auto_install = true, -- Set to true to automatically install missing parsers
-
-        -- Optional: Sync parser installation (blocks startup until installed)
-        -- sync_install = false, -- Set to true to block startup on installation
-      }
+    build = ':TSUpdate',
+    -- Use 'opts' to let Lazy handle the require('nvim-treesitter.configs').setup() internally
+    opts = {
+      highlight = { enable = true },
+      indent = { enable = true },
+      ensure_installed = {
+        "c", "lua", "vim", "vimdoc", "query", 
+        "javascript", "typescript", "python", 
+        "bash", "html", "css", "json", "yaml", 
+        "markdown", "markdown_inline"
+      },
+      auto_install = true,
+    },
+    config = function(_, opts)
+      -- If the old require still fails, we try the new standard or a pcall
+      local status, ts_configs = pcall(require, "nvim-treesitter.configs")
+      if status then
+        ts_configs.setup(opts)
+      else
+        -- 2026 Fallback: Some versions now use require('nvim-treesitter') directly
+        pcall(require('nvim-treesitter').setup, opts)
+      end
     end
- 
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
