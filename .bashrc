@@ -189,9 +189,9 @@ fi
 # Add to ~/.bashrc or ~/.zshrc
 
 # android platform tools for Samsung tablet reboot
-if [ -d "$HOME/android/platform-tools" ] ; then
- export PATH="$HOME/android/platform-tools:$PATH"
-fi
+# if [ -d "$HOME/android/platform-tools" ] ; then
+#  export PATH="$HOME/android/platform-tools:$PATH"
+# fi
 
 # Load personal secrets if the file exists
 if [ -f ~/.bash_secrets ]; then
@@ -338,7 +338,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Activate default nvm Node version and update PATH (0M, 0R).
-nvm use default >/dev/null 2>&1 || true
+nvm use --lts >/dev/null 2>&1 || true
 
 # click CLI auto-completion
 # {@link https://click.palletsprojects.com/en/stable/shell-completion/}
@@ -346,3 +346,10 @@ nvm use default >/dev/null 2>&1 || true
 # optimised version of the above command
 . ~/.bamf-complete.bash
 export PYTHON_GIL=0
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# joplin
+alias joplin='bunx --bun joplin'
