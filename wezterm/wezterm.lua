@@ -50,12 +50,12 @@ config.cursor_blink_rate = 500      -- Milliseconds for one blink cycle (on + of
 config.scrollback_lines = 30000 -- A generous amount of history
 
 -- Window Decorations & Padding
-config.window_decorations = "RESIZE" -- "FULL" (OS native), "NONE", "RESIZE" (minimal)
+-- config.window_decorations = "FULL" -- "FULL" (OS native), "NONE", "RESIZE" (minimal)
 config.window_padding = {
-  left = 0,   -- Pixels or '0.5cell' (string for cell-based)
-  right = 0,
-  top = 0,
-  bottom = 0,
+  left = 10,   -- Pixels or '0.5cell' (string for cell-based)
+  right = 10,
+  top = 10,
+  bottom = 10,
 }
 
 -- Tab Bar
@@ -140,8 +140,14 @@ end)
 --------------------------------------------------------------------------------
 -- Keybindings: Navigating the Tab Multiverse (existing)
 --------------------------------------------------------------------------------
+-- {@link https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/terminal-setup.md#wezterm}
+config.enable_kitty_keyboard = true
+config.keys = {
+  {
+    key = 'F11',
+    action = wezterm.action.ToggleFullScreen,
+  },
 -- Let tmux handle the panes and tabs
--- config.keys = {
 --   -- New Tab in Current Directory
 --   { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
 
@@ -194,7 +200,7 @@ end)
 
 --   -- If you want to use Super+T for new tab (as is common for browsers/editors):
 --   -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
--- }
+}
 --------------------------------------------------------------------------------
 -- Finalization: Return the configuration
 --------------------------------------------------------------------------------
