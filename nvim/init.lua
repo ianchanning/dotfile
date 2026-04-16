@@ -268,7 +268,7 @@ require("lazy").setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate', -- Command to run after install/update
     config = function()
-      require 'nvim-treesitter.configs'.setup {
+      require 'nvim-treesitter.config'.setup {
         highlight = { enable = true },
         indent = { enable = true }, -- Optional: enable treesitter based indent
 
