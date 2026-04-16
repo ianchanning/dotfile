@@ -208,7 +208,7 @@ require("lazy").setup({
       require("mason").setup()
       require("mason-lspconfig").setup({
         -- These replace your coc-json, coc-eslint, etc.
-        ensure_installed = { "jsonls", "eslint", "ts_ls", "lua_ls" },
+        ensure_installed = { "jsonls", "eslint", "ts_ls" },
       })
 
       -- 2. Setup Completion (The Reflex)
@@ -275,7 +275,7 @@ require("lazy").setup({
         -- Ensure parsers are installed for languages you use <<< ADD THIS
         ensure_installed = {
           "c",
-          "lua", -- Make sure lua is listed!
+          -- "lua", -- Make sure lua is listed!
           "vim",
           "vimdoc",
           "query", -- Treesitter's own query language, often useful
