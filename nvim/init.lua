@@ -287,13 +287,13 @@ require("lazy").setup({
           "css",
           "json",
           "yaml",
-          "markdown",
-          "markdown_inline", -- Required for markdown code blocks highlighting
+          -- "markdown",
+          -- "markdown_inline", -- Required for markdown code blocks highlighting
           -- Add other languages you frequently use (e.g., "rust", "go", "php", etc.)
         },
 
         -- Optional: Auto install parsers when entering a buffer for a new language
-        auto_install = true, -- Set to true to automatically install missing parsers
+        auto_install = false, -- Set to true to automatically install missing parsers
 
         -- ADD THESE THREE LINES TO SATISFY THE LIBRARIAN:
         modules = {},
