@@ -346,3 +346,6 @@ nvm use default >/dev/null 2>&1 || true
 # optimised version of the above command
 # . ~/.bamf-complete.bash
 # export PYTHON_GIL=0
+
+# uv
+export PATH="/data/data/com.termux/files/home/.local/bin:$PATH"
