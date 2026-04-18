@@ -449,8 +449,7 @@ require("lazy").setup({
     config = function()
       -- Keymaps
       local map = vim.keymap.set
-      map({ 'n', 'v' }, '<leader>ss', '<Plug>SlimeSend', { desc = "Slime: Send to REPL" })
-      map('n', '<leader>sc', '<Plug>SlimeConfig', { desc = "Slime: Re-configure" })
+      map({ 'n' }, '<leader>ss', ':SlimeSend<CR>', { desc = "Slime: Send to REPL" })
     end
   },
 }) -- End of lazy.setup
