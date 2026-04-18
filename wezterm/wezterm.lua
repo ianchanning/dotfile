@@ -21,12 +21,12 @@ end
 -- We'll try a common name first. If it doesn't work, we might need to
 -- use `wezterm ls-fonts --text "Latin Modern Mono"` to find the exact name
 -- WezTerm sees.
-config.font = wezterm.font('Latin Modern Mono', {
+config.font = wezterm.font('Departure Mono', {
   weight = 'Regular', -- Common weights: 'Regular', 'Bold', 'Light', 'Medium'
   -- stretch = 'Normal', -- Common stretches: 'Normal', 'Condensed', 'Expanded'
   -- style = 'Normal'    -- Common styles: 'Normal', 'Italic', 'Oblique'
 })
-config.font_size = 16.0
+config.font_size = 22.0
 
 -- Enable ligatures if Latin Modern Mono has them and you desire them
 -- (Many mono fonts don't have extensive ligatures beyond basics like fi, fl)
@@ -44,7 +44,7 @@ config.color_scheme = 'Catppuccin Latte'
 
 -- Cursor Style
 config.default_cursor_style = 'SteadyBlock'
-config.cursor_blink_rate = 500      -- Milliseconds for one blink cycle (on + off). 0 to disable.
+config.cursor_blink_rate = 500 -- Milliseconds for one blink cycle (on + off). 0 to disable.
 
 -- Scrollback Buffer
 config.scrollback_lines = 30000 -- A generous amount of history
@@ -52,15 +52,15 @@ config.scrollback_lines = 30000 -- A generous amount of history
 -- Window Decorations & Padding
 -- config.window_decorations = "FULL" -- "FULL" (OS native), "NONE", "RESIZE" (minimal)
 config.window_padding = {
-  left = 10,   -- Pixels or '0.5cell' (string for cell-based)
+  left = 10, -- Pixels or '0.5cell' (string for cell-based)
   right = 10,
   top = 10,
   bottom = 10,
 }
 
 -- Tab Bar
-config.use_fancy_tab_bar = false   -- Set to false for a simpler, less resource-intensive tab bar
-config.tab_bar_at_bottom = false   -- True to move tab bar to the bottom
+config.use_fancy_tab_bar = false           -- Set to false for a simpler, less resource-intensive tab bar
+config.tab_bar_at_bottom = false           -- True to move tab bar to the bottom
 config.hide_tab_bar_if_only_one_tab = true -- Keeps things clean with a single tab
 
 --------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ local nyx_operational_parameters = {
   current_objective = "Achieve Typographic and Chromatic Harmony",
   status_message = function(self)
     return string.format("Nyx Protocol (%s) active. Objective: %s. Dreamer: %s. All systems nominal for Lua sorcery!",
-                         self.version, self.current_objective, self.dreamer_handle)
+      self.version, self.current_objective, self.dreamer_handle)
   end
 }
 
@@ -103,7 +103,8 @@ wezterm.on('gui-startup', function(spawn_command_from_cli)
   else
     -- A command was passed via `wezterm start -- ARGS...`.
     -- We'll use that command directly and skip the Nyx welcome.
-    wezterm.log_info("Nyx gui-startup: CLI command detected, will spawn: " .. table.concat(spawn_command_from_cli.args, " "))
+    wezterm.log_info("Nyx gui-startup: CLI command detected, will spawn: " ..
+      table.concat(spawn_command_from_cli.args, " "))
     effective_spawn_command = spawn_command_from_cli
     should_add_nyx_welcome = false
   end
@@ -130,7 +131,8 @@ wezterm.on('gui-startup', function(spawn_command_from_cli)
     --   wezterm.log_info("Nyx gui-startup: Maximized initial window.")
     -- end
   else
-    wezterm.log_error("Nyx gui-startup: Failed to obtain a pane object from mux.spawn_window. Cannot send welcome or perform other pane actions.")
+    wezterm.log_error(
+      "Nyx gui-startup: Failed to obtain a pane object from mux.spawn_window. Cannot send welcome or perform other pane actions.")
   end
 
   -- No explicit return is needed from this event handler if we've spawned windows/panes.
@@ -147,62 +149,61 @@ config.keys = {
     key = 'F11',
     action = wezterm.action.ToggleFullScreen,
   },
--- Let tmux handle the panes and tabs
---   -- New Tab in Current Directory
---   { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+  -- Let tmux handle the panes and tabs
+  --   -- New Tab in Current Directory
+  --   { key = 't', mods = 'ALT', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
 
---   -- Navigate Tabs
---   -- { key = 'LeftArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=-1} },
---   -- { key = 'RightArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=1} },
+  --   -- Navigate Tabs
+  --   -- { key = 'LeftArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=-1} },
+  --   -- { key = 'RightArrow', mods = 'SUPER', action = wezterm.action{ActivateTabRelative=1} },
 
---   -- Close Current Tab
---   { key = 'w', mods = 'ALT', action = wezterm.action{CloseCurrentTab={confirm=true}} },
+  --   -- Close Current Tab
+  --   { key = 'w', mods = 'ALT', action = wezterm.action{CloseCurrentTab={confirm=true}} },
 
---   -- Switch to Specific Tab by Number
---   { key = '1', mods = 'ALT', action = wezterm.action{ActivateTab=0} },
---   { key = '2', mods = 'ALT', action = wezterm.action{ActivateTab=1} },
---   { key = '3', mods = 'ALT', action = wezterm.action{ActivateTab=2} },
---   { key = '4', mods = 'ALT', action = wezterm.action{ActivateTab=3} },
---   { key = '5', mods = 'ALT', action = wezterm.action{ActivateTab=4} },
---   { key = '6', mods = 'ALT', action = wezterm.action{ActivateTab=5} },
---   { key = '7', mods = 'ALT', action = wezterm.action{ActivateTab=6} },
---   { key = '8', mods = 'ALT', action = wezterm.action{ActivateTab=7} },
---   { key = '9', mods = 'ALT', action = wezterm.action{ActivateTab=8} },
---   { key = '0', mods = 'ALT', action = wezterm.action{ActivateTab=9} },
+  --   -- Switch to Specific Tab by Number
+  --   { key = '1', mods = 'ALT', action = wezterm.action{ActivateTab=0} },
+  --   { key = '2', mods = 'ALT', action = wezterm.action{ActivateTab=1} },
+  --   { key = '3', mods = 'ALT', action = wezterm.action{ActivateTab=2} },
+  --   { key = '4', mods = 'ALT', action = wezterm.action{ActivateTab=3} },
+  --   { key = '5', mods = 'ALT', action = wezterm.action{ActivateTab=4} },
+  --   { key = '6', mods = 'ALT', action = wezterm.action{ActivateTab=5} },
+  --   { key = '7', mods = 'ALT', action = wezterm.action{ActivateTab=6} },
+  --   { key = '8', mods = 'ALT', action = wezterm.action{ActivateTab=7} },
+  --   { key = '9', mods = 'ALT', action = wezterm.action{ActivateTab=8} },
+  --   { key = '0', mods = 'ALT', action = wezterm.action{ActivateTab=9} },
 
---   -- NEW KEYBINDINGS FOR PANES:
---   -- Split Current Pane Horizontally (Super + S)
---   { key = 's', mods = 'ALT', action = wezterm.action{SplitHorizontal={domain='CurrentPaneDomain'}} },
+  --   -- NEW KEYBINDINGS FOR PANES:
+  --   -- Split Current Pane Horizontally (Super + S)
+  --   { key = 's', mods = 'ALT', action = wezterm.action{SplitHorizontal={domain='CurrentPaneDomain'}} },
 
---   -- Split Current Pane Vertically (Super + D)
---   { key = 'a', mods = 'ALT', action = wezterm.action{SplitVertical={domain='CurrentPaneDomain'}} },
+  --   -- Split Current Pane Vertically (Super + D)
+  --   { key = 'a', mods = 'ALT', action = wezterm.action{SplitVertical={domain='CurrentPaneDomain'}} },
 
---   -- Navigate Panes (Super + H/J/K/L - Vim-style for active pane)
---   -- These will let you move focus between your split panes.
---   { key = 'h', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Left'} },
---   { key = 'j', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Down'} },
---   { key = 'k', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Up'} },
---   { key = 'l', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Right'} },
+  --   -- Navigate Panes (Super + H/J/K/L - Vim-style for active pane)
+  --   -- These will let you move focus between your split panes.
+  --   { key = 'h', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Left'} },
+  --   { key = 'j', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Down'} },
+  --   { key = 'k', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Up'} },
+  --   { key = 'l', mods = 'ALT', action = wezterm.action{ActivatePaneDirection='Right'} },
 
---   -- Resize Panes (Super + Shift + H/J/K/L) - For fine-tuning your splits
---   -- { key = 'h', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Left', 1}} },
---   -- { key = 'j', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Down', 1}} },
---   -- { key = 'k', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Up', 1}} },
---   -- { key = 'l', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Right', 1}} },
+  --   -- Resize Panes (Super + Shift + H/J/K/L) - For fine-tuning your splits
+  --   -- { key = 'h', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Left', 1}} },
+  --   -- { key = 'j', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Down', 1}} },
+  --   -- { key = 'k', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Up', 1}} },
+  --   -- { key = 'l', mods = 'SUPER|SHIFT', action = wezterm.action{AdjustPaneSize={'Right', 1}} },
 
---   -- Close Current Pane (Super + Backspace or Super + X, common in tmux)
---   -- { key = 'Backspace', mods = 'SUPER', action = wezterm.action{CloseCurrentPane={confirm=true}} },
---   -- Or if you prefer Super+X:
---   { key = 'x', mods = 'ALT', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+  --   -- Close Current Pane (Super + Backspace or Super + X, common in tmux)
+  --   -- { key = 'Backspace', mods = 'SUPER', action = wezterm.action{CloseCurrentPane={confirm=true}} },
+  --   -- Or if you prefer Super+X:
+  --   { key = 'x', mods = 'ALT', action = wezterm.action{CloseCurrentPane={confirm=true}} },
 
---   -- Maximize/Restore Current Pane (Super + Z, common in tmux)
---   -- { key = 'z', mods = 'SUPER', action = wezterm.action{TogglePaneZoomState={}} },
+  --   -- Maximize/Restore Current Pane (Super + Z, common in tmux)
+  --   -- { key = 'z', mods = 'SUPER', action = wezterm.action{TogglePaneZoomState={}} },
 
---   -- If you want to use Super+T for new tab (as is common for browsers/editors):
---   -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
+  --   -- If you want to use Super+T for new tab (as is common for browsers/editors):
+  --   -- { key = 't', mods = 'SUPER', action = wezterm.action{SpawnTab='CurrentPaneDomain'} },
 }
 --------------------------------------------------------------------------------
 -- Finalization: Return the configuration
 --------------------------------------------------------------------------------
 return config
-
