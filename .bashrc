@@ -292,10 +292,6 @@ if [ -d "$HOME/.cargo" ] ; then
   . "$HOME/.cargo/env"
 fi
 
-# gemini CLI
-export GOOGLE_CLOUD_PROJECT="charphq"
-export PATH="/home/charp/Projects/llama.cpp/build/bin:$PATH"
-
 export MOONSHOT_API_KEY=$_MOONSHOT_KEY
 # {@link https://platform.moonshot.ai/docs/guide/agent-support#configure-anthropic-api}
 export ANTHROPIC_AUTH_TOKEN=$_MOONSHOT_KEY
@@ -313,18 +309,6 @@ t() {
   fi
 }
 # --- END NYX PROTOCOL TMUX AUTO-ATTACH ---
-
-# Alias for listing sessions (0R/0M for quick check)
-alias tl="tmux ls"
-# --- END NYX PROTOCOL TMUX SESSION BRAINLET ---
-
-# --- NYX PROTOCOL: TMUX NEW WINDOW BRAINLET (30/0R/0M) ---
-# This alias creates a new tmux window within the *current* session,
-# and starts it in the *current working directory*.
-# This is the "new tab" experience for tmux.
-# Usage: tn
-alias tn="tmux new-window -c ."
-# --- END NYX PROTOCOL TMUX NEW WINDOW BRAINLET ---
 
 # pyenv setup (π/0K/0R/0M/30)
 export PYENV_ROOT="$HOME/.pyenv"
@@ -348,8 +332,10 @@ nvm use --lts >/dev/null 2>&1 || true
 export PYTHON_GIL=0
 
 # bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+if [ -d "$HOME/.bun" ] ; then
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
 
-# joplin
-alias joplin='bunx --bun joplin'
+  # joplin
+  alias joplin='bunx --bun joplin'
+fi
