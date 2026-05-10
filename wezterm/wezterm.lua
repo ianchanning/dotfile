@@ -26,7 +26,7 @@ config.font = wezterm.font('Departure Mono', {
   -- stretch = 'Normal', -- Common stretches: 'Normal', 'Condensed', 'Expanded'
   -- style = 'Normal'    -- Common styles: 'Normal', 'Italic', 'Oblique'
 })
-config.font_size = 22.0
+config.font_size = 11.0
 
 -- Enable ligatures if Latin Modern Mono has them and you desire them
 -- (Many mono fonts don't have extensive ligatures beyond basics like fi, fl)
